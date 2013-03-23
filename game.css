@@ -1,0 +1,45 @@
+html, body {
+	width: 100%;
+	height: 100%;
+
+	margin:0;
+}
+
+.game_window {
+	width: 100%;
+	height: 100%;
+
+	overflow: hidden;
+}
+
+.game_play_area {
+	width: 70%;
+	height: 100%;
+
+	float: left;
+}
+
+.game_current_player_notification {
+	width: 100%;
+	height: 3%;
+}
+
+.game_board {
+	width: 100%;
+	height: 100%;
+
+	background-image: url(res/gradiant.bmp);
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	border: solid black 1px;
+
+}
+
+.game_interface {
+	width: 30%;
+	height: 100%;
+
+	background-color: #004080;
+
+	float: right;
+}
