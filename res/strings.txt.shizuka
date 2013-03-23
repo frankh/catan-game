@@ -1,0 +1,578 @@
+#################################
+#
+# Settlers of Catan String File
+#
+# Note: Only one tab must follow after the ID number 
+#       otherwise the line will be ignored.
+#
+# This is a Unicode UTF-8 file
+#
+#################################
+# ==================
+# Text used in SOC
+# ==================
+# the title of the window, when in windowed mode
+9	カタン
+# material types
+10	資源|土|麦|鉄|羊|木|なし
+# hex types
+11	水|荒野|畑|山|草原|森|砂漠
+# default user name (%d is player number)
+12	プレイヤー %d
+# phase titles, shown in title bar of message area (Info View)
+13	初期配置|チャンス カード|生産|トレード|建設|手番を開始する|盗賊を動かす|資源を盗む|街道
+# Dev Card titles
+14	収穫|教会|独占|街道|ソルジャー|市場|大学|図書館|議事堂
+# Dev Card descriptions
+15	山札から 2 つの資源を取得します。異なった種類または同一の種類の資源を取得できます。|1 ポイント獲得!|いずれかの種類の資源を選択します。他のすべてのプレイヤーから、選択した種類のすべての資源を取得できます。|2 つの新しい道を置くと、新しい家を建設できます。|盗賊を動かす。
+ one resource from the owner of an adjacent settlement or city.|1 Victory Point!|1 Victory Point!|1 Victory Point!|1 Victory Point!
+# Dev Card status
+16	チャンス カード %d (%d)
+# No Dev Cards
+17	現在手持ちのチャンス カードはありません。
+# Bought a Dev Card
+18	チャンス カードを引きました!
+# Played a Dev Card
+19	%s がカードを使用しました!
+# Can't play card on turn it was built
+20	このカードは、取得した手番では使用できません。
+# Victory point explaination
+21	このカードを使用すると、追加ポイントを取得できます。使用しない場合は手元に残り、ゲームの最後に使用できます。
+# legalese
+22	This is the electronic incarnation of the board game published by Mayfair Games, Inc., Kosmos Verlag, and other licensees of Catan GmbH. Developed by Castle Hill Studios, LLC, Charlottesville, VA. “Catan” and “Catan Online” and “The Settlers of Catan” are copyright and trademark properties of Catan GmbH and are used under license from Catan GmbH. Copyright © 2004 MSN Games & Catan GmbH. All rights reserved.|The computer version of “The Settlers of Catan®” board game by Klaus Teuber|The online version of “The Settlers of Catan®” board game by Klaus Teuber
+# Default Font Name
+23	Verdana
+# Default Bold Font Name
+24	Verdana Bold
+# ==================
+# SOC art file names
+# ==================
+# hex art
+100	hex-water.bmp|hex-hills.bmp|hex-fields.bmp|hex-mountains.bmp|hex-pasture.bmp|hex-forest.bmp|hex-desert.bmp
+# trade circles
+101	tradecircle-left.bmp|tradecircle-center.bmp|tradecircle-right.bmp
+# All materials cards
+102	materialcards.bmp
+# Default Button Image
+103	freebtn1.bmp|freebtnclicked1.bmp|freebtn1greyed.bmp
+# Player View image
+104	PlayerViewButtons.bmp
+# Rotated Question Ports
+107	port-question-0deg.bmp|port-question-60deg.bmp|port-question-120deg.bmp|port-question-180deg.bmp|port-question-240deg.bmp|port-question-300deg.bmp
+# Blank Rotated Resource Ports
+108	port-blank-0deg.bmp|port-blank-60deg.bmp|port-blank-120deg.bmp|port-blank-180deg.bmp|port-blank-240deg.bmp|port-blank-300deg.bmp
+# Resource Port images
+109	port-brick.bmp|port-grain.bmp|port-ore.bmp|port-sheep.bmp|port-lumber.bmp|notused-was-port-blank.bmp|port-4to1.bmp|port-3to1.bmp
+# Roads
+110	roads-blue.bmp|roads-red.bmp|roads-green.bmp|roads-yellow.bmp
+# Card Backgrounds
+111	DevCard.bmp
+# Cities
+112	cities.bmp
+# Settlements
+113	settlements.bmp
+# Robber
+114	robber.bmp
+# Card Select Control
+115	card-select.bmp
+# Development Cards
+116	devcard-yop.bmp|devcard-chapel.bmp|devcard-monopoly.bmp|devcard-roadbuild.bmp|devcard-soldier.bmp|devcard-market.bmp|devcard-university.bmp|devcard-library.bmp|devcard-govhouse.bmp
+# Left and Right Clickers
+117	leftclicker.bmp|rightclicker.bmp
+# Trade Resource images
+118	anyresource.bmp|port-brick.bmp|port-grain.bmp|port-ore.bmp|port-sheep.bmp|port-lumber.bmp
+# Trade Graphics
+119	divider.bmp|divider_large.bmp|tradeflag.bmp|watermark_give.bmp|watermark_want.bmp
+# Resource Port images greyed out
+120	port-brick-greyed.bmp|port-grain-greyed.bmp|port-ore-greyed.bmp|port-sheep-greyed.bmp|port-lumber-greyed.bmp|port-blank.bmp|port-4to1-greyed.bmp|port-3to1-greyed.bmp
+# Small Development cards
+121	s-devcard-soldier.bmp|s-devcard-university.bmp|s-devcard-govhouse.bmp|s-devcard-chapel.bmp|s-devcard-library.bmp|s-devcard-market.bmp|s-longest-road.bmp|s-largest-army.bmp
+# PlayerView icons
+122	playerview-icons.bmp
+# Scroll Bar images Vertical
+123	scroll-button-down.bmp|scroll-button-up.bmp|scroll-slider-vert.bmp|scroll-button-down-clicked.bmp|scroll-button-up-clicked.bmp
+# BIG and Fancy Settlers of Catan image
+124	catan_logo.bmp
+# Any Card image
+125	anycard.bmp|anyresource.bmp
+# Trade Arrows
+126	trade-arrows.bmp|declineX.bmp
+# Checkbox Images
+127	box.bmp|box_check.bmp
+# Board Background Tile
+128	board-tile.bmp
+# Controls Background Tile
+129	control-tile-blue.bmp|control-tile-red.bmp|control-tile-green.bmp|control-tile-yellow.bmp|control-tile.bmp
+# Building Cost image buttons
+130	bc_road_free.bmp|bc_road_clicked.bmp|bc_road_greyed.bmp
+131	bc_sett_free.bmp|bc_sett_clicked.bmp|bc_sett_greyed.bmp
+132	bc_city_free.bmp|bc_city_clicked.bmp|bc_city_greyed.bmp
+133	bc_dev_free.bmp|bc_dev_clicked.bmp|bc_dev_greyed.bmp
+# Main Board Buttons
+134	boardbtn.bmp|boardbtnclicked.bmp|boardbtngreyed.bmp
+# Scroll Bar images Horizontal
+135	scroll-button-left.bmp|scroll-button-right.bmp|scroll-slider-horz.bmp|scroll-button-left-clicked.bmp|scroll-button-right-clicked.bmp
+# Radio Button images
+136	radio-open.bmp|radio-closed.bmp
+# Splash Screen
+137	chs_logo.bmp|splash_shield.bmp|splash_top.bmp|splash_catan.bmp|splash_compgame.bmp|splash_msn.bmp|splash_online.bmp|splash_sun.bmp
+# Phase Change Graphic
+138	castle.bmp|knights.bmp
+# Catan Dialog Border Images
+139	scrolls-big.bmp|scrolls-small.bmp
+# Catan logos
+140	catan_logo.bmp|shield.bmp|windmill_right.bmp
+# Help Arrow
+141	helparrow.bmp
+# Small buttons used in some dialogs
+142	freebtnsmall.bmp|freebtnsmallclicked.bmp|freebtnsmallgreyed.bmp
+# Popup Menu images
+143	menu_up_enabled.bmp|menu_up_disabled.bmp|menu_down_enabled.bmp|menu_down_disabled.bmp|pull_arrow.bmp
+# Large Longest Road and Largest Army images
+144	lroad_large.bmp|larmy_large.bmp
+# Roads Highlighted
+145	roads-blue_highlight.bmp|roads-red_highlight.bmp|roads-green_highlight.bmp|roads-yellow_highlight.bmp
+# Settlements Highlighted
+146	settlements_highlight.bmp
+# Cities Highlighted
+147	cities_highlight.bmp
+# Robber stealing animations
+148	robber_sethit.bmp|robber_setselect.bmp
+# 50% hatchmark for placing over background for pause
+149	hatch.bmp
+# Robber dialog
+150	robber_dialog.bmp
+# Gradient board image
+151	gradiant.bmp
+# Dice animations
+200	Dice.bmp|DiceAnim.bmp|DiceLarge.bmp
+# =============================================
+# Event Text, shown in message area (Info View)
+# =============================================
+# dice roll, %d is roll value
+1000	生産のサイコロの目は %d です。
+# production text, 1st %s is player name, 2nd %s is description of what they got
+# such as 1 wood, 1 brick, 2 ore
+1001	%s を生産しました。|%s を生産しました (%s が盗賊によって妨害されました)。|%s を生産しました (%s は山札から取得できません)。|%s を生産しました (%s は盗賊によって妨害され、%s は山札から取得できません)。
+1002	%s は %s を生産しました。|%s は %s を生産しました (%s は盗賊によって妨害されました)。|%s は %s を生産しました (%s は山札から取得できません)。|%s は %s を生産しました (%s は盗賊によって妨害され、%s は山札から取得できません)。
+# build mode text
+1003	-- unused -- 
+1004	そこに道を置くことはできません。
+1005	そこに建設することはできません。
+1006	強調表示されたボードの境界のいずれかをクリックし、道を置きます。
+1007	強調表示されたボードの境界のいずれかをクリックし、家を置きます。
+1008	強調表示されたボードの境界のいずれかをクリックし、街を置きます。
+1009	そこに道を置くことはできません。建設は取り消されます。
+1010	そこに建設することはできません。建設は取り消されます。
+1011	-- unused --
+1012	道のコマがないため、道を建設できません。
+1013	家のコマがないため、家を建設できません。
+1014	街のコマがないため、街を建設できません。
+1015	チャンス カードを引きました。使用するには、[チャンス カード] ボタンをクリックします。
+1016	手持ちのカードを調べるには矢印をクリックします。
+1017	このカードを使用するには [プレイ] をクリックします。
+1018	このカードは、現在使用できません。
+# start turn, %s is player name
+1019	%s の手番です。
+# Discard dialog
+1020	%s は、捨てるカードを手札から %d 枚選択してください。
+1021	盗賊は他の土地に置く必要があります。もう一度置いてください。
+1022	手持ちのチャンス カード
+1023	いずれかの土地をクリックして盗賊を動かします。砂漠と自分が家または街を建設した土地は避けてください。
+1024	隣接している家または街を選択し、そのプレイヤーから資源を 1 つ取得します。
+1025	盗賊のいる土地に隣接した家または街を選択する必要があります。もう一度選択してください。
+1026	%s を 1 つ %s から盗みました。
+1027	%s は %s からカードを 1 枚盗みました。
+1028	%s を捨てました。
+1029	%s は %s を捨てました。
+1030	%s は、山札から取得する資源を %d 枚選択してください。
+1031	%s は独占する資源 %d を選択してください。
+# Trade Dialog Strings
+1032	ほしい資源|あげる資源
+1033	残念ながら、現在、道を建設できる場所はありません。
+1034	残念ながら、家を建設できる場所はありません。最初に、使用できる境界に道を建設してください。
+1035	残念ながら、街を建設できる場所はありません。最初に、家を建設する必要があります。
+1036	残念ながら、山札が空であるため、チャンス カードを引くことはできません。
+# End Game strings
+1037	ゲームは終了です! カタン島は開拓されました! %s が勝利者です!
+1038	%s、プレイヤー -%d、は 10 ポイントを獲得しました。
+1039	1 位|2 位|3 位|4 位|(引き分け)
+1040	%s、プレイヤー -%d
+1041	合計 %d ポイントを獲得:
+1042	家 %d ポイント、街 %d ポイント
+1043	チャンス カード %d ポイント
+1044	ラージェスト アーミー 2 ポイント|ロンゲスト ロード 2 ポイント
+1045	%s はトレードで %s の %s に %s を与えました。
+1046	%s 港で %s を %s とトレードしました。
+# Message Strings
+1047	接続が解除されました。
+1048	%s がゲームを終了しました。
+1049	他のすべてのプレイヤーがゲーム開始の準備を整えるまでお待ちください。
+1050	ゲームを開始します。
+1051	%s は山札から %s を取得しました。
+# Online Startup Dialog Strings
+1052	プレイする|ゲーム名:
+1053	開拓ゲーム|カタン
+1054	%d- プレイヤー
+1055	特別な|オプションなし
+1056	時間|制限なし
+1057	以下のボタンをクリックし、使用する色を選択してください!|他のプレイヤーが選択を終了するまでお待ちください。|すべての色が選択されました。ゲームが開始するまでお待ちください。
+1058	青|赤|緑|黄
+1059	カタンへようこそ!
+# Downloadable Game Startup Dialog Strings
+1060	選択:|開拓者|船乗り|街|騎士|SOC カード|ゲーム
+1061	保存されたゲームをロードします。|新規ゲームを開始します。|ゲームの設定を変更します。|終了してデスクトップに移動します。
+# New game setup Dialog Strings
+1062	プレイヤー数:|位置:|色:|AI 1:|AI 2:|AI 3:|名前:
+1063	4 人|3 人
+1064	ランダム|1|2|3|4
+1065	知識|態度|バイアス
+1066	通常|上級|初級
+1067	中級|温和|攻撃的|ランダム
+#1068	(NO LONGER USED)
+1069	新規|再開|リプレイ
+# Game Settings Strings
+1070	設定
+1071	音量|音楽の音量|プレイ速度|簡略化されたインターフェイス|アニメーションを表示|ヒントを表示|確率を表示|ヘルプを表示|オフ|最大|低|高
+# Load/Save Strings
+1072	ゲームをロードする|ゲームを保存する
+# Game Details Strings
+1073	手持ちのコマ:|家|街|道
+1074	プレイ中のカード:|ソルジャー|ポイント カード
+1075	ポイント:|家|街|ポイント チャンス カード|ロンゲスト ロード|ラージェスト アーミー|合計ポイント
+1076	手持ちでないカードまたは使用されていないカード:
+1077	ゲームが開始されてから %d 分経過しました。
+1078	このゲームでの手番の制限時間は %d 分です。
+1079	プレイヤー オプション:
+1080	確率|ヘルプを表示|港でトレード
+# More Event Strings
+1081	最初の資源として %s を取得します。
+1082	%s は最初の資源として %s を取得します。
+1083	独占カードを使用して、他のプレイヤーから%d  %s を取得しました。
+1084	残念ながら、誰も %s を持っていませんでした。したがって、独占カードは無駄になります。
+1085	%s は、独占カードを使用して他のプレイヤーから %s %dを取得しました。
+1086	%s は %s を取得しようとしましたが、誰も持っていなかったので無駄になりました。
+1087	盗賊を土地 %s に置きました。
+1088	%s は盗賊を土地 %s に置きました。
+1089	%s カードを引きました。
+1090	%s はチャンス カードを引きました。
+1091	%s カードを使用しました。
+1092	%s は %s カードを使用しました。
+1093	新しい道を置きました。
+1094	%s は新しい道を置きました。
+1095	新しい家を置きました。
+1096	%s は新しい家を置きました。
+1097	家を街に置き換えました。
+1098	%s は家を街に置き換えました。
+1099	%s が %s 1 を盗みました。
+# ==================
+# Button Text
+# ==================
+# Game Buttons
+1100	ヒント|設定|トレード|チャンス カード|建設|手番を終了|サイコロを振る|詳細|有効|無効|ヘルプ オン|ヘルプ オフ|元に戻す|クレジット
+# Dialog Buttons
+1101	OK|取り消し|終了|申し出|プレイ|港でトレード|考慮|終了|はい|いいえ|保存|ロード|選択|開始|メイン メニュー|削除|レポート|終了|新規|終了|リプレイ|再開
+# Trade Dialog Buttons
+1102	一致|確認|拒否|非表示|表示|再開
+# Radio Button Text
+1103	オン|オフ
+# ==================
+# More Event Strings
+# ==================
+# Game Phase Dialog Strings
+1150	初期配置の開始
+1151	ゲームを開始してください!
+# Card Popup Dialog Strings
+1152	%s が盗賊を使用して %s を盗みました。|%s が %s を独占し、 %s を取得しました。|%s が収穫を使用して山札から %s を取得しました。|資源が生産されました。|%s を独占し、他のプレイヤーから %s を取得しました。|%s がロンゲスト ロードを取得しました。|%s がラージェスト アーミーを取得しました。|You just stole 1 card from %s.
+# Longest Road Popup strings
+1153	ロンゲスト ロード|2 ポイント獲得!|このカードは、最低 5 つの道をつなげたロンゲスト ロードを持つプレイヤーに渡されます。別のプレイヤーがこれよりも長い道を建設した場合、このカードはそのプレイヤーに渡されます。
+# Largest Army Popup strings
+1154	ラージェスト アーミー|2 ポイント獲得!|このカードは、最低 3 枚のソルジャーで構成されたラージェスト アーミーを持つプレイヤーに渡されます。別のプレイヤーがこれよりも大きいラージェスト アーミーを構成した場合、このカードはそのプレイヤーに渡されます。
+# ==================
+# Sounds
+# ==================
+1201	01 - start turn.wav
+1202	02 - end turn.wav
+1203	03 - dice roll.wav
+1204	04 - old victory point(not used).wav
+1205	05 - start setup + start play.wav
+1206	06 - win.wav
+1207	07 - button click.wav
+1208	08 - old button can't click (not used).wav
+1209	09 - robber rolled.wav
+1210	10 - robber dropped + settlement selected.wav
+1211	11 - old settlement selected (not used).wav
+1212	12 - play dev card.wav
+1213	13 - old highlight move (not used).wav
+1214	14 - resource highlight.wav
+1215	15 - build drop.wav
+1216	16 - resource created.wav
+1217	17 - build select + build dev card.wav
+1218	18 - old build development card (not used).wav
+1219	19 - old build drop (not used).wav
+1220	20 - undo.wav
+1221	21 - enact trade + accept trade.wav
+1222	22 - trade flag.wav
+1223	23 - old trade accept (not used).wav
+1224	24 - trade decline.wav
+1225	25 - finished trade.wav
+1226	26 - timer running out.wav
+1227	27 - time over.wav
+# ==================
+# ToolTips
+# ==================
+# GameController Button Tooltips
+1250	サイコロを振る
+1251	チャンス カードを表示および使用する
+1252	トレードを開始する
+1253	道、家、または街を建設する
+1254	手番を終了する
+1255	詳細なゲームの概要
+1256	ゲーム設定を変更する
+1257	ヒントを要求する
+1258	港でのトレードを開始する
+# InventoryView Tooltips
+1301	道を建設する
+1302	家を建設する
+1303	街を建設する
+1304	チャンス カードを建設する
+1305	手持ちの土資源
+1306	手持ちの麦資源
+1307	手持ちの鉄資源
+1308	手持ちの羊資源
+1309	手持ちの木資源
+1310	手持ちのチャンス カード
+# PlayerStats Tooltips
+1350	資源カード
+1351	チャンス カード
+1352	使用したソルジャー
+1353	ロンゲスト ロード
+1354	ポイント
+1355	%s のゲーム統計
+# PlayerNameView Tooltips
+1380	現在のプレイヤー
+1381	次のプレイヤー
+1382	その次のプレイヤー
+1383	前のプレイヤー
+1384	1 ポイントのチャンス カード
+# BoardView Tooltips, The value is the number of times out of 36 that a hex adjacent to the intersection will produce. 
+1400	ボードの確率を表示/非表示にする
+1401	いずれか 1 つの資源 3 つとそれ以外の資源とを交換する
+1402	2 つの %s を他のいずれかの資源と交換する
+1403	海マップ - プレイでは使用されない
+1404	サイコロを振って %d が出たので %s が生産される
+1405	6 角形の辺に道を建設する
+1406	36 回サイコロを振って資源 %d が生産された
+1407	勝敗とソルジャー カードが表示されるエリア
+1409	ボードの確率を表示/非表示にする
+1410	港でのトレードを開始する
+# TradeDialog Tooltips
+1500	資源 %s がほしい
+1501	資源 %s をあげる
+1502	トレードでほしい資源
+1503	トレードであげる資源
+1504	%s %s トレードの申し出
+1505	%s %s トレードの申し出
+1506	%s %s トレードの申し出
+1507	%s のトレードの申し出を断る
+1508	ほしい資源エリアに土を追加する
+1509	あげる資源エリアに麦を追加する
+1510	ほしい資源エリアに鉄を追加する
+1511	あげる資源エリアに羊を追加する
+1512	ほしい資源エリアに木を追加する
+1513	ほしい資源エリアに "何でも取得できる" を追加する
+1514	あげる資源エリアに土を追加する
+1515	あげる資源エリアに麦を追加する
+1516	あげる資源エリアに鉄を追加する
+1517	あげる資源エリアに羊を追加する
+1518	あげる資源エリアに木を追加する
+1519	あげる資源エリアに "何でも取得できる" を追加する
+1520	港でのトレードを開始
+1521	トレードを終了する
+1522	トレード ウィンドウに戻る
+1523	非表示
+1524	有効なトレーダー
+# PortTradeWindow Tooltips
+1548	ほしい資源エリアに %s を追加する
+1549	あげる資源エリアに %s を追加する
+1550	所有している港
+1551	資源 4 つをその他のいずれかの資源とトレードする
+1552	資源 3 つをその他のいずれかの資源とトレードする
+1553	資源 %s の 2 つをその他のいずれかの資源とトレードする
+1554	ほしい資源が表示されるエリア
+1555	あげた資源が表示されるエリア
+1556	あげる資源エリアに %s を %d 枚追加する
+1557	ほしい資源エリアに %s を追加する
+1558	ほしい資源エリアまたはあげる資源エリアに %s を追加する
+1559	トレードで選択された資源
+1560	トレードを取り消す
+# PortTrade Help
+1561	港で資源をトレードするには、まず灰色のボックスでいずれかの港の種類をクリックします。
+1562	港でトレードすることはできません。トレードするのに十分な資源がありません。
+1563	強調表示された資源から、手放す種類の資源を 1 つ選択します。同じ資源が最低 4 つ必要です。
+1564	強調表示された資源から、手放す種類の資源を 1 つ選択します。同じ種類の資源が最低 3 つ必要です。
+1565	交換により取得したい種類の資源を選択します。
+1566	[トレード] ボタンをクリックし、トレードを実行します。
+# Trade Help
+1567	トレードを申し出るには、ほしい資源をクリックし、他のすべてのプレイヤーにそのことがわかるようにします。
+1568	トレードの申し出を受け入れるには、あげる資源をクリックし、他のすべてのプレイヤーにそのことがわかるようにします。
+1569	申し出に興味を示したプレイヤーがいる場合は、下を向いた矢印が表示されます。
+1570	[確認] ボタンをクリックしてトレードを完了します。
+1571	他のプレイヤーからの申し出を受け入れるには、[一致] ボタンをクリックします。
+1572	この矢印は、申し出に興味を示したプレイヤーがいることを意味します。
+1573	カードがないため、トレードできません。
+1574	カードがないため、トレードできません。[非表示] をクリックするか、他のプレイヤーのトレードが終わるまでお待ちください。
+1575	トレードは、他のプレイヤーが確認すると完了します。
+1576	%s がトレードの申し出を断りました。申し出の条件を上げることができます。
+1577	%s がすべてのトレードを断った
+# Development card Window Tooltips
+1580	前のチャンス カードを表示
+1581	次のチャンス カードを表示
+1582	チャンス カードを使用する
+1583	使用不可 - この手番で建設済み
+1584	使用不可 - この手番ですでにチャンス カードを使用した
+1585	ウィンドウを閉じる
+1586	いずれか 2 つの資源を取得するようプレイする
+1587	1 ポイント換算
+1588	他のプレイヤーからいずれかの種類の資源をすべて取得する
+1589	2 つの道を自由に建設する
+1590	盗賊を動かし、資源を盗む
+1591	1 ポイント換算
+1592	1 ポイント換算
+1593	1 ポイント換算
+1594	1 ポイント換算
+# selectcarddialog tooltips
+1600	他のプレイヤーから取得する資源として %s を選択する
+1601	他のプレイヤーから取得する資源として選択されている %s を選択解除する。
+1602	選択の完了
+1603	%s を選択する
+1604	%s を選択解除する
+1605	%s を選択する
+1606	%s を選択解除する
+# Game Details dialog tooltips
+1650	ゲームの詳細を閉じる
+# DevCardIconClickView
+1655	手持ちチャンス カード
+1656	%d がソルジャー カードを使用した
+1657	1 ポイント (未カウント)
+1658	1 ポイント (未カウント)
+# InfoView ,Message area
+1660	メッセージおよび指示
+# DiceView 
+1665	最後に出たサイコロの目
+# Turn time
+1700	時間: %s
+# Load Game Window
+1720	選択されたゲームをロードする
+1721	選択されたゲームを削除する
+1722	メイン メニューに戻る
+# New Game window
+1729	Click to choose options
+1730	次の選択
+1731	前の選択
+1732	メイン メニューに戻る
+1733	ゲームを開始
+1734	クイック ゲーム モード
+1735	Using this variant each player builds a city in place of a second settlement during start up.
+# Game Settings window
+1740	コンピュータのプレイヤーの知識
+1741	コンピュータのプレイヤーの態度
+1742	コンピュータのプレイヤーのバイアス
+1743	現在のゲームを保存する
+1744	メイン メニューに戻る
+1745	進行中のゲームに戻る
+# Save Game Window
+1750	現在のゲームを保存する
+1751	選択されたゲームを削除する
+1752	メイン メニューに戻る
+#=======================
+#LOAD/SAVE ERROR MESSAGES
+#========================
+1756	File could not be found to be loaded. It may have already been deleted or moved.
+1757	File already exists. Do you want to overwrite it?
+1758	Are you sure you want to delete the saved game “%s”?
+# Help Area
+1755	ヘルプ スクロールを有効/無効にする
+#undo button's tooltips
+1760	置いた道を元に戻す
+1761	置いた家を元に戻す
+1762	置いた街を元に戻す
+1763	置いた道を元に戻す
+1764	置いた家を元に戻す
+1765	置いた街を元に戻す
+1766	港でのトレードを取り消す
+1767	収穫カードの使用を取り消す
+1768	ポイント カードの使用を取り消す
+1769	ソルジャー カードの使用を取り消す
+1770	独占カードの使用を取り消す
+1771	街道カードの使用を取り消す
+1772	置いた盗賊を元に戻す
+1773	最後のアクションを実行できません
+# ResourceLeftView
+1800	使用していない道の数
+1801	使用していない家の数
+1802	使用していない街の数
+# ==================
+# MIDI Music
+# ==================
+2000	catan01.mid
+# ==================
+# MP3 Music
+# ==================
+2100	catan01.mp3
+# ==================
+# MISCELLANEOUS
+# ==================
+2200	人
+2201	Al|Alan|Andrea|Anna|Ariel|Arnd|Axel|Bennie|Bill|Bob|Brad|Brett|Bridget|Bryan|Carol|Caroline|Catherine|Celia|Charlie|Charo|Cherie|Christa|Christoph|Claudia|Coleman|Colette|Dagmar|Dave|Dawne|Don|Doug|Ed|Edmund|Emily|Fritz|Greg|Guido|Hannah|Jamie|James|Jane|Jason|Jennifer|Jesse|Jessica|Jhinuk|John|Jordan|Joshua|Judy|Kaitlin|Karen|Karl|Katie|Kelton|Konnor|Kris|Larry|Lars|Lauren|Marcee|Margaret|Marianne|Matt|Melba|Mo|Moira|Mort|Nancy|Nick|Olivia|Page|Paul|Pete|Peter|Pro|Reiner|Renee|Rich|Richard|Ross|Schar|Scott|Shane|Sharry|Steve|Tabitha|Theo|Thomas|Thorsten|Tim|Tom|Vicki|Wendy|Will|William|Wolfgang|Zander
+2202	1 番
+2203	2 番
+2204	%s は家 %s を置いてください。
+2205	この手番ですでに生産を行いました。
+2206	%s が %d カードを捨てました。
+2207	他のプレイヤーがカードを捨てるまでお待ちください。
+#=====================
+# build mode text
+#=====================
+2208	強調表示された場所をクリックして最初の道を置きます。
+2209	強調表示された場所をクリックして 2 番目のフリー ロードを置きます。
+#====================
+2210	ゲームのプレイ中、このエリアにはゲームのヘルプが表示されます。
+2211	この家の隣に道を置きます。
+2212	家の隣に道を置きます。
+#===============
+# save game name
+#===============
+2213	名前を付けて保存:|ゲーム 1 を保存する|ゲーム 2 を保存する|ゲーム 3 を保存する|ゲーム 4 を保存する|ゲーム 5 を保存する
+#===============
+2214	取得済み
+2215	選択解除
+2216	選択
+#==================
+#Inventory view
+#==================
+2217	建設|手持ちのカード
+#Status caption
+2218	ステータス: 
+#=================
+#Board view misc.
+#=================
+2219	概要|ポイント|合計
+2220	使用されていないカード
+2221	クレジット
+2222	残念ながら、カードを盗む対象のプレイヤーが該当するカードを持っていませんでした。
+2223	PAUSED|Click to Continue
+2224	CONNECTING...
+#====================
+# Game Credits!!!!! 
+#====================
+# Format Command: [NN,F,J] where 
+# NN = point size, 
+# F = one of b,i,u (bold, italics, underline), 
+# J = one of l,r,c (left, right, centered)
+# Note: If a format markup (i.e. []) is not specified the previous markup takes precedence.
+# Break Command: [b] 
+# Adds a line break
+# Next Column Command: [c] 
+# Starts a new column
+2300	[13,b,c]Castle Hill Studios|[b]|[10,i,c]プログラミング|[11,b,c]Ed Zavada|Ariel Butler|Alan Davies|Suraj Deep Gogoi|Hemant Muthiyan|[b]|[10,i,c]アートワーク|[11,b,c]Karl Roelofs|[b]|[10,i,c]サウンド|[11,b,c]Brad Derrick|[b]|[10,i,c]プロデューサー|[11,b,c]Karl Roelofs|[b]|[10,i,c]エグゼクティブ プロデューサー|[11,b,c]Pete Fenlon|[b]|[10,i,c]ゲーム & AI デザイン|[11,b,c]Coleman Charlton|[b]|[10,i,c]チュートリアル|[11,b,c]Rich Sisson|[b]|[10,i,c]Special Thanks:|[11,p,c]Al Roireau, John Taylor, Kelton Flynn|James Whitehouse, Charo Mina Rojas|Shizuka Tanaka, Nick Laiacona|Jack Brunson Jr., Jogesh Sharma|Nick Gedge|[c]|[13,b,c]Catan GmbH|[b]|[10,i,c]ゲーム デザイン & AI コンセプト|[11,b,c]Klaus Teuber|[b]|[10,i,c]コンサルティング|[11,b,c]Guido Teuber|[b]|[10,i,c]プロデューサー|[11,b,c]Arnd Beenen|[b]|[10,i,c]バックグラウンド ミュージック|[11,b,c]Matthias Steinwachs|[b]|[b]|[11,p,c]ボード ゲーム版の開拓ゲーム カタンに基づく|デザイン担当 Klaus Teuber。|[b]|アートワーク担当 Stephen Graham Walsh。|[10,p,c]Mayfair Games, Inc.|および Catan GmbH の使用許可済み。|発明者 Klaus Teuber|および Reiner Müller。|[b]|Special thanks: Guido Teuber; Arnd Beenen;|Claudia Teuber; Bennie Teuber; Emily Johnson;|Liam Teuber; Darwin Bromley;|Matt Schwabel; Jason Hawkins; William Niebling;|Will Niebling; Bob Carty; Larry Roznai;|S. Coleman Charlton; and Pete Fenlon.|[b]|©1997, 2004 Mayfair Games, Inc.

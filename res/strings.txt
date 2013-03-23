@@ -1,0 +1,779 @@
+﻿#################################
+#
+# Settlers of Catan String File
+#
+# Note: Only one tab must follow after the ID number 
+#       otherwise the line will be ignored.
+#
+# This is a Unicode UTF-8 file
+#
+#################################
+
+# ==================
+# Text used in SOC
+# ==================
+
+# the title of the window, when in windowed mode
+9	Catan
+
+# material types
+10	resource(s)|brick|grain|ore|wool|lumber|nothing
+
+# hex types
+11	water|hill|field|mountain|pasture|forest|desert
+
+# default user name (%d is player number)
+12	Player %d
+
+# phase titles, shown in title bar of message area (Info View)
+13	Initial Setup|Development Card|Production|Trading|Building|Start Turn|Move Robber|Steal Resource|Road Building
+
+# Dev Card titles
+14	Year of Plenty|Chapel|Monopoly|Road Building|Soldier|Market|University of Catan|Library|Governor's House
+
+# Dev Card descriptions
+15	Take any 2 resources from the bank. They can be two different or two of the same resources.|1 Victory !|Pick one type of resource. All other players must give you all their resources of this type.|Place 2 new roads as if you just built them.|Move the robber. 
+ one resource from the owner of an adjacent settlement or city.|1 Victory Point!|1 Victory Point!|1 Victory Point!|1 Victory Point!
+
+# Dev Card status
+16	Development Card %d of %d
+
+# No Dev Cards
+17	You currently have no development cards.
+
+# Bought a Dev Card
+18	You bought a development card!
+
+# Played a Dev Card
+19	%s played a card!
+
+# Can't play card on turn it was built
+20	This card cannot be played on the turn it was built.
+
+# Victory point explaination
+21	This card gives you an extra victory point. You do not play it. It stays in your hand and will be revealed at the end of the game.
+
+# legalese
+22	This is the electronic incarnation of the board game published by Mayfair Games, Inc., Kosmos Verlag, and other licensees of Catan GmbH. Developed by Castle Hill Studios, LLC, Charlottesville, VA. “Catan” and “Catan Online” and “The Settlers of Catan” are copyright and trademark properties of Catan GmbH and are used under license from Catan GmbH.|Copyright © 2004-2005 Microsoft Corporation & Catan GmbH. All rights reserved.
+
+# Default Font Name
+23	Verdana
+
+# Default Bold Font Name
+24	Verdana Bold
+
+# upsell text
+25	The computer version of|“The Settlers of Catan®”|board game by Klaus Teuber
+
+26	The online version of|“The Settlers of Catan®”|board game by Klaus Teuber
+
+# ==================
+# SOC art file names
+# ==================
+
+# hex art
+100	hex-water.bmp|hex-hills.bmp|hex-fields.bmp|hex-mountains.bmp|hex-pasture.bmp|hex-forest.bmp|hex-desert.bmp
+
+# trade circles
+101	tradecircle-left.bmp|tradecircle-center.bmp|tradecircle-right.bmp
+
+# All materials cards
+102	materialcards.bmp
+
+# Default Button Image
+103	freebtn1.bmp|freebtnclicked1.bmp|freebtn1greyed.bmp
+
+# Player View image
+104	PlayerViewButtons.bmp
+
+# Rotated Question Ports
+107	port-question-0deg.bmp|port-question-60deg.bmp|port-question-120deg.bmp|port-question-180deg.bmp|port-question-240deg.bmp|port-question-300deg.bmp
+
+# Blank Rotated Resource Ports
+108	port-blank-0deg.bmp|port-blank-60deg.bmp|port-blank-120deg.bmp|port-blank-180deg.bmp|port-blank-240deg.bmp|port-blank-300deg.bmp
+
+# Resource Port images
+109	port-brick.bmp|port-grain.bmp|port-ore.bmp|port-sheep.bmp|port-lumber.bmp|notused-was-port-blank.bmp|port-4to1.bmp|port-3to1.bmp
+
+# Roads
+110	roads-blue.bmp|roads-red.bmp|roads-green.bmp|roads-yellow.bmp
+
+# Card Backgrounds
+111	DevCard.bmp
+
+# Cities
+112	cities.bmp
+
+# Settlements
+113	settlements.bmp
+
+# Robber
+114	robber.bmp
+
+# Card Select Control
+115	card-select.bmp
+
+# Development Cards
+116	devcard-yop.bmp|devcard-chapel.bmp|devcard-monopoly.bmp|devcard-roadbuild.bmp|devcard-soldier.bmp|devcard-market.bmp|devcard-university.bmp|devcard-library.bmp|devcard-govhouse.bmp
+
+# Left and Right Clickers
+117	leftclicker.bmp|rightclicker.bmp
+
+# Trade Resource images
+118	anyresource.bmp|port-brick.bmp|port-grain.bmp|port-ore.bmp|port-sheep.bmp|port-lumber.bmp
+
+# Trade Graphics
+119	divider.bmp|divider_large.bmp|tradeflag.bmp|watermark_give.bmp|watermark_want.bmp
+
+# Resource Port images greyed out
+120	port-brick-greyed.bmp|port-grain-greyed.bmp|port-ore-greyed.bmp|port-sheep-greyed.bmp|port-lumber-greyed.bmp|port-blank.bmp|port-4to1-greyed.bmp|port-3to1-greyed.bmp
+
+# Small Development cards
+121	s-devcard-soldier.bmp|s-devcard-university.bmp|s-devcard-govhouse.bmp|s-devcard-chapel.bmp|s-devcard-library.bmp|s-devcard-market.bmp|s-longest-road.bmp|s-largest-army.bmp
+
+# PlayerView icons
+122	playerview-icons.bmp
+
+# Scroll Bar images Vertical
+123	scroll-button-down.bmp|scroll-button-up.bmp|scroll-slider-vert.bmp|scroll-button-down-clicked.bmp|scroll-button-up-clicked.bmp
+
+# BIG and Fancy Settlers of Catan image
+124	catan_logo.bmp
+
+# Any Card image
+125	anycard.bmp|anyresource.bmp
+
+# Trade Arrows
+126	trade-arrows.bmp|declineX.bmp
+
+# Checkbox Images
+127	box.bmp|box_check.bmp
+
+# Board Background Tile
+128	board-tile.bmp
+
+# Controls Background Tile
+129	control-tile-blue.bmp|control-tile-red.bmp|control-tile-green.bmp|control-tile-yellow.bmp|control-tile.bmp
+
+# Building Cost image buttons
+130	bc_road_free.bmp|bc_road_clicked.bmp|bc_road_greyed.bmp
+131	bc_sett_free.bmp|bc_sett_clicked.bmp|bc_sett_greyed.bmp
+132	bc_city_free.bmp|bc_city_clicked.bmp|bc_city_greyed.bmp
+133	bc_dev_free.bmp|bc_dev_clicked.bmp|bc_dev_greyed.bmp
+
+# Main Board Buttons
+134	boardbtn.bmp|boardbtnclicked.bmp|boardbtngreyed.bmp
+
+# Scroll Bar images Horizontal
+135	scroll-button-left.bmp|scroll-button-right.bmp|scroll-slider-horz.bmp|scroll-button-left-clicked.bmp|scroll-button-right-clicked.bmp
+
+# Radio Button images
+136	radio-open.bmp|radio-closed.bmp
+
+# Splash Screen
+137	chs_logo.bmp|splash_shield.bmp|splash_top.bmp|splash_catan.bmp|splash_compgame.bmp|splash_msn.bmp|splash_online.bmp|splash_sun.bmp
+
+# Phase Change Graphic
+138	castle.bmp|knights.bmp
+
+# Catan Dialog Border Images
+139	scrolls-big.bmp|scrolls-small.bmp
+
+# Catan logos
+140	catan_logo.bmp|shield.bmp|windmill_right.bmp
+
+# Help Arrow
+141	helparrow.bmp
+
+# Small buttons used in some dialogs
+142	freebtnsmall.bmp|freebtnsmallclicked.bmp|freebtnsmallgreyed.bmp
+
+# Popup Menu images
+143	menu_up_enabled.bmp|menu_up_disabled.bmp|menu_down_enabled.bmp|menu_down_disabled.bmp|pull_arrow.bmp
+
+# Large Longest Road and Largest Army images
+144	lroad_large.bmp|larmy_large.bmp
+
+# Roads Highlighted
+145	roads-blue_highlight.bmp|roads-red_highlight.bmp|roads-green_highlight.bmp|roads-yellow_highlight.bmp
+
+# Settlements Highlighted
+146	settlements_highlight.bmp
+
+# Cities Highlighted
+147	cities_highlight.bmp
+
+# Robber stealing animations
+148	robber_sethit.bmp|robber_setselect.bmp
+
+# 50% hatchmark for placing over background for pause
+149	hatch.bmp
+
+# Robber dialog
+150	robber_dialog.bmp
+
+# Gradient board image
+151	gradiant.bmp
+
+# AI and Human Icons
+152	ai_icon.bmp|human_icon.bmp
+
+# Dice animations
+200	Dice.bmp|DiceAnim.bmp|DiceLarge.bmp
+
+# =============================================
+# Event Text, shown in message area (Info View)
+# =============================================
+
+# dice roll, %d is roll value
+1000	The production dice roll is %d.
+
+# production text, 1st %s is player name, 2nd %s is description of what they got
+# such as 1 wood, 1 brick, 2 ore
+1001	You produced %s.|You produced %s (%s blocked by the robber).|You produced %s (%s not available from the bank).|You produced %s (%s blocked by the robber and %s not available from the bank).
+1002	%s produced %s.|%s produced %s (%s blocked by the robber).|%s produced %s (%s not available from the bank).|%s produced %s (%s blocked by the robber and %s not available from the bank).
+
+# build mode text
+1003	Trade|Undo|Decline
+1004	You cannot place a road there.
+1005	You cannot build there. 
+1006	Click on one of the highlighted seams on the board to place your road.
+1007	Click a highlighted intersection on the board to place your settlement.
+1008	Click a highlighted intersection on the board to place your city.
+1009	You cannot place a road there. Building cancelled.
+1010	You cannot build there. Building cancelled.
+1011	%s has been disabled for this turn due to excessive use.
+1012	You cannot build a road because you have no road pieces left to place.
+1013	You cannot build a settlement because you have no pieces left to place.
+1014	You cannot build a city because you have no city pieces left to place.
+1015	You purchased a development card. Click the "Dev Cards" button to use it.
+1016	Click on the arrows to examine all of your cards. 
+1017	To use this card click play.
+1018	This card cannot be played now.
+
+# start turn, %s is player name
+1019	%s, it is now your turn.
+
+# Discard dialog
+1020	%s, select %d cards from your hand to discard.
+
+1021	You must place the robber on another land hex. Please try again.
+1022	Development Cards Held
+1023	Choose hex to move the robber. Avoid desert and hexes you've built on.
+1024	Select an adjacent settlement or city to take a resource from that player.
+1025	You must choose another player's building next to the robber. Try again. 
+1026	You stole 1 %s from %s.
+1027	%s stole a card from %s.
+1028	You discarded %s.
+1029	%s discarded %s.
+
+1030	%s, select %d resources to take from the bank.
+1031	%s, select %d resource to monopolize.
+
+# Trade Dialog Strings
+1032	WANT|GIVE
+
+1033	Sorry, no possible locations for you to build a road.
+1034	Sorry, nowhere to build. Build a road to a usable intersection first.
+1035	Sorry, nowhere to build a city. You must build a settlement first.
+1036	Sorry, you cannot buy a development card because the deck is empty.
+
+# End Game strings
+1037	%s Wins!
+1038	(not used)
+1039	(not used)
+1040	%s:
+1041	%d Victory Points
+1042	%d VPs for settlements, %d VPs for cities
+1043	%d VPs for dev cards
+1044	2 VPs for Largest Army|2 VPs for Longest Road
+
+1045	%s gave %s in trade for %s's %s.
+1046	%s port traded %s for %s.
+
+# Message Strings
+1047	You have been disconnected.
+1048	%s has left the game.
+1049	Please wait until all players have entered the game.
+1050	The game has started.
+
+1051	%s took %s from the bank.
+
+# Online Startup Dialog Strings
+1052	You are|playing:
+1053	The Settlers|of Catan
+1054	%d-Player
+1055	No Special|Options
+1056	No Time|Limit
+1057	Click a button below to choose your color!|Please wait while other players choose.|Colors chosen. Starting game...
+1058	Blue|Red|Green|Yellow
+1059	Welcome to Catan!
+
+# Downloadable Game Startup Dialog Strings
+1060	Select:|Settlers|Seafarers|Cities and|Knights|SOC Card|Game
+1061	Load a saved game.|Start a new game.|Change your game settings.|Exit to your desktop.
+
+# New game setup Dialog Strings
+1062	Players:|Position:|Color:|1:|2:|3:|Name:
+1063	4-Players|3-Players
+1064	Random|One|Two|Three|Four
+1065	Difficulty|Personality|Bias
+1066	Advanced|Expert|Beginner
+1067	Friendly|Neutral|Aggressive|Random
+#1068	(NO LONGER USED)
+1069	New Game|Restart Game|Replay Game
+
+# Game Settings Strings
+1070	Game Settings
+1071	Sound|Music|Play Speed|Simple Interface|Full Screen|Show Tooltips|Show Probability|Show Help|Off|Max|Slow|Fast
+
+# Load/Save Strings
+1072	Load Game|Save Game
+
+# Game Details Strings
+1073	Pieces left:|Settlements|Cities|Roads
+1074	Cards in Play:|Soldiers|VP Cards
+1075	Victory Points:|Settlements|Cities|VP Dev Cards|Longest Road|Largest Army|Total VPs
+1076	Cards Not Held or Played:
+
+1077	Your game has been running for %d minutes.
+1078	The time limit for each turn for this game is %d minutes.
+1079	Player Options:
+
+1080	Probability|Show Help|Port Trade
+
+# More Event Strings
+1081	You get %s for initial resources.
+1082	%s gets %s for initial resources.
+1083	You took %d %s from the other players with your monopoly card.
+1084	Sadly, no one else had any %s, so your monopoly card was wasted.
+1085	%s took %d %s from the other players with a monopoly card.
+1086	%s wasted a monopoly card trying to get %s that no one has.
+1087	You placed the robber on a %s hex.
+1088	%s placed the robber on a %s hex.
+1089	You bought a %s card.
+1090	%s bought a development card
+1091	You played a %s card.
+1092	%s played a %s card.
+1093	You placed a new road.
+1094	%s placed a new road.
+1095	You placed a new settlement.
+1096	%s placed a new settlement.
+1097	You replaced a settlement with a city.
+1098	%s replaced a settlement with a city.
+1099	%s stole 1 %s from you.
+
+# ==================
+# Button Text
+# ==================
+
+# Game Buttons
+
+1100	Hint|Settings|Trade|Dev Cards|Build|End Turn|Roll|Stats|ON|OFF|Help On|Help Off|Undo|Credits
+
+# Dialog Buttons
+1101	OK|Cancel|Done|Offer|Play|Port Trade|Consider|Close|Yes|No|Save|Load|Choose|Start|Menu|Delete|Resume|Quit|New|Exit|Replay|Restart|<< Back|Next >>
+
+# Trade Dialog Buttons
+1102	Match|Confirm|Decline|Hide Trade|Show Trade|Resume
+
+# Radio Button Text
+1103	On|Off
+
+# ==================
+# More Event Strings
+# ==================
+
+# Game Phase Dialog Strings
+1150	Start Setup Phase!
+1151	Start Game!
+
+# Card Popup Dialog Strings
+1152	%s just stole 1 card from you.|%s monopolized %s and took %s from the other players.|%s took %s from the bank with Year of Plenty.|Resources Produced|You monopolized %s and took %s from the other players.|%s has taken the Longest Road.|%s has taken the Largest Army.|You just stole 1 card from %s.
+
+# Longest Road Popup strings
+1153	Longest Road|2 Victory Points!|This card goes to the player with the longest road of at least five road segments. Another player who builds a longer road gets this card.
+
+# Largest Army Popup strings
+1154	Largest Army|2 Victory Points!|This card goes to the player with the largest army of at least three Soldiers. Another player who creates a larger army gets this card.
+
+# New city strings for use during short game setup.
+1155	You placed a new city.
+1156	%s placed a new city.
+
+# ==================
+# Sounds
+# ==================
+
+1201	01 - start turn.wav
+1202	02 - end turn.wav
+1203	03 - dice roll.wav
+1204	04 - old victory point(not used).wav
+1205	05 - start setup + start play.wav
+1206	06 - win.wav
+1207	07 - button click.wav
+1208	08 - old button can't click (not used).wav
+1209	09 - robber rolled.wav
+1210	10 - robber dropped + settlement selected.wav
+1211	11 - old settlement selected (not used).wav
+1212	12 - play dev card.wav
+1213	13 - old highlight move (not used).wav
+1214	14 - resource highlight.wav
+1215	15 - build drop.wav
+1216	16 - resource created.wav
+1217	17 - build select + build dev card.wav
+1218	18 - old build development card (not used).wav
+1219	19 - old build drop (not used).wav
+1220	20 - undo.wav
+1221	21 - enact trade + accept trade.wav
+1222	22 - trade flag.wav
+1223	23 - save game.wav
+1224	24 - trade decline.wav
+1225	25 - finished trade.wav
+1226	26 - timer running out.wav
+1227	27 - time over.wav
+
+
+# ==================
+# ToolTips
+# ==================
+
+# GameController Button Tooltips
+1250	Roll the Dice
+1251	View and Play Development Cards
+1252	Initiate Trade
+1253	Build Road, Settlement, or City
+1254	End Your Turn
+1255	Detailed Game Summary
+1256	Change Game Settings
+1257	Request a Hint
+1258	Initiate Port Trade
+
+# InventoryView Tooltips
+1301	Build a Road
+1302	Build a Settlement
+1303	Build a City
+1304	Build a Development Card
+1305	Brick Resources Held
+1306	Grain Resources Held
+1307	Ore Resources Held
+1308	Wool Resources Held
+1309	Lumber Resources Held
+1310	Development Cards Held
+
+# PlayerStats Tooltips
+
+1350	Resource Cards
+1351	Development Cards
+1352	Soldiers Played
+1353	Longest Road
+1354	Victory Points
+1355	Game Statistics for %s
+
+# PlayerNameView Tooltips
+
+1380	Current Player
+1381	Next Player
+1382	Player After Next
+1383	Previous Player
+1384	Development Card Worth 1 Victory Point
+
+# BoardView Tooltips, The value is the number of times out of 36 that a hex adjacent to the intersection will produce. 
+1400	Enable/Disable Board Probabilities
+1401	Trade 3 of Any 1 Resource for Any Other Resource
+1402	Trade 2 %s for Any Other Resource
+1403	Sea Hex - No Effect on Play
+1404	Roll of %d Produces %s
+1405	Build Roads on Hex Edges
+1406	Produces Resources %d in 36 Die Rolls
+1407	Victory and Soldier Card Display Area
+1409	Enable/Disable Board Probabilities
+1410	Initiate Port Trade
+
+# TradeDialog Tooltips
+1500	Resources %s Wants
+1501	Resources %s Will Give
+1502	Resources You Want in Trade
+1503	Resources You Will Give in Trade
+1504	%s %s's Trade Offer
+1505	%s %s's Trade Offer
+1506	%s %s's Trade Offer
+1507	Decline %s's Trade Offer
+1508	Add Brick to Your WANT Area
+1509	Add Grain to Your WANT Area
+1510	Add Ore to Your WANT Area
+1511	Add Wool to Your WANT Area
+1512	Add Lumber to Your WANT Area
+1513	Add “Will Take Anything” to Your WANT Area
+1514	Add Brick to Your GIVE Area
+1515	Add Grain to Your GIVE Area
+1516	Add Ore to Your GIVE Area
+1517	Add Wool to Your GIVE Area
+1518	Add Lumber to Your GIVE Area
+1519	Add “Will Give Anything” to Your GIVE Area
+1520	Open Port Trade
+1521	End Trade
+1522	Return to Trade Window
+1523	Hide Trade Window
+1524	Active Trader
+
+# PortTradeWindow Tooltips
+1548	Add %s to the WANT Area
+1549	Add %s to the GIVE Area
+1550	Your Ports
+1551	Trade 4 of Any 1 Resource for Any Other Resource
+1552	Trade 3 of Any 1 Resource for Any Other Resource
+1553	Trade 2 %s Resources for Any Other Resource
+1554	Display Area for Resources Wanted
+1555	Display Area for Resources Given
+1556	Add %d %s Resources to GIVE Area
+1557	Add %s Resource to WANT Area
+1558	Add %s to WANT or GIVE Area
+1559	Trade Selected Resources
+1560	Cancel Trade
+
+# PortTrade Help
+1561	To trade at a port, start by clicking on a port type in the gray box.
+1562	Port trades are not possible. You do not have enough resources to trade.
+1563	Choose a highlighted resource to give up 4 of in trade.
+1564	Choose a highlighted resource to give up 3 of in trade.
+1565	Choose the type of resource you want to get in exchange.
+1566	Click the Trade button to execute the trade.
+
+# Trade Help
+
+1567	To offer a trade, click a resource you WANT so everyone can see it.
+1568	To offer a trade, click a resource you will GIVE in trade so everyone can see it.
+1569	An yellow arrow will appear if a player is interested in your offer.
+1570	Click on the Confirm button to complete the trade.
+1571	To accept an offer from another player, click the match button.
+1572	The arrow means a player is interested, click Consider to respond.
+1573	You cannot trade because you have no cards.
+1574	You cannot trade because you have no cards. Wait while others trade.
+1575	The trade will complete when the other player confirms.
+1576	%s has declined your trade offer. You may want to improve your offer.
+1577	%s Declined All Trade
+
+# Development card Window Tooltips
+
+1580	View Previous Development Card
+1581	View Next Development Card
+1582	Play Development Card
+1583	Unplayable - Built This Turn
+1584	Unplayable - Already Played Development Card This Turn
+1585	Close Window
+1586	Play to Gain Any 2 Resources
+1587	Worth 1 Victory Point
+1588	Play to Take All Resources of 1 Type from Opponents
+1589	Play to Build 2 Free Roads
+1590	Play to Move Robber and Steal Resource
+1591	Worth 1 Victory Point
+1592	Worth 1 Victory Point
+1593	Worth 1 Victory Point
+1594	Worth 1 Victory Point
+
+
+# selectcarddialog tooltips
+1600	Select %s as Resource to Take from Opponents
+1601	Deselect %s as Resource to Take from Opponents
+1602	Complete Selection
+1603	Select a %s
+1604	Deselect a %s
+1605	Select an %s
+1606	Deselect an %s
+1607	Cancel Selection
+
+# Game Details dialog tooltips
+1650	Close Game Stats
+
+# DevCardIconClickView
+1655	Development Cards Held
+1656	%d Played Soldier Cards
+1657	1 Hidden Victory Point
+1658	1 Hidden Victory Point
+
+# InfoView ,Message area
+1660	Messages and Instructions
+
+# DiceView 
+1665	Last Dice Roll
+
+# Turn time
+1700	Time: %s
+
+# Load Game Window
+1720	Load Selected Game
+1721	Delete Selected Game
+1722	Return to Main Menu
+
+
+# New Game window
+1729	Click to choose options
+1730	Next Choice
+1731	Previous Choice
+1732	Return to Main Menu
+1733	Start the Game
+1734	Short Game
+1735	Using this variant each player builds a city in place of a second settlement during start up.
+
+# Game Settings window
+1740	Computer Player Expertise
+1741	Computer Player Attitude
+1742	Computer Player Bias
+1743	Save Current Game
+1744	Return to Main Menu
+1745	Return to Game in Progress
+1746	Adjust Sound Volume
+1747	Adjust Music Volume
+1748	Adjust Computer Play Speed
+1749	Turn Tooltips on or off
+
+# Save Game Window
+1750	Save the Current Game
+1751	Delete Selected Game
+
+# In Game Settings Window
+1752	Turn board probability numbers on or off
+1753	Turn help window on or off
+
+
+#=======================
+#LOAD/SAVE ERROR MESSAGES
+#========================
+
+1754	The saved game file is damaged and could not be loaded.
+
+# Help Area
+1755	Enable/Disable Help Scrolls
+
+1756	File could not be found. It may have already been deleted or moved.
+1757	File already exists. Do you want to overwrite it?
+1758	Are you sure you want to delete the saved game “%s”?
+1759	An error occurred while saving game.
+
+
+#undo button's tooltips
+
+1760	Undo Road Placement
+1761	Undo Town Placement
+1762	Undo City Placement
+1763	Undo Road Placement
+1764	Undo Town Placement
+1765	Undo City Placement
+1766	Undo Port Trade
+1767	Undo Play of Year of Plenty Card
+1768	Undo Play of Victory Point Card
+1769	Undo Play of Soldier Card
+1770	Undo Play of Monopoly Card
+1771	Undo Play of Road Building Card
+1772	Undo Robber Placement
+1773	Last Action Cannot be Undone
+
+# Main Menu Window
+
+1780	Start a new Game
+1781	Load a saved game
+1782	Save the current game
+1783	Check settings
+1784	Continue with the current game
+1785	Restart a new game
+1786	Check credits for the game
+1787	Exit to your desktop
+
+
+# ResourceLeftView
+
+1800	Number of Roads Left
+1801	Number of Settlements Left
+1802	Number of Cities Left
+
+# ==================
+# MIDI Music
+# ==================
+
+2000	catan01.mid
+
+# ==================
+# MP3 Music
+# ==================
+
+2100	catan01.mp3
+
+# ==================
+# MISCELLANEOUS
+# ==================
+2197	Now place a road adjacent to your city.
+2198	%s, place a city where you could normally place a settlement.
+2199	Last move undone.
+2200	Human
+2201	Al|Alan|Andrea|Anna|Ariel|Arnd|Axel|Benny|Bill|Bob|Brad|Brett|Bridget|Bryan|Carol|Caroline|Catherine|Celia|Charlie|Charo|Cherie|Christa|Christoph|Claudia|Coleman|Colette|Dagmar|Dave|Dawne|Don|Doug|Ed|Edmund|Emily|Fritz|Greg|Guido|Hannah|Jamie|James|Jane|Jason|Jennifer|Jesse|Jessica|Jhinuk|John|Jordan|Joshua|Judy|Kaitlin|Karen|Karl|Katie|Kelton|Konnor|Kris|Larry|Lars|Lauren|Marcee|Margaret|Marianne|Matt|Melba|Mo|Moira|Mort|Nancy|Nick|Olivia|Page|Paul|Pete|Peter|Pro|Reiner|Renee|Rich|Richard|Ross|Schar|Scott|Shane|Sharry|Steve|Tabitha|Theo|Thomas|Thorsten|Tim|Tom|Vicki|Wendy|Will|William|Wolfgang|Zander
+2202	first
+2203	second
+2204	%s, place your %s settlement.
+2205	You've already rolled production this turn.
+2206	%s discarded %d cards.
+2207	Please wait while other players discard.
+
+#=====================
+# build mode text
+#=====================
+2208	Click on a highlighted location to place your first free road.
+2209	Click on a highlighted location to place your second free road.
+#====================
+
+2210	As you play the game help will be shown in this area.
+2211	Now place a road adjacent to that settlement.
+2212	Now place a road adjacent to the settlement.
+
+#===============
+# save game name
+#===============
+
+2213	Save As:|Save Game 1|Save Game 2|Save Game 3|Save Game 4|Save Game 5
+#===============
+2214	Taken
+2215	Deselect
+2216	Choose
+
+#==================
+#Inventory view
+#==================
+
+2217	Build|Cards in Hand
+
+#Status caption
+2218	Status: 
+
+#=================
+#Board view misc.
+#=================
+
+2219	Summary|Point|Total
+2220	Pieces Left
+
+2221	Credits
+2222	Sorry, the player you stole from had no cards to give you.
+
+2223	PAUSED|Click to Continue
+
+2224	CONNECTING...
+
+2225	Resizing, please wait...
+2226	Road|Army
+
+#====================
+# Game Credits!!!!! 
+#====================
+# Format Command: [NN,F,J] where 
+# NN = point size, 
+# F = one of b,i,u (bold, italics, underline), 
+# J = one of l,r,c (left, right, centered)
+# Note: If a format markup (i.e. []) is not specified the previous markup takes precedence.
+# Break Command: [b] 
+# Adds a line break
+# Next Column Command: [c] 
+# Starts a new column
+
+2300	[2,b,c] |[b]|[14,b,c]Castle Hill Studios|[b]|[10,i,c]Programming|[11,b,c]Ed Zavada      Ariel Butler      Alan Davies|Suraj Deep Gogoi      Hemant Muthiyan|[b]|[10,i,c]Game & AI Design|[11,b,c]Coleman Charlton|[b]|[10,i,c]Sound|[11,b,c]Brad Prucha|[b]|[10,i,c]Producing & Artwork|[11,b,c]Karl Roelofs|[b]|[10,i,c]Executive Producer|[11,b,c]Pete Fenlon|[b]|[10,i,c]Tutorial|[11,b,c]Rich Sisson|[b]|[10,i,c]Special Thanks to:|[10,p,c]Al Roireau, John Taylor, Kelton Flynn,|James Whitehouse, Charo Mina Rojas, Shizuka Tanaka,|Nick Laiacona, Jack Brunson Jr., Jogesh Sharma,|Vicki Roelofs, Kaitlin Roelofs, Konnor Roelofs,|Olivia Johnston, Melba Fenlon, Carol Finch, and Pegg Redd.
+2301	[4,b,c] |[b]|[14,b,c]Catan GmbH|[b]|[10,i,c]Game Design & AI Concept|[11,b,c]Klaus Teuber|[b]|[10,i,c]Consulting|[11,b,c]Guido Teuber|[b]|[10,i,c]Producer|[11,b,c]Arnd Beenen|[b]|[10,i,c]Background Music|[11,b,c]Matthias Steinwachs|[b]|[11,p,c]Based on the|Settlers of Catan board game|Designed by Klaus Teuber.|[b]|Artwork by Stephen Graham Walsh. |[10,p,c]Used by permission from Mayfair Games, Inc.and Catan GmbH. |Originally developed by Klaus Teuber, with Reiner Müller.|[b]|[10,p,c]Special thanks to Claudia Teuber, Benny Teuber, Emily Johnson, |Liam Teuber, Larisa Teuber, Darwin Bromley, Matt Schwabel, |Jason Hawkins, William Niebling, Will Niebling, Bob Carty, and Larry Roznai.|[b]|© 1997, 2004 Mayfair Games, Inc.
+2302	[4,b,c] |[b]|[14,b,c]Carbonated Games|[b]|[10,i,c]Program Management|[11,b,c]Richard Thames Rowan|[b]|[10,i,c]Development|[11,b,c]Nick Gedge|[b]|[10,i,c]Test|[11,b,c]Prodipto Roy|Hakimuddin Ronaque|Aravinda Chavali|Govinda Raju Gotivada|Vijayalakshmi Viswanathan|[b]|[10,i,c]Marketing|[11,b,c]Shawn McMichael|Colette Olsen|[b]|[10,i,c]Content/Editing|[11,b,c]Nancy Han|Michael Knott|[b]|[10,i,c]Special Thanks to:|[10,p,c]Corey Dangel, Tom Fuller, Aaron Jasinski, and Steven Mathiesen.
