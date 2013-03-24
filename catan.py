@@ -12,25 +12,25 @@ def flatten(l):
 def generate_board():
 
 	tiles = [
-		['desert']*1,
-		['fields']*4,
-		['forest']*4,
-		['hills']*3,
-		['mountains']*3,
-		['pasture']*4,
+		['desert']		* 1,
+		['fields']		* 4,
+		['forest']		* 4,
+		['pasture']		* 4,
+		['hills']		* 3,
+		['mountains']	* 3,
 	]
 
 	values = [
-		[2]*1,
-		[3]*2,
-		[4]*2,
-		[5]*2,
-		[6]*2,
-		[8]*2,
-		[9]*2,
-		[10]*2,
-		[11]*2,
-		[12]*1,
+		[2]	* 1,
+		[3]	* 2,
+		[4]	* 2,
+		[5]	* 2,
+		[6]	* 2,
+		[8]	* 2,
+		[9]	* 2,
+		[10]* 2,
+		[11]* 2,
+		[12]* 1,
 	]
 
 	tiles = flatten(tiles)
