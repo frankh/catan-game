@@ -26,6 +26,19 @@ html, body {
 .template {
 	display: none !important;
 }
+
+td {
+	text-align: center;
+}
+
+.hex_text {
+	width: 0px;
+	height: 0px;
+	position: relative;
+
+	font-weight: bold;
+	font-family: georgia;
+}
 /*	
 	1255x940 window
 	865x940 play_area
@@ -127,7 +140,11 @@ html, body {
        -moz-transform: rotate(-60deg);
          -o-transform: rotate(-60deg);
             transform: rotate(-60deg);
-    }
+}
+
+td:nth-child(odd) .hex_in2 {
+	background-image: url(res/hex-fields.bmp);
+}
 
 .game_interface {
 	width: 31.1%;
