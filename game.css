@@ -3,30 +3,45 @@ html, body {
 	height: 100%;
 
 	margin:0;
+	overflow: hidden;
+
+	background-color: #004080;
 }
 
 .game_window {
 	width: 100%;
 	height: 100%;
+	margin: 0 auto;
 
 	overflow: hidden;
 }
 
 .game_play_area {
-	width: 70%;
+	width: 68.9%;
 	height: 100%;
 
 	float: left;
 }
 
+.template {
+	display: none !important;
+}
+/*	
+	1255x940 window
+	865x940 play_area
+	865x33	notification
+	390x940 interface
+	150x135	game_hex
+   */
+
 .game_current_player_notification {
 	width: 100%;
-	height: 3%;
+	height: 3.51%;
 }
 
 .game_board {
 	width: 100%;
-	height: 100%;
+	height: 96.49%;
 
 	background-image: url(res/gradiant.bmp);
 	background-repeat: no-repeat;
@@ -35,11 +50,95 @@ html, body {
 
 }
 
+.hex_grid {
+	width: 100%;
+	height: 100%;
+}
+
+.game_hex:hover {
+	opacity: 0.5;
+}
+
+.game_hex_row:nth-child(1) > td:nth-child(1) .hex_in2 {
+	visibility: hidden;
+}
+
+.game_hex_row:nth-child(1) > td:nth-child(2) .hex_in2 {
+	visibility: hidden;
+}
+
+.game_hex_row:nth-child(1) > td:nth-child(4) .hex_in2 {
+	visibility: hidden;
+}
+
+.game_hex_row:nth-child(1) > td:nth-child(5) .hex_in2 {
+	visibility: hidden;
+}
+
+.game_hex_row:nth-child(5) > td:nth-child(1) .hex_in2 {
+	visibility: hidden;
+}
+
+.game_hex_row:nth-child(5) > td:nth-child(5) .hex_in2 {
+	visibility: hidden;
+}
+
+.game_hex_row {
+	width: 100%;
+	height: 13.8%;
+}
+/* 787x826 */
+
+.game_hex {
+	position:relative;
+    width: 200%;
+    height: 100%;
+    overflow: hidden;
+    visibility: hidden;
+    -webkit-transform: rotate(120deg);
+       -moz-transform: rotate(120deg);
+         -o-transform: rotate(120deg);
+            transform: rotate(120deg);
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+td {
+}
+
+.hex_in1 {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    -webkit-transform: rotate(-60deg);
+       -moz-transform: rotate(-60deg);
+         -o-transform: rotate(-60deg);
+            transform: rotate(-60deg);
+    }
+.hex_in2 {
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: 50%;
+	background-image: url(res/hex-desert.bmp);
+	background-repeat: no-repeat;
+	background-size: 60% 100%;
+    visibility: visible;
+    -webkit-transform: rotate(-60deg);
+       -moz-transform: rotate(-60deg);
+         -o-transform: rotate(-60deg);
+            transform: rotate(-60deg);
+    }
+
 .game_interface {
-	width: 30%;
+	width: 31.1%;
 	height: 100%;
 
 	background-color: #004080;
+	border: solid black 1px;
 
 	float: right;
 }
