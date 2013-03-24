@@ -110,3 +110,48 @@ html, body {
 	font-family: verdana;
 	color: white;
 }
+
+.roll_dice {
+	width: 12%;
+	height: 11.45%;
+
+	float: right;
+	position: relative;
+
+	top: 45%;
+	left: -45%;
+
+	z-index: 1000;
+}
+
+.rolling_die:nth-child(1) {
+	float:left;
+}
+
+.rolling_die:nth-child(2) {
+	float:right;
+}
+
+
+.rolling_die {
+	-webkit-animation-name: rolldie;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-timing-function: steps(14, end);
+  	-webkit-animation-iteration-count: infinite;
+	display: inline-block;
+
+	width: 50%;
+	height: 68.0%;
+
+	background-image: url(res/DiceAnim.png);
+	background-size: auto 100%;
+}
+
+@-webkit-keyframes rolldie {
+  from {
+    background-position-x: 0%;
+  }
+  to {
+    background-position-x: 100%;
+  }
+}
