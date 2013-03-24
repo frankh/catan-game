@@ -42,6 +42,8 @@ var resize = function() {
 		$(this).css('left',  hex_width * 0.5 - font_offset_x +'px');
 		$(this).css('font-size',  font_size+'px');
 	});
+
+	$('.game_interface').css('font-size', height/940 + 'em');
 };
 
 $(window).load(function() {
