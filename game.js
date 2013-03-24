@@ -51,22 +51,65 @@ var resize = function() {
 	$('.game_interface').css('font-size', height/940 + 'em');
 	$('.dice_value').css('font-size', 2*height/940 + 'em');
 
+	$('.hex_text').each(function() {
+		$(this).text($(this).parent().attr('hex_position'));
+	});
+
 	// Position vertices
 	$('.hex_vertex').each(function() {
 		var $this = $(this);
-
-		if( $this.attr('number') == 1 ) {
+		var hex = $this.parent().find('.hex_in2');
+		var hex_position = parseInt(hex.attr('hex_position'));
+		var number = parseInt($this.attr('number'));
+		// Always add 1 and 4
+		if( number == 1 ) {
 			$this.position({
 				my: 'center',
-				at: 'left+22%',
-				of: $this.parent().find('.hex_in2')
-			})
-		} else if( $this.attr('number') == 2 ) {
+				at: 'left+20%',
+				of: hex
+			});
+		} else if( number == 4 ) {
 			$this.position({
 				my: 'center',
-				at: 'right-22%',
-				of: $this.parent().find('.hex_in2')
-			})
+				at: 'right-20%',
+				of: hex
+			});
+		} 
+		// Only add 2 if on top or left
+		else if( number == 2 && [1,2,3,7,12].indexOf(hex_position) >= 0 ) {
+			$this.position({
+				my: 'center',
+				at: 'center-15% top+1.8%',
+				of: hex
+			});
+		} 
+		// Only add 3 if on top or right
+		else if( number == 3 && [1,5,6,11,16].indexOf(hex_position) >= 0 ) {
+			$this.position({
+				my: 'center',
+				at: 'center+15% top+1.8%',
+				of: hex
+			});
+		}
+		// Only add 5 if on bottom right
+		else if( number == 5 && [16,19,18].indexOf(hex_position) >= 0 ) {
+			$this.position({
+				my: 'center',
+				at: 'center+15% bottom-1.8%',
+				of: hex
+			});
+		}
+		// Only add 6 if on bottom left
+		else if( number == 6 && [12,17,18].indexOf(hex_position) >= 0 ) {
+			$this.position({
+				my: 'center',
+				at: 'center-15% bottom-1.8%',
+				of: hex
+			});
+		} else {
+			// We can't remove because its needed for consistent layout.
+			$this.css('visibility', 'hidden');
+			$this.addClass('hidden_vertex');
 		}
 	});
 };
@@ -101,7 +144,16 @@ $(window).load(function() {
 	var i = 1;
 	var hexes = $('.game_hex .hex_in2').not('.sea_tile');
 	hexes.each(function() {
-		$(this).find('.hex_text').text(i);
+		$(this).attr('hex_position', i);
+		i += 1
+	});
+
+	resize();
+
+	i = 1;
+	$('.hex_vertex').not('.hidden_vertex').each(function() {
+		$(this).attr('vertex_position', i);
+		$(this).find('.vertex_text').text(i);
 		i += 1;
 	});
 
