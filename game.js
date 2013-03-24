@@ -14,7 +14,7 @@ var resize = function() {
 
 	var hex_width = $('.game_hex').width();
 	var hex_height = $('.game_hex').height();
-	var font_size = hex_height / 5;
+	var font_size = hex_height / 5.5;
 
 	var width_offset = hex_width * (0.05) + 1;
 	var height_offset = hex_height * (0.50);
@@ -35,7 +35,7 @@ var resize = function() {
 		var font_offset_x = font_size * 0.3;
 
 		if( two_chars ) {
-			font_offset_x = font_size * 0.5;
+			font_offset_x = font_size * 0.6;
 		}
 
 		$(this).css('top',  hex_height * 0.5 - font_size * 0.65 +'px');
