@@ -121,7 +121,7 @@ html, body {
 	top: 45%;
 	left: -45%;
 
-	z-index: 1000;
+	z-index: -1;
 }
 
 .rolling_die:nth-child(1) {
