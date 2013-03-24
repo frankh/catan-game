@@ -132,10 +132,14 @@ html, body {
 
 
 .rolling_die {
-	-webkit-animation-name: rolldie;
+	-webkit-animation-name: -webkit-rolldie;
 	-webkit-animation-duration: 1s;
 	-webkit-animation-timing-function: steps(15, end);
   	-webkit-animation-iteration-count: infinite;
+	-moz-animation-name: -moz-rolldie;
+	-moz-animation-duration: 1s;
+	-moz-animation-timing-function: steps(15, end);
+  	-moz-animation-iteration-count: infinite;
 	display: inline-block;
 
 	width: 50%;
@@ -145,11 +149,28 @@ html, body {
 	background-size: auto 100%;
 }
 
-@-webkit-keyframes rolldie {
+@keyframes rolldie {
   from {
-    background-position-x: 0%;
+    background-position: 0%;
   }
   to {
-    background-position-x: 107%;
+    background-position: 107%;
+  }
+}
+@-moz-keyframes -moz-rolldie {
+  from {
+    background-position: 0%;
+  }
+  to {
+    background-position: 107%;
+  }
+}
+
+@-webkit-keyframes -webkit-rolldie {
+  from {
+    background-position: 0%;
+  }
+  to {
+    background-position: 107%;
   }
 }

@@ -51,10 +51,6 @@ var resize = function() {
 	$('.game_interface').css('font-size', height/940 + 'em');
 	$('.dice_value').css('font-size', 2*height/940 + 'em');
 
-	$('.hex_text').each(function() {
-		$(this).text($(this).parent().attr('hex_position'));
-	});
-
 	// Position vertices
 	$('.hex_vertex').each(function() {
 		var $this = $(this);
@@ -69,7 +65,7 @@ var resize = function() {
 		$this.find('.vertex_text').css('font-size', new_size/24 + 'em');
 		// Vertical centering
 		$this.find('.vertex_text').css('padding-top', new_size/10+'px');
-		
+
 		// Always add 1 and 4
 		if( number == 1 ) {
 			$this.position({
