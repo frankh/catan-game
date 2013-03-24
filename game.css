@@ -15,6 +15,7 @@ html, body {
     user-select: none;
 
     cursor: default;
+	font-family: verdana;
 }
 
 .game_window {
@@ -70,4 +71,42 @@ html, body {
 	background-size: 100% 100%;
 	border-top: solid black 1px;
 
+}
+
+.corner_dice {
+	width: 10%;
+	height: 9.54%;
+
+	float: left;
+	position: relative;
+
+	top: 7%;
+	left: 7%;
+
+	text-align: center;
+
+}
+
+.die {
+	display: inline-block;
+
+	width: 50%;
+	height: 50%;
+
+	background-image: url(res/dice.png);
+	background-size: auto 100%;
+}
+
+.die:nth-child(1) {
+	float:left;
+}
+
+.die:nth-child(2) {
+	float:right;
+}
+
+.dice_value {
+	font-size: 2em;
+	font-family: verdana;
+	color: white;
 }

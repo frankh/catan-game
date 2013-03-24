@@ -26,7 +26,7 @@ var resize = function() {
 	$('td:nth-child(4) .game_hex').css('left', -2 * width_offset + 'px');
 	$('td:nth-child(5) .game_hex').css('left', -3 * width_offset + 'px');
 
-	$('.hex_grid').css('left', 5.7 * width_offset+'px');
+	//$('.hex_grid').css('left', 5.7 * width_offset+'px');
 	$('.hex_grid').css('top', 1 * height_offset+'px');
 
 	$('.hex_text').each(function() {
@@ -44,6 +44,7 @@ var resize = function() {
 	});
 
 	$('.game_interface').css('font-size', height/940 + 'em');
+	$('.dice_value').css('font-size', 2*height/940 + 'em');
 };
 
 $(window).load(function() {
