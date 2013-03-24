@@ -20,6 +20,15 @@ def generate_board():
 		['mountains']	* 3,
 	]
 
+	ports = [
+		['general']	* 4,
+		['wheat']	* 1,
+		['wood']	* 1,
+		['wool']	* 1,
+		['clay']	* 1,
+		['ore']		* 1,
+	]
+
 	values = [
 		[2]	* 1,
 		[3]	* 2,
@@ -39,13 +48,21 @@ def generate_board():
 	values = flatten(values)
 	random.shuffle(values)
 
+	ports = flatten(ports)
+	random.shuffle(ports)
+
 	return {
 		'tiles': tiles, 
 		'values': values,
+		'ports': ports,
 	}
 
 class Game(object):
+	started = False
+
 	def __init__(self):
+		self.players = []
+		self.password = None
 		self.board = generate_board()
 
 class DefaultGame(Game):
@@ -63,6 +80,7 @@ games = {
 }
 
 class ClientSocket(tornado.websocket.WebSocketHandler):
+
 	def open(self, username, game_id, password):
 		username = username.decode('utf-8')
 		game_id = game_id.decode('utf-8')
@@ -101,21 +119,28 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 			return
 
 		self.write_message(json.dumps({
-			'board': game.board	
+			'type': 'board',
+			'board': game.board	,
 		}));
 		log.debug(username+" joined "+game_id)
 
 	def on_message(self, message):
-		log.debug(str(self.player.id)+'>'+message)
+		log.debug(str('temp')+'>'+message)
 		message = json.loads(message)
 
+	def write_message(self, message):
+		log.debug(str('temp')+'<'+message)
+		super().write_message(message);
+
+
 	def on_close(self):
-		if hasattr(self, 'game'):
-			if self.game.started:
-				self.player.connected = False
-				self.player.connection = None
-			else:
-				self.game.players.remove(self.player)
+		pass
+		# if hasattr(self, 'game'):
+		# 	if self.game.started:
+		# 		self.player.connected = False
+		# 		self.player.connection = None
+		# 	else:
+		# 		self.game.players.remove(self.player)
 
 socket_app = tornado.web.Application([
 	(r"/socket/(?P<username>\w+)/(?P<game_id>\w+)(?:/(?P<password>\w+))?", ClientSocket),

@@ -120,8 +120,6 @@ html, body {
 
 	top: 45%;
 	left: -45%;
-
-	z-index: -1;
 }
 
 .rolling_die:nth-child(1) {
@@ -136,7 +134,7 @@ html, body {
 .rolling_die {
 	-webkit-animation-name: rolldie;
 	-webkit-animation-duration: 1s;
-	-webkit-animation-timing-function: steps(14, end);
+	-webkit-animation-timing-function: steps(15, end);
   	-webkit-animation-iteration-count: infinite;
 	display: inline-block;
 
@@ -152,6 +150,6 @@ html, body {
     background-position-x: 0%;
   }
   to {
-    background-position-x: 100%;
+    background-position-x: 107%;
   }
 }
