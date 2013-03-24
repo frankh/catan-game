@@ -10,8 +10,8 @@
 }
 
 .hex_vertex {
-    width: 15%;
-    height: 15%;
+    
+    position: absolute;
     z-index: 100;
     background-color: white;
     border-radius: 100%;

@@ -61,6 +61,15 @@ var resize = function() {
 		var hex = $this.parent().find('.hex_in2');
 		var hex_position = parseInt(hex.attr('hex_position'));
 		var number = parseInt($this.attr('number'));
+
+		var new_size = hex.width()*0.10;
+
+		$this.width(new_size);
+		$this.height(new_size);
+		$this.find('.vertex_text').css('font-size', new_size/24 + 'em');
+		// Vertical centering
+		$this.find('.vertex_text').css('padding-top', new_size/10+'px');
+		
 		// Always add 1 and 4
 		if( number == 1 ) {
 			$this.position({
@@ -107,9 +116,7 @@ var resize = function() {
 				of: hex
 			});
 		} else {
-			// We can't remove because its needed for consistent layout.
-			$this.css('visibility', 'hidden');
-			$this.addClass('hidden_vertex');
+			$this.remove();
 		}
 	});
 };
@@ -148,10 +155,11 @@ $(window).load(function() {
 		i += 1
 	});
 
+	// Initialise vertexes.
 	resize();
 
 	i = 1;
-	$('.hex_vertex').not('.hidden_vertex').each(function() {
+	$('.hex_vertex').each(function() {
 		$(this).attr('vertex_position', i);
 		$(this).find('.vertex_text').text(i);
 		i += 1;
