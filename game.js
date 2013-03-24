@@ -62,8 +62,20 @@ $(window).load(function() {
 			.removeClass('template')
 			.appendTo($('.hex_grid'));
 	}
+
+	$('.game_hex_row:nth-child(1) > td:nth-child(1) .hex_in2').addClass('sea_tile');
+	$('.game_hex_row:nth-child(1) > td:nth-child(2) .hex_in2').addClass('sea_tile');
+	$('.game_hex_row:nth-child(1) > td:nth-child(4) .hex_in2').addClass('sea_tile');
+	$('.game_hex_row:nth-child(1) > td:nth-child(5) .hex_in2').addClass('sea_tile');
+	$('.game_hex_row:nth-child(5) > td:nth-child(1) .hex_in2').addClass('sea_tile');
+	$('.game_hex_row:nth-child(5) > td:nth-child(5) .hex_in2').addClass('sea_tile');
+
+	var i = 1;
+	$('.game_hex .hex_in2').not('.sea_tile').each(function() {
+		$(this).find('.hex_text').text(i);
+		i += 1;
+	});
 });
 
 $(window).load(resize);
 $(window).resize(resize);
-
