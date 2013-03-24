@@ -5,7 +5,16 @@ html, body {
 	margin:0;
 	overflow: hidden;
 
-	background-color: #004080;
+	background-color: #004080;   
+
+	-webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    cursor: default;
 }
 
 .game_window {
@@ -23,6 +32,25 @@ html, body {
 	height: 100%;
 
 	float: left;
+}
+
+::-webkit-scrollbar-button:end { 
+	background-image: url(res/scroll-button-down.bmp);
+}
+
+::-webkit-scrollbar-button:start { 
+	background-image: url(res/scroll-button-up.bmp);
+}
+
+::-webkit-scrollbar {
+    width: 16px;
+    background-color: #4C647E;
+}
+
+::-webkit-scrollbar-thumb {
+    width: 16px;
+	height: 27px;
+	background-image: url(res/scroll-slider-vert.bmp);
 }
 
 .game_interface {
@@ -61,7 +89,7 @@ html, body {
 	overflow-y: scroll;
 
 	width: 97%;
-	height: 80%;
+	height: 85%;
 }
 
 .summary_container {
@@ -114,7 +142,7 @@ td {
 	background-image: url(res/gradiant.bmp);
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	border: solid black 1px;
+	border-top: solid black 1px;
 
 }
 
