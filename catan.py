@@ -4,6 +4,7 @@ import json
 import logging
 from collections import defaultdict, Iterable
 import itertools
+from functools import lru_cache
 
 log = logging.getLogger('catan')
 log.setLevel(logging.DEBUG)
@@ -27,13 +28,33 @@ def get_ident(*ident_in):
 
 	return ident
 
+class Board(object):
+	def __init__(self, Hex, Vertex, Path):
+		self.Hex, self.Vertex, self.Path = Hex, Vertex, Path
+
+		self.hexes = list(Hex.objects.values())
+		self.vertices = list(Vertex.objects.values())
+		self.paths = list(Path.objects.values())
+
+		self.land_hexes = [hx for hx in self.hexes if not hx.is_sea]
+
+	def as_dict(self):
+		return {
+			'hexes'   : [hx.as_dict() for hx in self.land_hexes],
+			'vertices': [v.as_dict()  for v  in self.vertices  ],
+			'paths'   : [p.as_dict()  for p  in self.paths     ],
+		}
+
+# Make it easier to keep track of which sea is where.
+def Sea(hex1, hex2):
+	return 10000 + 100*hex1 + hex2 
+
 def create_board():
 
 	class CatanObj(object):
 		objects = None
 		count = 0
-
-		# TODO use create function not init to test if already exists.
+		initialised = False
 
 		@classmethod
 		def get(cls, *ident_in):
@@ -48,6 +69,9 @@ def create_board():
 			return cls(*ident_in)
 
 		def __init__(self, *ident_in):
+			if self.initialised: 
+				raise Exception('Should not be creating new objects after initialisation.')
+
 			ident = get_ident(*ident_in)
 
 			self.id = ident
@@ -74,28 +98,12 @@ def create_board():
 			return '{cls}<{id}>'.format(cls=self.__class__.__name__, id=self.id)
 		__repr__ = __str__
 
-	class Sea(int):
-		seas = {}
-		count = 0
-
-		def __new__(cls, hex1, hex2):
-			if (hex1, hex2) in cls.seas:
-				return cls.seas[(hex1, hex2)]
-
-			Sea.count += 1
-
-			inst = super().__new__(cls, 100+Sea.count)
-			inst.hexes = (hex1, hex2)
-			cls.seas[(hex1, hex2)] = inst
-
-			return inst
-
-		def __str__(self):
-			return 'Sea_{h1}_{h2}'.format(h1=self.hexes[0], h2=self.hexes[1])
-		repr = __str__
-
 	class Hex(CatanObj):
-		SEA = 1
+		tile = None
+		value = None
+		port = None
+		port_path = None
+		being_robbed = False
 		# Hex numbers start from top and spiral clockwise
 		#        __
 		#     __/1 \__
@@ -149,6 +157,13 @@ def create_board():
 			Sea(1 , 12): [Sea(11, 12), Sea(1 , 1 ), 1 , 12],
 		}
 
+		@property
+		def vertices(self):
+			return {v for v in Vertex.objects.values() if self in v.hexes}
+
+		@property
+		def is_sea(self):
+			return self.id > 100
 
 		def __init__(self, ident):
 			super().__init__(ident)
@@ -164,11 +179,41 @@ def create_board():
 						if len({hx.id, hx2.id, hx3.id}) == 3:
 							Vertex.get(hx.id, hx2.id, hx3.id)
 
+		def as_dict(self):
+			return {
+				'id': self.id,
+				'tile': self.tile,
+				'value': self.value,
+				'port': self.port,
+				'port_path': self.port_path.as_dict() if self.port_path else None,
+				'being_robbed': self.being_robbed,
+			}
+
 	class Vertex(CatanObj):
+		built = None
+		probabilities = {
+			0 : 0,
+			2 : 1,
+			3 : 2,
+			4 : 3,
+			5 : 4,
+			6 : 5,
+			8 : 5,
+			9 : 4,
+			10: 3,
+			11: 2,
+			12: 1
+		}
+
+		@property
+		def probability(self):
+			return sum(Vertex.probabilities[hx.value] for hx in self.hexes
+			                                                 if not hx.is_sea)
+
 		def __init__(self, hex1, hex2, hex3):
 			super().__init__(hex1, hex2, hex3)
 
-			self.hexes = {hex1, hex2, hex3}
+			self.hexes = {Hex.get(hx) for hx in (hex1, hex2, hex3)}
 
 			for vert in Vertex.objects.values():
 				num_shared_hexes = len(vert.hexes & self.hexes)
@@ -176,23 +221,73 @@ def create_board():
 				if num_shared_hexes == 2:
 					Path(self.id, vert.id)
 
+		def as_dict(self):
+			return {
+				'id': self.id,
+				'built': self.built.as_dict() if self.built else None,
+				'probability': self.probability
+			}
+
 	class Path(CatanObj):
+		port = None
+		built = None
+
+		@property
+		def next_coastal_path(self):
+			coastal_paths = {p for p in self.paths if p.is_coastal}
+			next_path = max(p.id for p in coastal_paths)
+
+			if next_path < self.id:
+				# We have wrapped around
+				next_path = min(p.id for p in coastal_paths)
+
+			return Path.get(next_path)
+
+		@property
+		def is_coastal(self):
+			return bool(hx for hx in self.hexes if hx.is_sea)
+
+		@property
+		def hexes(self):
+			vert1, vert2 = self.verts
+			return vert1.hexes & vert2.hexes
+
+		@property
+		def paths(self):
+			return {p for p in Path.objects.values()
+			                if p.verts & self.verts}
+
 		def __init__(self, vert1, vert2):
 			super().__init__(vert1, vert2)
-			self.verts = (vert1, vert2)
+			self.verts = {Vertex.get(v) for v in (vert1, vert2)}
 
+		def as_dict(self):
+			return {
+				'id': self.id,
+				'built': self.built.as_dict() if self.built else None,
+				'port': self.port,
+			}
+
+	# Creating 1 hex creates them all
 	Hex.get(1)
+	# Creating vertices creates paths
 	Hex.create_vertices()
+	CatanObj.initialised = True
 
-	return {
-		'hexes': list(Hex.objects.values()),
-		'vertices': list(Vertex.objects.values()),
-		'paths': list(Path.objects.values()),
-	}
+	return Board(Hex, Vertex, Path)
 
-
-def generate_board():
+def generate_board(port_start_offset=0):
 	board = create_board()
+	Hex, Vertex, Path = board.Hex, board.Vertex, board.Path
+
+	port_start_sea_hex = Hex.get(Sea(1,2))
+	port_start_v1, port_start_v2 = [v for v in port_start_sea_hex.vertices
+	                                        if Hex.get(2) in v.hexes]
+
+	port_start = Path.get(port_start_v1.id, port_start_v2.id)
+
+	for i in range(port_start_offset):
+		port_start = port_start.next_coastal_path
 
 	tiles = [
 		['desert']		* 1,
@@ -234,11 +329,36 @@ def generate_board():
 	ports = flatten(ports)
 	random.shuffle(ports)
 
-	return {
-		'tiles': tiles, 
-		'values': values,
-		'ports': ports,
-	}
+	# Assign ports
+	port_path = port_start
+	for port in ports:
+		port_hex = [hx for hx in port_path.hexes 
+		                      if not hx.is_sea][0]
+
+		port_path.port = port
+		port_hex.port = port
+		port_hex.port_path = port_path
+
+		for i in range(3):
+			port_path = port_path.next_coastal_path
+
+	# Assign tiles
+	for hx, tile in zip([hx for hx in board.land_hexes], tiles):
+		print('assigned',hx,tile)
+		hx.tile = tile
+
+	hexes = [hx for hx in board.land_hexes 
+	                   if not hx.tile == 'desert']
+
+	desert_hex = [hx for hx in board.land_hexes if hx.tile == 'desert'][0]
+	desert_hex.being_robbed = True
+	desert_hex.value = 0
+
+	# Assign values
+	for hx, value in zip(hexes, values):
+		hx.value = value
+
+	return board
 
 class Game(object):
 	started = False
@@ -303,7 +423,7 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 
 		self.write_message(json.dumps({
 			'type': 'board',
-			'board': game.board	,
+			'board': game.board.as_dict(),
 		}));
 		log.debug(username+" joined "+game_id)
 
@@ -326,7 +446,8 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 		# 		self.game.players.remove(self.player)
 
 socket_app = tornado.web.Application([
-	(r"/socket/(?P<username>\w+)/(?P<game_id>\w+)(?:/(?P<password>\w+))?", ClientSocket),
+	(r"/socket/(?P<username>\w+)/(?P<game_id>\w+)(?:/(?P<password>\w+))?", 
+	 ClientSocket),
 ])
 
 if __name__ == '__main__':

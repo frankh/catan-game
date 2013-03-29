@@ -48,7 +48,7 @@
 	opacity: 0.5;
 }
 
-.game_hex .sea_tile {
+.game_hex.sea_tile .hex_in2 {
     visibility: hidden;
 }
 
@@ -82,7 +82,6 @@
 .hex_in2 {
     width: 100%;
     height: 100%;
-    background-repeat: no-repeat;
     background-position: 50%;
 	background-repeat: no-repeat;
 	background-size: 60% 100%;
@@ -93,26 +92,26 @@
             transform: rotate(-60deg);
 }
 
-.hex_fields {
+.hex_fields .hex_in2 {
     background-image: url(res/hex-fields.bmp);
 }
 
-.hex_desert {
+.hex_desert .hex_in2 {
     background-image: url(res/hex-desert.bmp);
 }
 
-.hex_pasture {
+.hex_pasture .hex_in2 {
     background-image: url(res/hex-pasture.bmp);
 }
 
-.hex_hills {
+.hex_hills .hex_in2 {
     background-image: url(res/hex-hills.bmp);
 }
 
-.hex_mountains {
+.hex_mountains .hex_in2 {
     background-image: url(res/hex-mountains.bmp);
 }
 
-.hex_forest {
+.hex_forest .hex_in2 {
     background-image: url(res/hex-forest.bmp);
 }

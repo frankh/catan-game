@@ -1,5 +1,36 @@
+HEX_CONV_MAP = {
+	1 :  1,
+	2 : 11,
+	3 : 12,
+	4 : 13,
+	5 :  2,
+	6 :  3,
+	7 : 10,
+	8 : 18,
+	9 : 19,
+	10: 14,
+	11:  4,
+	12:  9,
+	13: 17,
+	14: 16,
+	15: 15,
+	16:  5,
+	17:  8,
+	18:  7,
+	19:  6
+}
+
+var RESIZE_TIMER;
 
 var resize = function() {
+	_resize();
+	//TODO overlay while waiting on resize timer
+	
+	// clearTimeout(RESIZE_TIMER);
+	// RESIZE_TIMER = setTimeout(_resize, 200);
+}
+
+var _resize = function() {
 	var min_height = 350;
 	var height = $('.game_window').height();
 
@@ -51,70 +82,7 @@ var resize = function() {
 	$('.game_interface').css('font-size', height/940 + 'em');
 	$('.dice_value').css('font-size', 2*height/940 + 'em');
 
-	// Position vertices
-	$('.hex_vertex').each(function() {
-		var $this = $(this);
-		var hex = $this.parent().find('.hex_in2');
-		var hex_position = parseInt(hex.attr('hex_position'));
-		var number = parseInt($this.attr('number'));
-
-		var new_size = hex.width()*0.10;
-
-		$this.width(new_size);
-		$this.height(new_size);
-		$this.find('.vertex_text').css('font-size', new_size/24 + 'em');
-		// Vertical centering
-		$this.find('.vertex_text').css('padding-top', new_size/10+'px');
-
-		// Always add 1 and 4
-		if( number == 1 ) {
-			$this.position({
-				my: 'center',
-				at: 'left+20%',
-				of: hex
-			});
-		} else if( number == 4 ) {
-			$this.position({
-				my: 'center',
-				at: 'right-20%',
-				of: hex
-			});
-		} 
-		// Only add 2 if on top or left
-		else if( number == 2 && [1,2,3,7,12].indexOf(hex_position) >= 0 ) {
-			$this.position({
-				my: 'center',
-				at: 'center-15% top+1.8%',
-				of: hex
-			});
-		} 
-		// Only add 3 if on top or right
-		else if( number == 3 && [1,5,6,11,16].indexOf(hex_position) >= 0 ) {
-			$this.position({
-				my: 'center',
-				at: 'center+15% top+1.8%',
-				of: hex
-			});
-		}
-		// Only add 5 if on bottom right
-		else if( number == 5 && [16,19,18].indexOf(hex_position) >= 0 ) {
-			$this.position({
-				my: 'center',
-				at: 'center+15% bottom-1.8%',
-				of: hex
-			});
-		}
-		// Only add 6 if on bottom left
-		else if( number == 6 && [12,17,18].indexOf(hex_position) >= 0 ) {
-			$this.position({
-				my: 'center',
-				at: 'center-15% bottom-1.8%',
-				of: hex
-			});
-		} else {
-			$this.remove();
-		}
-	});
+	resize_vertices();
 };
 
 $(window).load(function() {
@@ -133,34 +101,23 @@ $(window).load(function() {
 			.appendTo($('.hex_grid'));
 	}
 
-	$('.template').remove();
+	$('.game_hex_row.template').remove();
 
-	$('.game_hex_row:nth-child(1) > td:nth-child(1) .hex_in2').addClass('sea_tile');
-	$('.game_hex_row:nth-child(1) > td:nth-child(2) .hex_in2').addClass('sea_tile');
-	$('.game_hex_row:nth-child(1) > td:nth-child(4) .hex_in2').addClass('sea_tile');
-	$('.game_hex_row:nth-child(1) > td:nth-child(5) .hex_in2').addClass('sea_tile');
-	$('.game_hex_row:nth-child(5) > td:nth-child(1) .hex_in2').addClass('sea_tile');
-	$('.game_hex_row:nth-child(5) > td:nth-child(5) .hex_in2').addClass('sea_tile');
+	$('.game_hex_row:nth-child(1) > td:nth-child(1) .game_hex').addClass('sea_tile');
+	$('.game_hex_row:nth-child(1) > td:nth-child(2) .game_hex').addClass('sea_tile');
+	$('.game_hex_row:nth-child(1) > td:nth-child(4) .game_hex').addClass('sea_tile');
+	$('.game_hex_row:nth-child(1) > td:nth-child(5) .game_hex').addClass('sea_tile');
+	$('.game_hex_row:nth-child(5) > td:nth-child(1) .game_hex').addClass('sea_tile');
+	$('.game_hex_row:nth-child(5) > td:nth-child(5) .game_hex').addClass('sea_tile');
 
 	$('.sea_tile').parents('td').find('.hex_vertex').remove();
 
 	var i = 1;
-	var hexes = $('.game_hex .hex_in2').not('.sea_tile');
+	var hexes = $('.game_hex').not('.sea_tile');
 	hexes.each(function() {
-		$(this).attr('hex_position', i);
+		$(this).attr('hex_id', HEX_CONV_MAP[i]);
 		i += 1
 	});
-
-	// Initialise vertexes.
-	resize();
-
-	i = 1;
-	$('.hex_vertex').each(function() {
-		$(this).attr('vertex_position', i);
-		$(this).find('.vertex_text').text(i);
-		i += 1;
-	});
-
 
 	var socket = new WebSocket("ws://localhost:8080/socket/temp/1");
 
@@ -180,26 +137,7 @@ $(window).load(function() {
 		var msg = JSON.parse(msg.data);
 		if( msg.type == 'board' ) {
 			var board = msg.board;
-
-			hexes.each(function() {
-				var tile = board.tiles.pop();
-
-				if( !(tile in valid_tiles) ) {
-					alert('Invalid tile!');
-				}
-
-				if( tile != 'desert' ) {
-					var value = board.values.pop();
-
-					$(this).find('.hex_text').text(value);
-					if( value == 6 || value == 8 ) {
-						$(this).find('.hex_text').addClass('high_yield');
-					}
-				}
-
-				$(this).addClass('hex_'+tile);
-			});
-
+			create_board(board);
 			resize();
 		}
 	}
@@ -210,4 +148,48 @@ $(window).resize(resize);
 
 $(document).ready(function() {
 
-})
+});
+
+function create_board(board) {
+	for(var i in board.hexes) {
+		var hex = board.hexes[i];
+		var $hex = $('.game_hex[hex_id='+hex.id+']');
+
+		$hex.addClass('hex_'+hex.tile);
+		var hex_text = $hex.find('.hex_text').text(hex.value);
+
+		if( hex.value == 6 || hex.value == 8 ) {
+			hex_text.addClass('high_yield');
+		}
+	}
+
+	for( var i in board.vertices ) {
+		var vert = board.vertices[i];
+		create_vertex(vert);
+	}
+
+}
+// Hex numbers start from top and spiral clockwise
+//        __
+//     __/1 \__
+//  __/3 \__/5 \__
+// /2 \__/4 \__/6 \
+// \__/8 \__/10\__/
+// /7 \__/9 \__/11\
+// \__/13\__/15\__/
+// /12\__/14\__/16\
+// \__/17\__/19\__/
+//    \__/18\__/
+//       \__/
+// Hex numbers start from top and spiral clockwise
+//        __
+//     __/1 \__
+//  __/12\__/2 \__
+// /11\__/13\__/3 \
+// \__/18\__/14\__/
+// /10\__/19\__/4 \
+// \__/17\__/15\__/
+// /9 \__/16\__/5 \
+// \__/8 \__/6 \__/
+//    \__/7 \__/
+//       \__/

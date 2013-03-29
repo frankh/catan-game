@@ -3,6 +3,7 @@
 	<head>
 		<script src="jQuery-1.7.2.js"></script>
 		<script src="jquery-ui-1.10.2.custom.js"></script>
+		<script src="vertex.js"></script>
 		<script src="game.js"></script>
 		<link rel='stylesheet' type="text/css" href='game.css'>
 		<link rel='stylesheet' type="text/css" href='scroll.css'>
@@ -58,25 +59,7 @@
 		</div>
 		<table>
 		<tr class='template game_hex_row'>
-			<td class='template'>
-				<div class='hex_vertex' number='1'>
-					<div class='vertex_text'>1</div>
-				</div>
-				<div class='hex_vertex' number='2'>
-					<div class='vertex_text'>2</div>
-				</div>
-				<div class='hex_vertex' number='3'>
-					<div class='vertex_text'>3</div>
-				</div>
-				<div class='hex_vertex' number='4'>
-					<div class='vertex_text'>4</div>
-				</div>
-				<div class='hex_vertex' number='5'>
-					<div class='vertex_text'>5</div>
-				</div>
-				<div class='hex_vertex' number='6'>
-					<div class='vertex_text'>6</div>
-				</div>
+			<td class='hex_cell template'>
 				<div class='game_hex'>
 					<div class='hex_in1'>
 						<div class='hex_in2'>
@@ -87,5 +70,10 @@
 			</td>
 		</tr>
 	</table>
+	<div class='vertexes'>
+		<div class='hex_vertex template'>
+			<div class='vertex_text'>1</div>
+		</div>
+	</div>
 	</body>
 </html>
