@@ -25,12 +25,12 @@ resize_vertices = function() {
 			var hex_id = vert.id[j];
 
 			if( hex_id > 100 ) {
-				var from_id = hex_id.toString().slice(1,3);
-				var to_id = hex_id.toString().slice(3,5);
+				var from_id = parseInt(hex_id.toString().slice(1,3), 10);
+				var to_id = parseInt(hex_id.toString().slice(3,5), 10);
 				hexes.push({
 					sea: true,
-					from: $('.game_hex[hex_id='+parseInt(from_id)+']'),
-					to: $('.game_hex[hex_id='+parseInt(to_id)+']')
+					from: $('.game_hex[hex_id='+from_id+']'),
+					to: $('.game_hex[hex_id='+to_id+']')
 				});
 			} else {
 				hexes.push($('.game_hex[hex_id='+hex_id+']'));
