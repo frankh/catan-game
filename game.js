@@ -23,11 +23,14 @@ HEX_CONV_MAP = {
 var RESIZE_TIMER;
 
 var resize = function() {
-	_resize();
 	//TODO overlay while waiting on resize timer
-	
-	// clearTimeout(RESIZE_TIMER);
-	// RESIZE_TIMER = setTimeout(_resize, 200);
+
+	$('.overlay').show();
+	clearTimeout(RESIZE_TIMER);
+	RESIZE_TIMER = setTimeout(function() {
+		_resize();
+		$('.overlay').hide();
+	}, 200);
 }
 
 var _resize = function() {
