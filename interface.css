@@ -1,4 +1,14 @@
+.message_box {
+	width: 20%;
+	height: 10%;
 
+	color: black;
+	border: solid 1px black;
+	background-color: white;
+
+	position: absolute;
+	display: none;
+}
 
 .interface_container {
 	width: 100%;
@@ -30,6 +40,13 @@
 	height: 25%;
 }
 
+.summary {
+	width: 97%;
+	height: 85%;
+	background-color: white;
+	border: solid black 1px;
+}
+
 .build_container {
 	height: 35%;
 }
@@ -40,4 +57,77 @@
 
 .template {
 	display: none !important;
+}
+
+.summary table {
+	width: 100%;
+	height: 100%;
+
+	border-collapse: collapse;
+}
+
+.summary_head_row {
+	height: 30%;
+}
+
+.summary_head_padding {
+	width: 40% !important;
+}
+
+.summary_head_points {
+	width: 20% !important;
+}
+
+.summary_head_cards div {
+	background-image: url(res/playerview-icons.bmp);
+	background-size: 400% 100%;
+}
+
+.summary_head_dev_cards div {
+	background-image: url(res/playerview-icons.bmp);
+	background-size: 400% 100%;
+    background-position: 33.33%;
+}
+.summary_head_knights div {
+	background-image: url(res/playerview-icons.bmp);
+	background-size: 400% 100%;
+    background-position: 66.66%;
+}
+.summary_head_road div {
+	background-image: url(res/playerview-icons.bmp);
+	background-size: 400% 100%;
+    background-position: 100%;
+}
+.summary_head_points {
+	color: black;
+	font-size: 1.5em;
+}
+
+.summary_head_row th div {
+	width: 100%;
+	height: 100%;
+}
+
+.summary_player_name {
+	color: black;
+}
+
+.player_row.unused {
+	visibility: hidden;
+}
+
+.player_red {
+	background-color: #E89394;
+}
+
+.player_blue {
+	background-color: #B4D5FA;
+}
+
+.player_green {
+	background-color: #A5E999;
+}
+
+.player_yellow {
+	background-color: #F7F599;
 }

@@ -7,7 +7,7 @@ create_vertex = function(vert) {
 	vertex.appendTo($('.vertexes'));
 	vertex.find('.vertex_text').text(vert.probability);
 	vertex.attr('vertex_id', vert_id);
-
+	vertex.addClass('unbuilt');
 };
 
 resize_vertices = function() {

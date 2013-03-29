@@ -183,3 +183,15 @@ html, body {
     background-position: 107%;
   }
 }
+
+.build_settlement_blue:hover {
+	background-image: url(res/settlements_highlight.png);
+	background-size: 400% 100%;
+	overflow: visible;
+}
+.built_settlement_blue {
+	background-image: url(res/settlements.png);
+	background-size: 400% 100%;
+	background-color: transparent !important;
+	border-radius: 0 !important;
+}

@@ -187,6 +187,7 @@ def create_board():
 
 		@classmethod
 		def create_vertices(cls):
+			# Every group of 3 hexes has a vertex
 			for hx in Hex.objects.values():
 				for hx2 in hx.adj_hexes:
 					for hx3 in [h for h in hx2.adj_hexes if h in hx.adj_hexes]:
@@ -254,7 +255,8 @@ def create_board():
 			return {
 				'id': self.id,
 				'built': self.built.as_dict() if self.built else None,
-				'probability': self.probability
+				'probability': self.probability,
+				'blocked': not self.is_free,
 			}
 
 	class Path(CatanObj):
@@ -390,10 +392,20 @@ def generate_board(port_start_offset=0):
 	return board
 
 class Player(object):
-	def __init__(self, connection, game, name):
+	def __init__(self, connection, name, game):
 		self.connection = connection
 		self.game = game
 		self.name = name
+		self.cards = []
+		self.dev_cards = []
+		self.num_soldiers = 0
+		self.longest_road = 0
+		self.has_longest_road = 0
+		self.victory_points = 0
+		self.ready = False
+
+	def send(self, msg):
+		self.connection.write_message(json.dumps(msg))
 
 	@property
 	def num_settlements(self):
@@ -405,9 +417,33 @@ class Player(object):
 		return len([p for p in self.game.board.paths
 			                if p.built and p.built.owner is self])
 
+	def as_dict(self):
+		return {
+			'type': 'player',
+			'name': self.name,
+			'icon': 'human',
+			'num_cards': len(self.cards),
+			'cards': self.cards,
+			'num_dev_cards': len(self.dev_cards),
+			'dev_cards': self.dev_cards,
+			'num_soldiers': self.num_soldiers,
+			'longest_road': self.longest_road,
+			'has_longest_road': self.has_longest_road,
+			'victory_points': self.victory_points,
+			'player_id': self.id,
+			'color': self.color,
+		}
+
+player_colors = {
+	1: 'blue',
+	2: 'red',
+	3: 'green',
+	4: 'yellow',
+}
 
 class Game(object):
 	started = False
+	max_players = 4
 
 	def __init__(self):
 		self.players = []
@@ -415,11 +451,20 @@ class Game(object):
 		self.board = generate_board()
 		self.current_player = None
 
+	def maybe_start(self):
+		if not [p for p in self.players if not p.ready]\
+		   and len(self.players) == self.max_players:
+			self.start()
+
 	def start(self):
 		self.started = True
 		self.turn_generator = self.turns(random.choice(self.players))
 
-		return self.turn()
+		moves = next(self.turn())
+		self.current_player.send({
+			'type': 'moves',
+			'moves': moves
+		})
 
 	def turn(self):
 		while True:
@@ -443,9 +488,9 @@ class Game(object):
 					))
 
 				valid_moves = [{
-					'type': 'build',
+					'type': 'place',
 					'build': build,
-					'location': location
+					'location': location.as_dict()
 				} for location in locations]
 
 				move = yield valid_moves
@@ -480,14 +525,29 @@ class Game(object):
 			yield player
 			current_player = (current_player + 1) % num_players
 
+	def set_ready(self,player):
+		player.ready = True
+		self.maybe_start()
+
 	def add_player(self, player):
 		self.players.append(player)
 		player.id = len(self.players)
+		player.color = player_colors[player.id]
+
+		if len(self.players) == self.max_players:
+			self.maybe_start()
+
+	def as_dict(self):
+		return {
+			'board': self.board.as_dict(),
+			'players': [p.as_dict() for p in self.players],
+		}
 
 class DefaultGame(Game):
+
 	def __init__(self):
 		super().__init__()
-
+		self.max_players = 1
 
 import tornado.web
 import tornado.ioloop
@@ -540,8 +600,8 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 			return
 
 		self.write_message(json.dumps({
-			'type': 'board',
-			'board': game.board.as_dict(),
+			'type': 'game',
+			'game': game.as_dict(),
 		}));
 		log.debug(username+" joined "+game_id)
 
@@ -549,19 +609,17 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 		log.debug(str('temp')+'>'+message)
 		message = json.loads(message)
 
+		if( message['type'] == 'ready' ):
+			self.game.set_ready(self.player)
+		
 	def write_message(self, message):
 		log.debug(str('temp')+'<'+message)
 		super().write_message(message);
 
 
 	def on_close(self):
-		pass
-		# if hasattr(self, 'game'):
-		# 	if self.game.started:
-		# 		self.player.connected = False
-		# 		self.player.connection = None
-		# 	else:
-		# 		self.game.players.remove(self.player)
+		if hasattr(self, 'game'):
+			self.game.players.remove(self.player)
 
 socket_app = tornado.web.Application([
 	(r"/socket/(?P<username>\w+)/(?P<game_id>\w+)(?:/(?P<password>\w+))?", 

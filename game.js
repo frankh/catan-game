@@ -1,3 +1,6 @@
+// convert from our js order (number increases by row)
+// to server side order (number increases in a spiral)
+
 HEX_CONV_MAP = {
 	1 :  1,
 	2 : 11,
@@ -24,7 +27,6 @@ var BOARD;
 var RESIZE_TIMER;
 
 var resize = function() {
-	//TODO overlay while waiting on resize timer
 	if( !BOARD )
 		return;
 
@@ -89,7 +91,10 @@ var _resize = function() {
 	$('.dice_value').css('font-size', 2*height/940 + 'em');
 
 	resize_vertices();
+	position_message();
 };
+
+var SOCKET;
 
 $(window).load(function() {
 	if( !('WebSocket' in window) ) {
@@ -97,11 +102,11 @@ $(window).load(function() {
 		return;
 	}
 
-	var socket = new WebSocket("ws://shawabawa.mooo.com:8080/socket/temp/1");
+	SOCKET = new WebSocket("ws://shawabawa.mooo.com:8080/socket/temp/1");
 
 	$('.overlay').text('Connecting');
 
-	socket.onopen = function(){
+	SOCKET.onopen = function(){
 		$('.overlay').text('Connected');
 	};
 
@@ -114,10 +119,12 @@ $(window).load(function() {
 		'mountains'	: true,
 	}
 
-	socket.onmessage = function(msg) {
+	SOCKET.onmessage = function(msg) {
 		var msg = JSON.parse(msg.data);
 
 		handlers = {
+			game           : handler_game,
+			moves          : handler_moves,
 			board          : handler_board,
 			forced_action  : handler_forced_action,
 			assign_player  : handler_assign_player,
@@ -186,27 +193,3 @@ function create_board(board) {
 	}
 
 }
-// Hex numbers start from top and spiral clockwise
-//        __
-//     __/1 \__
-//  __/3 \__/5 \__
-// /2 \__/4 \__/6 \
-// \__/8 \__/10\__/
-// /7 \__/9 \__/11\
-// \__/13\__/15\__/
-// /12\__/14\__/16\
-// \__/17\__/19\__/
-//    \__/18\__/
-//       \__/
-// Hex numbers start from top and spiral clockwise
-//        __
-//     __/1 \__
-//  __/12\__/2 \__
-// /11\__/13\__/3 \
-// \__/18\__/14\__/
-// /10\__/19\__/4 \
-// \__/17\__/15\__/
-// /9 \__/16\__/5 \
-// \__/8 \__/6 \__/
-//    \__/7 \__/
-//       \__/

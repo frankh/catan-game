@@ -27,6 +27,12 @@
     font-family: verdana;
     font-size: 0.8em;
     text-align: center;
+
+    visibility: hidden;
+}
+
+.unbuilt .vertex_text {
+    visibility: visible;
 }
 
 .high_yield {
@@ -42,10 +48,6 @@
 	height: 70%;
 
 	position: relative;
-}
-
-.game_hex:hover {
-	opacity: 0.5;
 }
 
 .game_hex.sea_tile .hex_in2 {
