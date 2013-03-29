@@ -20,10 +20,13 @@ HEX_CONV_MAP = {
 	19:  6
 }
 
+var BOARD;
 var RESIZE_TIMER;
 
 var resize = function() {
 	//TODO overlay while waiting on resize timer
+	if( !BOARD )
+		return;
 
 	$('.overlay').show();
 	clearTimeout(RESIZE_TIMER);
@@ -89,6 +92,46 @@ var _resize = function() {
 };
 
 $(window).load(function() {
+	if( !('WebSocket' in window) ) {
+		$('.overlay').text('Browser not supported');
+		return;
+	}
+
+	var socket = new WebSocket("ws://shawabawa.mooo.com:8080/socket/temp/1");
+
+	$('.overlay').text('Connecting');
+
+	socket.onopen = function(){
+		$('.overlay').text('Connected');
+	};
+
+	var valid_tiles = {
+		'desert'	: true,
+		'fields'	: true,
+		'forest'	: true,
+		'pasture'	: true,
+		'hills'		: true,
+		'mountains'	: true,
+	}
+
+	socket.onmessage = function(msg) {
+		var msg = JSON.parse(msg.data);
+
+		handlers = {
+			board          : handler_board,
+			forced_action  : handler_forced_action,
+			assign_player  : handler_assign_player,
+			available_moves: handler_available_moves,
+		}
+
+		handlers[msg.type](msg);
+	}
+});
+
+$(window).load(resize);
+$(window).resize(resize);
+
+$(document).ready(function() {
 	for( var i = 1; i < 5; i++ ) {
 		$('.game_hex_row.template td.template')
 			.clone()
@@ -121,35 +164,6 @@ $(window).load(function() {
 		$(this).attr('hex_id', HEX_CONV_MAP[i]);
 		i += 1
 	});
-
-	var socket = new WebSocket("ws://localhost:8080/socket/temp/1");
-
-	socket.onopen = function(){
-	};
-
-	var valid_tiles = {
-		'desert'	: true,
-		'fields'	: true,
-		'forest'	: true,
-		'pasture'	: true,
-		'hills'		: true,
-		'mountains'	: true,
-	}
-
-	socket.onmessage = function(msg) {
-		var msg = JSON.parse(msg.data);
-		if( msg.type == 'board' ) {
-			var board = msg.board;
-			create_board(board);
-			resize();
-		}
-	}
-});
-
-$(window).load(resize);
-$(window).resize(resize);
-
-$(document).ready(function() {
 
 });
 

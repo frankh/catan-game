@@ -40,13 +40,27 @@ class Board(object):
 
 	def as_dict(self):
 		return {
+			'type'    : 'board',
 			'hexes'   : [hx.as_dict() for hx in self.land_hexes],
 			'vertices': [v.as_dict()  for v  in self.vertices  ],
 			'paths'   : [p.as_dict()  for p  in self.paths     ],
 		}
 
+class Building(object):
+	def __init__(self, owner, building):
+		self.owner = owner
+		self.building = building
+
+	def as_dict(self):
+		return {
+			'type'    : 'board',
+			'owner'   : self.owner,
+			'building': self.building,
+		}
+
 # Make it easier to keep track of which sea is where.
 def Sea(hex1, hex2):
+	hex1, hex2 = sorted([hex1, hex2])
 	return 10000 + 100*hex1 + hex2 
 
 def create_board():
@@ -210,6 +224,21 @@ def create_board():
 			return sum(Vertex.probabilities[hx.value] for hx in self.hexes
 			                                                 if not hx.is_sea)
 
+
+		@property
+		def paths(self):
+			return [p for p in Path.objects.values() if self in p.verts]
+
+		@property
+		def adj_verts(self):
+			return [v for v in Vertex.objects.values()
+			           if v in itertools.chain(p.verts for p in self.paths)
+			          and v is not self]
+
+		def is_free(self):
+			return not [v.built for v in self.adj_verts if v.built] \
+			   and not self.built
+
 		def __init__(self, hex1, hex2, hex3):
 			super().__init__(hex1, hex2, hex3)
 
@@ -360,6 +389,23 @@ def generate_board(port_start_offset=0):
 
 	return board
 
+class Player(object):
+	def __init__(self, connection, game, name):
+		self.connection = connection
+		self.game = game
+		self.name = name
+
+	@property
+	def num_settlements(self):
+		return len([v for v in self.game.board.vertices
+			                if v.built and v.built.owner is self])
+
+	@property
+	def num_roads(self):
+		return len([p for p in self.game.board.paths
+			                if p.built and p.built.owner is self])
+
+
 class Game(object):
 	started = False
 
@@ -367,6 +413,76 @@ class Game(object):
 		self.players = []
 		self.password = None
 		self.board = generate_board()
+		self.current_player = None
+
+	def start(self):
+		self.started = True
+		self.turn_generator = self.turns(random.choice(self.players))
+
+		return self.turn()
+
+	def turn(self):
+		while True:
+			self.current_player = next(self.turn_generator)
+			pl = self.current_player
+			move = None
+
+			if pl.num_settlements < 2 or pl.num_roads < 2:
+				print('starting', self.current_player)
+				# Starting phase.
+				build = 'settlement'
+				locations = [
+					v for v in self.board.vertices if v.is_free()
+				]
+
+				if pl.num_roads < pl.num_settlements:
+					build = 'road'
+					locations = list(itertools.chain(
+						[v.paths for v in self.board.vertices 
+						               if v.built and v.built.owner is pl]
+					))
+
+				valid_moves = [{
+					'type': 'build',
+					'build': build,
+					'location': location
+				} for location in locations]
+
+				move = yield valid_moves
+				while move not in valid_moves:
+					move = yield valid_moves
+
+			self.do_move(self.current_player, move)
+
+	def do_move(self, player, move):
+		if move['type'] == 'build':
+			if move['location'].built is not None:
+				raise Exception('Tried to build over existing building')
+
+			move['location'].built = Building(player, move['build'])
+
+
+	def turns(self, first_player):
+		num_players = len(self.players)
+		start_index = self.players.index(first_player)
+
+		for i in range(num_players):
+			player = self.players[(start_index+i)%num_players]
+			yield player
+
+		for i in range(num_players):
+			player = self.players[(start_index-1-i)%num_players]
+			yield player
+
+		current_player = start_index
+		while True:
+			player = self.players[current_player]
+			yield player
+			current_player = (current_player + 1) % num_players
+
+	def add_player(self, player):
+		self.players.append(player)
+		player.id = len(self.players)
 
 class DefaultGame(Game):
 	def __init__(self):
@@ -407,6 +523,8 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 			
 		game = games[game_id]
 		self.game = game
+		self.player = Player(self, username, game)
+		game.add_player(self.player)
 
 		if game.password and game.password != password:
 			self.write_message(json.dumps(

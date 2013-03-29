@@ -82,6 +82,7 @@
 .hex_in2 {
     width: 100%;
     height: 100%;
+    background-image: url(res/hex-desert.bmp);
     background-position: 50%;
 	background-repeat: no-repeat;
 	background-size: 60% 100%;
