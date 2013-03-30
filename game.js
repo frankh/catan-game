@@ -102,7 +102,7 @@ $(window).load(function() {
 		return;
 	}
 
-	SOCKET = new WebSocket("ws://shawabawa.mooo.com:8080/socket/temp/1");
+	SOCKET = new WebSocket("ws://localhost:8080/socket/temp/1");
 
 	$('.overlay').text('Connecting');
 

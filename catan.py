@@ -5,6 +5,7 @@ import logging
 from collections import defaultdict, Iterable
 import itertools
 from functools import lru_cache
+from pprint import pprint
 
 log = logging.getLogger('catan')
 log.setLevel(logging.DEBUG)
@@ -606,14 +607,22 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 		log.debug(username+" joined "+game_id)
 
 	def on_message(self, message):
-		log.debug(str('temp')+'>'+message)
+		try:
+			log.debug(str('temp')+'>'+pprint(json.loads(message)))
+		except:
+			log.debug(str('temp')+'>'+message)
+
 		message = json.loads(message)
 
 		if( message['type'] == 'ready' ):
 			self.game.set_ready(self.player)
 		
 	def write_message(self, message):
-		log.debug(str('temp')+'<'+message)
+		try:
+			log.debug(str('temp')+'<'+pprint(json.loads(message)))
+		except:
+			log.debug(str('temp')+'<'+message)
+
 		super().write_message(message);
 
 

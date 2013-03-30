@@ -189,9 +189,23 @@ html, body {
 	background-size: 400% 100%;
 	overflow: visible;
 }
+
 .built_settlement_blue {
+	-webkit-animation-name: -webkit-settle_blue;
+	-webkit-animation-duration: 0.15s;
+	-webkit-animation-timing-function: steps(2, end);
+  	-webkit-animation-iteration-count: 7;
 	background-image: url(res/settlements.png);
 	background-size: 400% 100%;
 	background-color: transparent !important;
 	border-radius: 0 !important;
+}
+
+@-webkit-keyframes -webkit-settle_blue {
+  from {
+	background-image: url(res/settlements.png);
+  }
+  to {
+	background-image: url(res/settlements_highlight.png);
+  }
 }
