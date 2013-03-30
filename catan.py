@@ -598,9 +598,9 @@ class Game(object):
 
 			if( move['location']['type'] == 'vertex'):
 				location = self.board.Vertex.get(move['location']['id'])
-			else:
-				raise Exception('TODO')
 
+			elif( move['location']['type'] == 'path'):
+				location = self.board.Path.get(move['location']['id'])
 
 			if location.built is not None:
 				raise Exception('Tried to build over existing building')

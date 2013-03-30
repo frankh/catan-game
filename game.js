@@ -321,7 +321,13 @@ function update_board(board) {
 
 	for( var i in board.paths ) {
 		var path = board.paths[i];
+		var $path = get_path(path.id);
 
-
+		if( path.built ) {
+			build_road($path, path.built.owner.color);
+		} else {
+			// Potential bug for not cleaning up color class here.
+			$path.removeClass('built');
+		}
 	}
 }

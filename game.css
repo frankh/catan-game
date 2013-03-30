@@ -289,6 +289,15 @@ html, body {
 	}
 }
 
+@-moz-keyframes placementflash {
+	from {
+		opacity: 1.0;
+	}
+	to {
+		opacity: 0.0;
+	}
+}
+
 
 .path_in {
 	width:100%;
