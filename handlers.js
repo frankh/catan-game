@@ -1,3 +1,11 @@
+"use strict";
+
+var globals;
+
+(function(global) {
+	globals = global;
+})(this);
+
 var handler_game =function(msg) {
 	handler_board(msg.game);
 	handler_players(msg.game);
@@ -8,9 +16,9 @@ var handler_game =function(msg) {
 };
 
 var handler_board =function(msg) {
-	if( !BOARD ) {
-		BOARD = msg.board;
-		create_board(BOARD);
+	if( !globals.BOARD ) {
+		globals.BOARD = msg.board;
+		create_board(globals.BOARD);
 		resize();
 	} else {
 		update_board(msg.board);
@@ -18,12 +26,12 @@ var handler_board =function(msg) {
 };
 
 var handler_players =function(msg) {
-	if( !PLAYER ) {
-		PLAYERS = msg.players;
+	if( !globals.PLAYER ) {
+		globals.PLAYERS = msg.players;
 		
-		for( var i in PLAYERS ) {
-			PLAYER = PLAYERS[i];
-			var player = PLAYER;
+		for( var i in globals.PLAYERS ) {
+			globals.PLAYER = globals.PLAYERS[i];
+			var player = globals.PLAYER;
 			var player_row = $('.player_row.unused:eq(0)')
 			                    .removeClass('unused')
 			                    .addClass('player_'+player.color);
@@ -33,40 +41,82 @@ var handler_players =function(msg) {
 };
 
 var handler_moves =function(msg) {
-	moves = msg.moves;
-	var place_vertices = $();
+	var moves = msg.moves;
 	for( var i in moves ) {
 		var move = moves[i];
 
 		if( move.type == 'place' ) {
 			if( move.build == 'settlement' ) {
+				var place_vertices = $();
 				show_message('Place your starting settlement');
-				$(window).bind('settlement_built', clear_message);
 
-				var build_class = 'build_settlement_'+PLAYER.color;
-				var vertex = get_vertex(move.location.id);
-				vertex.addClass(build_class);
-				place_vertices = place_vertices.add(vertex);
+				for( var j in move.locations ) {
+					var location = move.locations[j];
+					var vertex = get_vertex(location.id);
 
-				var do_move = function(move, vertex) {
-					return function() {
-						place_vertices.unbind();
-						place_vertices.removeClass(build_class);
+					vertex.addClass('build');
+					vertex.addClass('settlement');
+					vertex.addClass(globals.PLAYER.color);
 
-						vertex.removeClass('unbuilt')
-						      .addClass('built_settlement_'+PLAYER.color);
-
-						new Audio("res/15 - build drop.wav").play();
-						$(window).trigger('settlement_built');
-
-						SOCKET.send(JSON.stringify({
-							type: 'do_move',
-							move: move,
-						}));
-					}
+					place_vertices = place_vertices.add(vertex);
 				}
 
-				vertex.click(do_move(move, vertex));
+				place_vertices.click(function() {
+					place_vertices.unbind();
+					place_vertices.removeClass('build');
+					place_vertices.removeClass('settlement');
+					place_vertices.removeClass(globals.PLAYER.color);
+
+					build_on_vert($(this), 'settlement', globals.PLAYER.color);
+					clear_message();
+
+					globals.SOCKET.send(JSON.stringify({
+						type: 'do_move',
+						move: {
+							type: 'place',
+							build: 'settlement',
+							location: {
+								'type': 'vertex',
+								'id': get_vertex_id($(this)),
+							},
+						},
+					}));
+				});
+			} else if ( move.build == 'road' ) {
+				var place_paths = $();
+				show_message('Now place a road adjacent to that settlement');
+
+				for( var j in move.locations ) {
+					var path = move.locations[j];
+					path = get_path(path.id);
+
+					path.addClass('build');
+					path.addClass(globals.PLAYER.color);
+
+					place_paths = place_paths.add(path);
+				}
+
+				place_paths.click(function() {
+					place_paths.unbind();
+					place_paths.removeClass('build');
+					place_paths.removeClass(globals.PLAYER.color);
+
+					build_road($(this), globals.PLAYER.color);
+					clear_message();
+
+					globals.SOCKET.send(JSON.stringify({
+						type: 'do_move',
+						move: {
+							type: 'place',
+							build: 'road',
+							location: {
+								'type': 'path',
+								'id': get_path_id($(this)),
+							},
+						},
+					}));
+				});
+
 			}
 		}
 	}
@@ -76,7 +126,7 @@ var handler_forced_action = function(msg) {
 };
 
 var handler_assign_player = function(msg) {
-	PLAYER = msg.player;
+	globals.PLAYER = msg.player;
 };
 
 var handler_available_moves = function(msg) {

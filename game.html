@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<link rel='stylesheet/less' type="text/css" href='game.css'>
+		<link rel='stylesheet/less' type="text/css" href='scroll.css'>
+		<link rel='stylesheet/less' type="text/css" href='interface.css'>
+		<link rel='stylesheet/less' type="text/css" href='hex.css'>
+		<script src="less-1.3.3.min.js"></script>
 		<script src="jQuery-1.7.2.js"></script>
 		<script src="jquery-ui-1.10.2.custom.js"></script>
+		<script src="building.js"></script>
 		<script src="vertex.js"></script>
 		<script src="handlers.js"></script>
 		<script src="game.js"></script>
-		<link rel='stylesheet' type="text/css" href='game.css'>
-		<link rel='stylesheet' type="text/css" href='scroll.css'>
-		<link rel='stylesheet' type="text/css" href='interface.css'>
-		<link rel='stylesheet' type="text/css" href='hex.css'>
 		<title>Catan!</title>
 	</head>
 	<body>
@@ -148,9 +150,9 @@
 
 		</div>
 		<table>
-		<tr class='template game_hex_row'>
+		<tr class='template hex_row'>
 			<td class='hex_cell template'>
-				<div class='game_hex'>
+				<div class='hex'>
 					<div class='hex_in1'>
 						<div class='hex_in2'>
 							<div class='hex_text'>1</div>
@@ -161,9 +163,14 @@
 		</tr>
 	</table>
 	<div class='vertexes'>
-		<div class='hex_vertex template'>
+		<div class='vertex template'>
 			<div class='vertex_text'>1</div>
+			<div class='building'></div>
 		</div>
+		<div class='paths'></div>
+	</div>
+	<div class='path template'>
+		<div class='path_in'></div>
 	</div>
 	</body>
 </html>

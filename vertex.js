@@ -1,8 +1,6 @@
 create_vertex = function(vert) {
-	// Convert the ID (which is a list of 3 hex_ids)
-	//  to a valid html id.
-	var vert_id = vert.id.join().replace(/,/g, '_');
-	var vertex = $('.hex_vertex.template').clone();
+	var vert_id = vert.id;
+	var vertex = $('.vertex.template').clone();
 	vertex.removeClass('template');
 	vertex.appendTo($('.vertexes'));
 	vertex.find('.vertex_text').text(vert.probability);
@@ -11,12 +9,17 @@ create_vertex = function(vert) {
 };
 
 get_vertex = function(vert_id) {
-	var vert_id = vert_id.join().replace(/,/g, '_');
-	return $('.hex_vertex[vertex_id='+vert_id+']');
+	return $('.vertex[vertex_id='+vert_id+']');
+}
+
+get_vertex_id = function(vert) {
+	var vert_id = $(vert).attr('vertex_id');
+
+	return vert_id;
 }
 
 resize_vertices = function() {
-	$('.vertexes .hex_vertex').not('.template').each(function() {
+	$('.vertexes .vertex').not('.template').each(function() {
 		var vertex = $(this);
 
 		var vert_id = vertex.attr('vertex_id');
@@ -34,11 +37,11 @@ resize_vertices = function() {
 				var to_id = parseInt(hex_id.toString().slice(3,5), 10);
 				hexes.push({
 					sea: true,
-					from: $('.game_hex[hex_id='+from_id+']'),
-					to: $('.game_hex[hex_id='+to_id+']')
+					from: $('.hex[hex_id='+from_id+']'),
+					to: $('.hex[hex_id='+to_id+']')
 				});
 			} else {
-				hexes.push($('.game_hex[hex_id='+hex_id+']'));
+				hexes.push($('.hex[hex_id='+hex_id+']'));
 			}
 		}
 

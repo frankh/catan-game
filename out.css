@@ -1,0 +1,241 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background-color: #005090;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+  font-family: verdana;
+}
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #005090;
+  z-index: 10000;
+}
+.game_window {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  border-left: solid black 1px;
+  border-right: solid black 1px;
+}
+.game_play_area {
+  width: 68.9%;
+  height: 100%;
+  float: left;
+}
+.game_interface {
+  width: 31.1%;
+  height: 100%;
+  background-color: #004080;
+  float: right;
+  color: white;
+  font-size: 12pt;
+  -webkit-text-size-adjust: none;
+}
+/*	
+	1255x940 window
+	865x940 play_area
+	865x33	notification
+	390x940 interface
+	150x135	game_hex
+   */
+.game_current_player_notification {
+  width: 100%;
+  height: 3.51%;
+  background-color: salmon;
+}
+.game_board {
+  width: 100%;
+  height: 96.49%;
+  background-image: url(res/gradiant.bmp);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  border-top: solid black 1px;
+}
+.corner_dice {
+  width: 10%;
+  height: 9.54%;
+  float: left;
+  position: relative;
+  top: 7%;
+  left: 7%;
+  text-align: center;
+}
+.die {
+  display: inline-block;
+  width: 50%;
+  height: 50%;
+  background-image: url(res/dice.png);
+  background-size: auto 100%;
+}
+.die:nth-child(1) {
+  float: left;
+}
+.die:nth-child(2) {
+  float: right;
+}
+.dice_value {
+  font-size: 2em;
+  font-family: verdana;
+  color: white;
+}
+.roll_dice {
+  width: 12%;
+  height: 11.45%;
+  float: right;
+  position: relative;
+  top: 45%;
+  left: -45%;
+}
+.rolling_die:nth-child(1) {
+  float: left;
+}
+.rolling_die:nth-child(2) {
+  float: right;
+}
+.rolling_die {
+  -webkit-animation-name: -webkit-rolldie;
+  -moz-animation-name: -moz-rolldie;
+  -webkit-animation-duration: 1s;
+  -moz-animation-duration: 1s;
+  -webkit-animation-timing-function: steps(15, end);
+  -moz-animation-timing-function: steps(15, end);
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+  display: inline-block;
+  width: 50%;
+  height: 68.0%;
+  background-image: url(res/DiceAnim.png);
+  background-size: auto 100%;
+}
+@keyframes rolldie {
+  from {
+    background-position: 0%;
+  }
+  to {
+    background-position: 107%;
+  }
+}
+@-moz-keyframes rolldie {
+  from {
+    background-position: 0%;
+  }
+  to {
+    background-position: 107%;
+  }
+}
+@-webkit-keyframes rolldie {
+  from {
+    background-position: 0%;
+  }
+  to {
+    background-position: 107%;
+  }
+}
+.vertex.built .building {
+  -webkit-animation-duration: 0.15s;
+  -moz-animation-duration: 0.15s;
+  -webkit-animation-timing-function: steps(2, end);
+  -moz-animation-timing-function: steps(2, end);
+  -webkit-animation-iteration-count: 7;
+  -moz-animation-iteration-count: 7;
+  background-size: 400% 100%;
+}
+.vertex.settlement.vertex.built .building {
+  -webkit-animation-name: -webkit-settle_place;
+  -moz-animation-name: -moz-settle_place;
+  background-image: url(res/settlements.png);
+}
+.vertex.city.vertex.built .building {
+  -webkit-animation-name: -webkit-city_place;
+  -moz-animation-name: -moz-city_place;
+  background-image: url(res/cities.png);
+}
+.vertex.red.vertex.built .building {
+  background-position: 33.33%;
+}
+.building.build:hover {
+  background-size: 400% 100%;
+}
+.vertex.settlement .building.build:hover {
+  background-image: url(res/settlements_highlight.png);
+}
+.vertex.red .building.build:hover {
+  background-position: 33.33%;
+}
+@-webkit-keyframes -webkit-settle_place {
+  from {
+    background-image: url(res/settlements.png);
+  }
+  to {
+    background-image: url(res/settlements_highlight.png);
+  }
+}
+@-moz-keyframes -moz-settle_place {
+  from {
+    background-image: url(res/settlements.png);
+  }
+  to {
+    background-image: url(res/settlements_highlight.png);
+  }
+}
+@keyframes settle_place {
+  from {
+    background-image: url(res/settlements.png);
+  }
+  to {
+    background-image: url(res/settlements_highlight.png);
+  }
+}
+.path {
+  position: absolute;
+  overflow: visible;
+  visibility: hidden;
+}
+.path.built {
+  visibility: visible;
+}
+.path.build .path_in {
+  background-image: url(res/roads_hightlight.png);
+}
+.path_in {
+  width: 100%;
+  height: 100%;
+  background-size: 300% 400%;
+  background-image: url(res/roads.png);
+}
+.path.leading .path_in {
+  background-position: 50% 0%;
+}
+.red.path.leading .path_in {
+  background-position: 50% 33.33%;
+}
+.green.path.leading .path_in {
+  background-position: 50% 66.66%;
+}
+.yellow.path.leading .path_in {
+  background-position: 50% 100%;
+}
+.path.flat .path_in {
+  background-position: 100% 0%;
+}
+.red.path.flat .path_in {
+  background-position: 100% 33.33%;
+}
+.green.path.flat .path_in {
+  background-position: 100% 66.66%;
+}
+.yellow.path.flat .path_in {
+  background-position: 100% 100%;
+}

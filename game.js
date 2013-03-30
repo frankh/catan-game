@@ -54,20 +54,20 @@ var _resize = function() {
 	// Lock ratio
 	$('.game_window').width(height*(4/3));
 
-	var hex_width = $('.game_hex').width();
-	var hex_height = $('.game_hex').height();
+	var hex_width = $('.hex').width();
+	var hex_height = $('.hex').height();
 	var font_size = hex_height / 5.5;
 
 	var width_offset = hex_width * (0.05) + 1;
 	var height_offset = hex_height * (0.50);
 
 	// Position hexes
-	$('td:nth-child(odd) .game_hex').css('top', height_offset + 'px');
+	$('td:nth-child(odd) .hex').css('top', height_offset + 'px');
 
-	$('td:nth-child(odd) .game_hex').css('left', width_offset + 'px');
-	$('td:nth-child(3) .game_hex').css('left', -1 * width_offset + 'px');
-	$('td:nth-child(4) .game_hex').css('left', -2 * width_offset + 'px');
-	$('td:nth-child(5) .game_hex').css('left', -3 * width_offset + 'px');
+	$('td:nth-child(odd) .hex').css('left', width_offset + 'px');
+	$('td:nth-child(3) .hex').css('left', -1 * width_offset + 'px');
+	$('td:nth-child(4) .hex').css('left', -2 * width_offset + 'px');
+	$('td:nth-child(5) .hex').css('left', -3 * width_offset + 'px');
 
 	// Center the grid
 	$('.hex_grid').css('top', 1 * height_offset+'px');
@@ -92,6 +92,7 @@ var _resize = function() {
 	$('.dice_value').css('font-size', 2*height/940 + 'em');
 
 	resize_vertices();
+	resize_paths();
 	position_message();
 };
 
@@ -141,33 +142,33 @@ $(window).resize(resize);
 
 $(document).ready(function() {
 	for( var i = 1; i < 5; i++ ) {
-		$('.game_hex_row.template td.template')
+		$('.hex_row.template td.template')
 			.clone()
 			.removeClass('template')
-			.appendTo($('.game_hex_row.template'));
+			.appendTo($('.hex_row.template'));
 	}
-	$('.game_hex_row.template td.template').removeClass('template');
+	$('.hex_row.template td.template').removeClass('template');
 
 	for( var i = 0; i < 5; i++ ) {
-		$('.game_hex_row.template')
+		$('.hex_row.template')
 			.clone()
 			.removeClass('template')
 			.appendTo($('.hex_grid'));
 	}
 
-	$('.game_hex_row.template').remove();
+	$('.hex_row.template').remove();
 
-	$('.game_hex_row:nth-child(1) > td:nth-child(1) .game_hex').addClass('sea_tile');
-	$('.game_hex_row:nth-child(1) > td:nth-child(2) .game_hex').addClass('sea_tile');
-	$('.game_hex_row:nth-child(1) > td:nth-child(4) .game_hex').addClass('sea_tile');
-	$('.game_hex_row:nth-child(1) > td:nth-child(5) .game_hex').addClass('sea_tile');
-	$('.game_hex_row:nth-child(5) > td:nth-child(1) .game_hex').addClass('sea_tile');
-	$('.game_hex_row:nth-child(5) > td:nth-child(5) .game_hex').addClass('sea_tile');
+	$('.hex_row:nth-child(1) > td:nth-child(1) .hex').addClass('sea_tile');
+	$('.hex_row:nth-child(1) > td:nth-child(2) .hex').addClass('sea_tile');
+	$('.hex_row:nth-child(1) > td:nth-child(4) .hex').addClass('sea_tile');
+	$('.hex_row:nth-child(1) > td:nth-child(5) .hex').addClass('sea_tile');
+	$('.hex_row:nth-child(5) > td:nth-child(1) .hex').addClass('sea_tile');
+	$('.hex_row:nth-child(5) > td:nth-child(5) .hex').addClass('sea_tile');
 
-	$('.sea_tile').parents('td').find('.hex_vertex').remove();
+	$('.sea_tile').parents('td').find('.vertex').remove();
 
 	var i = 1;
-	var hexes = $('.game_hex').not('.sea_tile');
+	var hexes = $('.hex').not('.sea_tile');
 	hexes.each(function() {
 		$(this).attr('hex_id', HEX_CONV_MAP[i]);
 		i += 1
@@ -175,10 +176,110 @@ $(document).ready(function() {
 
 });
 
+var get_path = function(path_id) {
+	return $('.path[path_id='+path_id+']');
+}
+
+var get_path_id = function(path) {
+	var path_id = $(path).attr('path_id');
+
+	return path_id;
+}
+
+function create_path(path) {
+	var path_id = path.id;
+	var path = $('.path.template').clone();
+	path.removeClass('template');
+	path.appendTo($('.vertexes .paths'));
+	path.attr('path_id', path_id);
+}
+
+function resize_paths() {
+	"use strict";
+
+	$('.path').not('.template').each(function() {
+		var path = $(this);
+		var path_id = path.attr('path_id');
+
+		var vert_ids = path_id.split('__');
+		var vert1 = get_vertex(vert_ids[0]);
+		var vert2 = get_vertex(vert_ids[1]);
+
+		var new_size = vert1.width() * 1.7;
+		path.width(new_size);
+		path.height(new_size);
+
+		var v1pos = vert1.offset();
+		v1pos.left += vert1.width() / 2;
+		v1pos.top += vert1.height() / 2;
+
+		var v2pos = vert2.offset();
+		v2pos.left += vert2.width() / 2;
+		v2pos.top += vert2.height() / 2;
+
+		path.css({
+			top: (v1pos.top + v2pos.top) / 2 - (path.height() / 2),
+			left: (v1pos.left + v2pos.left) / 2 - (path.width() / 2),
+			position: 'absolute'
+		});
+
+		var ppos = path.offset();
+		ppos.left += path.width() / 2;
+		ppos.top += path.height() / 2;
+
+		var top = function(pos) {
+			if( pos === false )
+				return false;
+
+			if( pos.top - ppos.top < -5 )
+				return pos;
+
+			return false;
+		};
+		var left = function(pos) {
+			if( pos === false )
+				return false;
+
+			if( pos.left - ppos.left < -5 )
+				return pos;
+
+			return false;
+		};
+		var bottom = function(pos) {
+			if( pos === false )
+				return false;
+
+			if( pos.top - ppos.top > 5 )
+				return pos;
+
+			return false;
+		};
+		var right = function(pos) {
+			if( pos === false )
+				return false;
+
+			if( pos.left - ppos.left > 5 )
+				return pos;
+
+			return false;
+		};
+
+		if( top(left(v1pos)) && bottom(right(v2pos)) 
+		 || top(left(v2pos)) && bottom(right(v1pos)) ) {
+			path.addClass('trailing');
+		} else if( bottom(left(v1pos)) && top(right(v2pos)) 
+		        || bottom(left(v2pos)) && top(right(v1pos)) )  {
+			path.addClass('leading');
+		} else {
+			path.addClass('flat');
+		}
+	});
+}
+
 function create_board(board) {
 	for(var i in board.hexes) {
 		var hex = board.hexes[i];
-		var $hex = $('.game_hex[hex_id='+hex.id+']');
+		var $hex = $('.hex[hex_id='+hex.id+']');
 
 		$hex.addClass('hex_'+hex.tile);
 		var hex_text = $hex.find('.hex_text').text(hex.value);
@@ -192,6 +293,14 @@ function create_board(board) {
 		var vert = board.vertices[i];
 		create_vertex(vert);
 	}
+
+	for( var i in board.paths ) {
+		var path = board.paths[i];
+
+		create_path(path);
+	}
+
+	update_board(board);
 }
 
 function update_board(board) {
@@ -201,10 +310,18 @@ function update_board(board) {
 
 		if( vert.blocked || vert.built ) {
 			$vert.removeClass('unbuilt');
+		} else {
+			$vert.addClass('unbuilt');
 		}
 
 		if( vert.built ) {
-			$vert.addClass('built_'+vert.built.building+'_'+vert.built.owner.color);
-		}
+			build_on_vert($vert, vert.built.building, vert.built.owner.color);
+		} 
+	}
+
+	for( var i in board.paths ) {
+		var path = board.paths[i];
+
+
 	}
 }

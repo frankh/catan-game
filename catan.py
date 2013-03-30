@@ -20,6 +20,26 @@ def listify(gen):
 	return patched
 
 def get_ident(*ident_in):
+	if isinstance(ident_in[0], list):
+		ident_in =ident_in[0]
+
+	new_ident_in = []
+
+	for ident in ident_in:
+		new_ident = ident
+		if isinstance(ident, str):
+			if '__' in ident:
+				for x in ident.split('__'):
+					new_ident_in.append(get_ident(x))
+			elif '_' in ident:
+				new_ident_in.append(get_ident(ident.split('_')))
+			else:
+				new_ident_in.append(int(ident))
+		else:
+			new_ident_in.append(ident)
+
+	ident_in = new_ident_in
+
 	ident_in = tuple(sorted(ident_in))
 
 	if len(ident_in) == 1:
@@ -85,7 +105,11 @@ def create_board():
 
 		def __init__(self, *ident_in):
 			if self.initialised: 
-				raise Exception('Should not be creating new objects after initialisation.')
+				raise Exception('Should not be creating new'
+				' objects after initialisation. ({cls}, {args})'.format(
+					cls=self.__class__.__name__,
+					args=ident_in)
+				)
 
 			ident = get_ident(*ident_in)
 
@@ -108,6 +132,35 @@ def create_board():
 			objs[ident] = self
 
 			print ('created ' + str(self) + ' - ' + str(ident))
+
+		def id_dict(self):
+			d = self.as_dict()
+
+			return {
+				'type': d['type'],
+				'id': d['id'],
+			}
+
+		@property
+		def str_id(self):
+			if isinstance(self.id, int):
+				return str(self.id)
+
+			def tuple_to_str(tup):
+				l = []
+				depth = 1
+				for x in tup:
+					if isinstance(x, tuple):
+						x, sub_depth = tuple_to_str(x)
+						depth = max(1+sub_depth, depth)
+					else:
+						x = str(x)
+					l.append(x)
+
+				return ('_'*depth).join(l), depth
+
+			return tuple_to_str(self.id)[0]
+
 
 		def __str__(self):
 			return '{cls}<{id}>'.format(cls=self.__class__.__name__, id=self.id)
@@ -254,7 +307,7 @@ def create_board():
 
 		def as_dict(self):
 			return {
-				'id': list(self.id),
+				'id': self.str_id,
 				'built': self.built.as_dict() if self.built else None,
 				'probability': self.probability,
 				'blocked': not self.is_free(),
@@ -296,7 +349,7 @@ def create_board():
 
 		def as_dict(self):
 			return {
-				'id': list(self.id),
+				'id': self.str_id,
 				'built': self.built.as_dict() if self.built else None,
 				'port': self.port,
 				'type': 'path',
@@ -411,7 +464,7 @@ class Player(object):
 		self.connection.write_message(json.dumps(msg))
 
 	@property
-	def num_settlements(self):
+	def num_buildings(self):
 		return len([v for v in self.game.board.vertices
 			                if v.built and v.built.owner is self])
 
@@ -453,10 +506,12 @@ class Game(object):
 		self.password = None
 		self.board = generate_board()
 		self.current_player = None
+		self.started = False
 
 	def maybe_start(self):
 		if not [p for p in self.players if not p.ready]\
-		   and len(self.players) == self.max_players:
+		   and len(self.players) == self.max_players   \
+		   and not self.started:
 			self.start()
 
 	def start(self):
@@ -476,10 +531,6 @@ class Game(object):
 	def recv_move(self, player, move):
 		if player == self.current_player:
 			moves = self.gen.send(move)
-			self.broadcast({
-				'type': 'game',
-				'game': self.as_dict()
-			})
 			self.current_player.send({
 				'type': 'moves',
 				'moves': moves
@@ -491,43 +542,75 @@ class Game(object):
 			pl = self.current_player
 			move = None
 
-			if pl.num_settlements < 2 or pl.num_roads < 2:
-				print('starting', self.current_player)
+			if pl.num_buildings < 2:
+				print('settle', self.current_player.id)
 				# Starting phase.
-				build = 'settlement'
-				locations = [
-					v for v in self.board.vertices if v.is_free()
-				]
 
-				if pl.num_roads < pl.num_settlements:
-					build = 'road'
-					locations = itertools.chain(
-						*[v.paths for v in self.board.vertices 
-						                if v.built and v.built.owner is pl]
-					)
-
+				## PLACE SETTLEMENT
 				valid_moves = [{
 					'type': 'place',
-					'build': build,
-					'location': location.as_dict()
-				} for location in locations]
+					'build': 'settlement',
+					'locations': [v.id_dict() for v in self.board.vertices 
+					                                if v.is_free()]
+				}]
 
 				move = yield valid_moves
-				while move not in valid_moves:
-					raise Exception('inv move')
+
+				def is_valid(move):
+					for valid in valid_moves:
+						if move['type'] == valid['type'] \
+						and move['location'] in valid['locations'] \
+						and move['build'] == valid['build']:
+							return True
+					return False
+
+				while not is_valid(move):
+					import pdb
+					pdb.set_trace()
+					raise Exception('invalid')
 					move = yield valid_moves
 
-			self.do_move(self.current_player, move)
+				self.do_move(self.current_player, move)
+				print('road', self.current_player.id)
+
+				placed_vertex = self.board.Vertex.get(move['location']['id'])
+
+				## PLACE ROAD
+				valid_moves = [{
+					'type': 'place',
+					'build': 'road',
+					'locations': [path.id_dict() for path in placed_vertex.paths
+					                                      if not path.built]
+				}]
+
+				move = yield valid_moves
+				while not is_valid(move):
+					raise Exception('invalid')
+					move = yield valid_moves
+
+				self.do_move(self.current_player, move)
+				print('done', self.current_player.id)
+
 
 	def do_move(self, player, move):
 		if move['type'] == 'place':
-			if move['location']['built'] is not None:
-				raise Exception('Tried to build over existing building')
+			location = None
 
 			if( move['location']['type'] == 'vertex'):
-				location = self.board.Vertex.get(*move['location']['id'])
+				location = self.board.Vertex.get(move['location']['id'])
+			else:
+				raise Exception('TODO')
+
+
+			if location.built is not None:
+				raise Exception('Tried to build over existing building')
 
 			location.built = Building(player, move['build'])
+
+		self.broadcast({
+			'type': 'game',
+			'game': self.as_dict()
+		})
 
 	def turns(self, first_player):
 		num_players = len(self.players)
