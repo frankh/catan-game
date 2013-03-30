@@ -204,7 +204,7 @@ function update_board(board) {
 		}
 
 		if( vert.built ) {
-			$vert.addClass('build_'+vert.built.building+'_'+vert.built.color);
+			$vert.addClass('built_'+vert.built.building+'_'+vert.built.owner.color);
 		}
 	}
 }

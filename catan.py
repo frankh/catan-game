@@ -469,10 +469,14 @@ class Game(object):
 			'moves': moves
 		})
 
+	def broadcast(self, message):
+		for player in self.players:
+			player.send(message)
+
 	def recv_move(self, player, move):
 		if player == self.current_player:
 			moves = self.gen.send(move)
-			self.current_player.send({
+			self.broadcast({
 				'type': 'game',
 				'game': self.as_dict()
 			})
@@ -565,7 +569,7 @@ class DefaultGame(Game):
 
 	def __init__(self):
 		super().__init__()
-		self.max_players = 1
+		self.max_players = 2
 
 import tornado.web
 import tornado.ioloop

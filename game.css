@@ -209,3 +209,31 @@ html, body {
 	background-image: url(res/settlements_highlight.png);
   }
 }
+
+.build_settlement_red:hover {
+	background-image: url(res/settlements_highlight.png);
+	background-size: 400% 100%;
+	background-position: 33.33%;
+	overflow: visible;
+}
+
+.built_settlement_red {
+	-webkit-animation-name: -webkit-settle_red;
+	-webkit-animation-duration: 0.15s;
+	-webkit-animation-timing-function: steps(2, end);
+  	-webkit-animation-iteration-count: 7;
+	background-image: url(res/settlements.png);
+	background-size: 400% 100%;
+	background-color: transparent !important;
+	background-position: 33.33%;
+	border-radius: 0 !important;
+}
+
+@-webkit-keyframes -webkit-settle_red {
+  from {
+	background-image: url(res/settlements.png);
+  }
+  to {
+	background-image: url(res/settlements_highlight.png);
+  }
+}
