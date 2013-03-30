@@ -24,6 +24,7 @@ HEX_CONV_MAP = {
 }
 
 var BOARD;
+var PLAYER;
 var RESIZE_TIMER;
 
 var resize = function() {
@@ -191,5 +192,19 @@ function create_board(board) {
 		var vert = board.vertices[i];
 		create_vertex(vert);
 	}
+}
 
+function update_board(board) {
+	for( var i in board.vertices ) {
+		var vert = board.vertices[i];
+		var $vert = get_vertex(vert.id);
+
+		if( vert.blocked || vert.built ) {
+			$vert.removeClass('unbuilt');
+		}
+
+		if( vert.built ) {
+			$vert.addClass('build_'+vert.built.building+'_'+vert.built.color);
+		}
+	}
 }

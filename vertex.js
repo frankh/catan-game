@@ -10,6 +10,11 @@ create_vertex = function(vert) {
 	vertex.addClass('unbuilt');
 };
 
+get_vertex = function(vert_id) {
+	var vert_id = vert_id.join().replace(/,/g, '_');
+	return $('.hex_vertex[vertex_id='+vert_id+']');
+}
+
 resize_vertices = function() {
 	$('.vertexes .hex_vertex').not('.template').each(function() {
 		var vertex = $(this);

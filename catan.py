@@ -5,7 +5,7 @@ import logging
 from collections import defaultdict, Iterable
 import itertools
 from functools import lru_cache
-from pprint import pprint
+from pprint import pprint, pformat
 
 log = logging.getLogger('catan')
 log.setLevel(logging.DEBUG)
@@ -54,8 +54,8 @@ class Building(object):
 
 	def as_dict(self):
 		return {
-			'type'    : 'board',
-			'owner'   : self.owner,
+			'type'    : 'building',
+			'owner'   : self.owner.as_dict(),
 			'building': self.building,
 		}
 
@@ -234,7 +234,7 @@ def create_board():
 		@property
 		def adj_verts(self):
 			return [v for v in Vertex.objects.values()
-			           if v in itertools.chain(p.verts for p in self.paths)
+			           if v in itertools.chain(*[p.verts for p in self.paths])
 			          and v is not self]
 
 		def is_free(self):
@@ -254,10 +254,11 @@ def create_board():
 
 		def as_dict(self):
 			return {
-				'id': self.id,
+				'id': list(self.id),
 				'built': self.built.as_dict() if self.built else None,
 				'probability': self.probability,
-				'blocked': not self.is_free,
+				'blocked': not self.is_free(),
+				'type': 'vertex',
 			}
 
 	class Path(CatanObj):
@@ -295,9 +296,10 @@ def create_board():
 
 		def as_dict(self):
 			return {
-				'id': self.id,
+				'id': list(self.id),
 				'built': self.built.as_dict() if self.built else None,
 				'port': self.port,
+				'type': 'path',
 			}
 
 	# Creating 1 hex creates them all
@@ -460,12 +462,24 @@ class Game(object):
 	def start(self):
 		self.started = True
 		self.turn_generator = self.turns(random.choice(self.players))
-
-		moves = next(self.turn())
+		self.gen = self.turn()
+		moves = next(self.gen)
 		self.current_player.send({
 			'type': 'moves',
 			'moves': moves
 		})
+
+	def recv_move(self, player, move):
+		if player == self.current_player:
+			moves = self.gen.send(move)
+			self.current_player.send({
+				'type': 'game',
+				'game': self.as_dict()
+			})
+			self.current_player.send({
+				'type': 'moves',
+				'moves': moves
+			})
 
 	def turn(self):
 		while True:
@@ -483,10 +497,10 @@ class Game(object):
 
 				if pl.num_roads < pl.num_settlements:
 					build = 'road'
-					locations = list(itertools.chain(
-						[v.paths for v in self.board.vertices 
-						               if v.built and v.built.owner is pl]
-					))
+					locations = itertools.chain(
+						*[v.paths for v in self.board.vertices 
+						                if v.built and v.built.owner is pl]
+					)
 
 				valid_moves = [{
 					'type': 'place',
@@ -496,17 +510,20 @@ class Game(object):
 
 				move = yield valid_moves
 				while move not in valid_moves:
+					raise Exception('inv move')
 					move = yield valid_moves
 
 			self.do_move(self.current_player, move)
 
 	def do_move(self, player, move):
-		if move['type'] == 'build':
-			if move['location'].built is not None:
+		if move['type'] == 'place':
+			if move['location']['built'] is not None:
 				raise Exception('Tried to build over existing building')
 
-			move['location'].built = Building(player, move['build'])
+			if( move['location']['type'] == 'vertex'):
+				location = self.board.Vertex.get(*move['location']['id'])
 
+			location.built = Building(player, move['build'])
 
 	def turns(self, first_player):
 		num_players = len(self.players)
@@ -608,7 +625,7 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 
 	def on_message(self, message):
 		try:
-			log.debug(str('temp')+'>'+pprint(json.loads(message)))
+			log.debug(str('temp')+'>'+pformat(json.loads(message)))
 		except:
 			log.debug(str('temp')+'>'+message)
 
@@ -616,12 +633,17 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 
 		if( message['type'] == 'ready' ):
 			self.game.set_ready(self.player)
+
+		elif( message['type'] == 'do_move' ):
+			move = message['move']
+			self.game.recv_move(self.player, move)
 		
 	def write_message(self, message):
 		try:
-			log.debug(str('temp')+'<'+pprint(json.loads(message)))
+			log.debug(str('temp')+'<'+pformat(json.loads(message)))
 		except:
-			log.debug(str('temp')+'<'+message)
+			pass
+			#log.debug(str('temp')+'<'+message)
 
 		super().write_message(message);
 
