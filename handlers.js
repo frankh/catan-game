@@ -1,14 +1,16 @@
 "use strict";
 
-var globals;
-
-(function(global) {
-	globals = global;
-})(this);
+var globals = this;
 
 var handler_game =function(msg) {
 	handler_board(msg.game);
 	handler_players(msg.game);
+
+	if( msg.game.current_player ) {
+		handler_current_player({
+			player: msg.game.current_player
+		});
+	}
 
 	SOCKET.send(JSON.stringify({
 		'type': 'ready',
@@ -35,9 +37,28 @@ var handler_players =function(msg) {
 			var player_row = $('.player_row.unused:eq(0)')
 			                    .removeClass('unused')
 			                    .addClass('player_'+player.color);
+			player_row.find('.summary_player_name .name').text(player.name);
+			player_row.find('.summary_player_name .icon').addClass(player.icon);
 
 		}
 	}
+};
+
+var handler_current_player = function(msg) {
+	var player = msg.player;
+
+	var $bar = $('.game_current_player_notification');
+
+	$bar.removeClass('blue')
+	    .removeClass('red')
+	    .removeClass('green')
+	    .removeClass('yellow')
+        .addClass(msg.player.color);
+
+	$bar.find('.name').text(player.name);
+	$bar.find('.icon').removeClass('ai')
+	                  .removeClass('human')
+	                  .addClass(player.icon);
 };
 
 var handler_moves =function(msg) {

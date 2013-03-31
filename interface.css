@@ -1,3 +1,5 @@
+@import "shared.less";
+
 .message_box {
 	width: 20%;
 	height: 10%;
@@ -66,8 +68,21 @@
 	border-collapse: collapse;
 }
 
+.player_row {
+	font-weight: bold;
+	color:black;
+}
+
+.player_row td:nth-child(n+2) {
+	text-align: center;
+}
+
 .summary_head_row {
 	height: 30%;
+
+	th {
+		position: relative;
+	}
 }
 
 .summary_head_padding {
@@ -104,12 +119,35 @@
 }
 
 .summary_head_row th div {
-	width: 100%;
-	height: 100%;
+	width: auto;
+	.fit-to-margin;
+	margin-top: 15%;
+	margin-bottom: 20%;
+	margin-left: 10%;
+	margin-right: 10%;
 }
 
 .summary_player_name {
 	color: black;
+	position: relative;
+
+	.icon {
+		width: 16%;
+		margin-top: 4%;
+		margin-bottom: 4%;
+		margin-left: 4%;
+		.fit-to-margin;
+		background-size: 100% 100%;
+		&.human {
+			background-image: url(res/human_icon.png);
+		}
+	}
+
+	.name {
+		.fit-to-margin;
+		left: 25%;
+		top: 22%;
+	}
 }
 
 .player_row.unused {
@@ -117,17 +155,17 @@
 }
 
 .player_red {
-	background-color: #E89394;
+	background-color: @lred;
 }
 
 .player_blue {
-	background-color: #B4D5FA;
+	background-color: @lblue;
 }
 
 .player_green {
-	background-color: #A5E999;
+	background-color: @lgreen;
 }
 
 .player_yellow {
-	background-color: #F7F599;
+	background-color: @lyellow;
 }

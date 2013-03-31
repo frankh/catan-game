@@ -540,6 +540,12 @@ class Game(object):
 		while True:
 			self.current_player = next(self.turn_generator)
 			pl = self.current_player
+			
+			self.broadcast({
+				'type': 'current_player',
+				'player': pl.as_dict()
+			})
+
 			move = None
 
 			if pl.num_buildings < 2:
@@ -565,8 +571,6 @@ class Game(object):
 					return False
 
 				while not is_valid(move):
-					import pdb
-					pdb.set_trace()
 					raise Exception('invalid')
 					move = yield valid_moves
 
@@ -590,7 +594,16 @@ class Game(object):
 
 				self.do_move(self.current_player, move)
 				print('done', self.current_player.id)
+			else:
+				valid_moves = [{
+					'type': 'roll',
+				}]
+				
+				move = yield valid_moves
+				while move['type'] != 'roll':
+					raise Exception('invalid')
 
+				die1, die2 = random.randint(1, 6), random.randint(1, 6)
 
 	def do_move(self, player, move):
 		if move['type'] == 'place':
@@ -614,6 +627,7 @@ class Game(object):
 
 	def turns(self, first_player):
 		num_players = len(self.players)
+		random.shuffle(self.players)
 		start_index = self.players.index(first_player)
 
 		for i in range(num_players):

@@ -90,6 +90,7 @@ var _resize = function() {
 	// Fix other text sizes
 	$('.game_interface').css('font-size', height/940 + 'em');
 	$('.dice_value').css('font-size', 2*height/940 + 'em');
+	$('.game_current_player_notification').css('font-size', 1.5*height/940 + 'em');
 
 	resize_vertices();
 	resize_paths();
@@ -131,6 +132,7 @@ $(window).load(function() {
 			forced_action  : handler_forced_action,
 			assign_player  : handler_assign_player,
 			available_moves: handler_available_moves,
+			current_player : handler_current_player,
 		}
 
 		handlers[msg.type](msg);
@@ -156,6 +158,13 @@ $(document).ready(function() {
 			.appendTo($('.hex_grid'));
 	}
 
+	for( var i = 0; i < 4; i++ ) {
+		$('.player_row.template')
+		    .clone()
+		    .removeClass('template')
+		    .appendTo('.summary table')
+	}
+	$('.player_row.template').remove();
 	$('.hex_row.template').remove();
 
 	$('.hex_row:nth-child(1) > td:nth-child(1) .hex').addClass('sea_tile');

@@ -1,3 +1,5 @@
+@import "shared.less";
+
 html, body {
 	width: 100%;
 	height: 100%;
@@ -64,11 +66,53 @@ html, body {
 	150x135	game_hex
    */
 
+.gradient(@color; @angle:-90deg) {
+	background: -webkit-linear-gradient(@angle, @color, darken(@color, 10%));
+	background: -moz-linear-gradient(@angle, @color, darken(@color, 10%));
+	background: linear-gradient(@angle, @color, darken(@color, 10%));
+}
+
 .game_current_player_notification {
 	width: 100%;
 	height: 3.51%;
 
-	background-color: salmon;
+	// So that positioned child elements are relative to this.
+	position: relative;
+
+	&.blue {
+		.gradient(@lblue);
+	}
+	&.red {
+		.gradient(@lred);
+	}
+	&.green {
+		.gradient(@lgreen);
+	}
+	&.yellow {
+		.gradient(@lyellow);
+	}
+
+	.name {
+		.fit-to-margin;
+		left: 4%;
+		font-size: 1em;
+		font-weight: bold;
+	}
+
+	.icon {
+		width: 3.5%;
+		margin: 0.3%;
+		.fit-to-margin;
+		background-size: 100% 100%;
+
+		&.human {
+			background-image: url(res/human_icon.png);
+		}
+
+		&.ai {
+			background-image: url(res/ai_icon.png);
+		}
+	}
 }
 
 .game_board {
@@ -138,31 +182,6 @@ html, body {
 .rolling_die:nth-child(2) {
 	float:right;
 }
-
-.animation-name(@name) {
-	-webkit-animation-name: @name;
-	-moz-animation-name: @name;
-}
-
-.animation-duration(@duration) {
-	-webkit-animation-duration: @duration;
-	-moz-animation-duration: @duration;
-}
-
-.animation-timing-function(@timing) {
-	-webkit-animation-timing-function: @timing;
-	-moz-animation-timing-function: @timing;
-}
-
-.animation-iteration-count(@count) {
-  	-webkit-animation-iteration-count: @count;
-  	-moz-animation-iteration-count: @count;
- }
-
-.animation-direction(@dir) {
-  	-webkit-animation-direction: @dir;
-  	-moz-animation-direction: @dir;
- }
 
 .rolling_die {
 	.animation-name(rolldie);
@@ -282,19 +301,19 @@ html, body {
 
 @-webkit-keyframes placementflash {
 	from {
-		opacity: 1.0;
+		opacity: 0.0;
 	}
 	to {
-		opacity: 0.0;
+		opacity: 1.0;
 	}
 }
 
 @-moz-keyframes placementflash {
 	from {
-		opacity: 1.0;
+		opacity: 0.0;
 	}
 	to {
-		opacity: 0.0;
+		opacity: 1.0;
 	}
 }
 
