@@ -1,7 +1,11 @@
+import mimetypes
+mimetypes.init(files=[])
 import http
 from http import server
 import argparse
 import sys
+
+
 
 class CacheControlHandler(server.SimpleHTTPRequestHandler):
 	def send_response(self, code, message=None):

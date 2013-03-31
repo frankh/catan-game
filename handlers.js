@@ -140,6 +140,12 @@ var handler_moves =function(msg) {
 
 			}
 		}
+
+		if( move.type == 'roll' ) {
+			console.log('roll');
+			$('.actions .roll').addClass('enabled');
+
+		}
 	}
 };
 

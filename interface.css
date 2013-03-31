@@ -49,14 +49,6 @@
 	border: solid black 1px;
 }
 
-.build_container {
-	height: 35%;
-}
-
-.hand_container {
-	height: 15%;
-}
-
 .template {
 	display: none !important;
 }
@@ -80,8 +72,10 @@
 .summary_head_row {
 	height: 30%;
 
-	th {
+	th .intermediate {
 		position: relative;
+		width: 100%;
+		height: 100%;
 	}
 }
 
@@ -93,22 +87,22 @@
 	width: 20% !important;
 }
 
-.summary_head_cards div {
+.summary_head_cards .intermediate div {
 	background-image: url(res/playerview-icons.bmp);
 	background-size: 400% 100%;
 }
 
-.summary_head_dev_cards div {
+.summary_head_dev_cards .intermediate div {
 	background-image: url(res/playerview-icons.bmp);
 	background-size: 400% 100%;
     background-position: 33.33%;
 }
-.summary_head_knights div {
+.summary_head_knights .intermediate div {
 	background-image: url(res/playerview-icons.bmp);
 	background-size: 400% 100%;
     background-position: 66.66%;
 }
-.summary_head_road div {
+.summary_head_road .intermediate div {
 	background-image: url(res/playerview-icons.bmp);
 	background-size: 400% 100%;
     background-position: 100%;
@@ -118,7 +112,7 @@
 	font-size: 1.5em;
 }
 
-.summary_head_row th div {
+.summary_head_row th .intermediate div {
 	width: auto;
 	.fit-to-margin;
 	margin-top: 15%;
@@ -127,14 +121,26 @@
 	margin-right: 10%;
 }
 
+.ihatecss {
+	width:100%;
+	height:100%;
+}
+
 .summary_player_name {
 	color: black;
-	position: relative;
+
+	.intermediate {
+		position: relative;
+		width: 100%;
+		height: 100%; 
+		min-height: 100%;
+    	min-width: 100%;
+	}
 
 	.icon {
 		width: 16%;
-		margin-top: 4%;
-		margin-bottom: 4%;
+		margin-top: 2%;
+		margin-bottom: 3%;
 		margin-left: 4%;
 		.fit-to-margin;
 		background-size: 100% 100%;
@@ -168,4 +174,178 @@
 
 .player_yellow {
 	background-color: @lyellow;
+}
+
+.build_position_y(@xpos) {
+	background-position: @xpos 0%;
+
+	.enabled& {
+		background-position: @xpos 50%;
+	}
+
+	.clicked& {
+		background-position: @xpos 100%;
+	}
+}
+
+.build_container {
+	height: 30%;
+}
+
+.build_section {
+
+	width: 100%;
+	height: 100%;
+
+	.build {
+		float: left;
+		width: 60%;
+		padding: 1%;
+		height: 90%;
+
+		div {
+			width: 100%;
+			height: 25%;
+			background-size: 400% 300%;
+			background-image: url(res/buildbuttons.png);
+
+			&.road {
+				@xpos: 0;
+
+				.build_position_y(@xpos)
+			}
+
+			&.settlement {
+				@xpos: 33.33%;
+
+				.build_position_y(@xpos)
+			}
+
+			&.city {
+				@xpos: 66.66%;
+
+				.build_position_y(@xpos)
+			}
+
+			&.dev_card {
+				@xpos: 100%;
+
+				.build_position_y(@xpos)
+			}
+		}
+	}
+
+	.actions {
+		float: right;
+		height: 100%;
+		width: 37%;
+		padding-right: 1%;
+
+		div {
+			color: white;
+			font-weight: bold;
+			text-align: center;
+			font-size: 1.2em;
+			line-height: 2.2;
+
+			width: 100%;
+			height: 15%;
+			margin-bottom: 8%;
+
+			background-size: 100% 300%;
+			background-image: url(res/actionbuttons.png);
+
+			&.enabled {
+				background-position: 0 50%;
+				cursor: pointer;
+
+				&.roll {
+					.animation-name(actionflash);
+					.animation-duration(0.7s);
+					.animation-timing-function(steps(2,end));
+					.animation-iteration-count(infinite);
+				}
+			}
+
+			&.clicked {
+				background-position: 0 100%;
+			}
+		}
+	}
+}
+
+@-webkit-keyframes actionflash {
+	from {
+	}
+	to {
+		background-position: 0 150%;
+	}
+}
+
+@-moz-keyframes actionflash {
+	from {
+	}
+	to {
+		background-position: 0 150%;
+	}
+}
+
+.hand_container {
+	height: 15%;
+	width: 97%;
+
+	.hand {
+		padding: 4%;
+		left:1%;
+		width: 92%;
+		height: 73%;
+		background-color: white;
+	}
+}
+
+.card {
+	height:100%;
+	width: 15%;
+	display: inline-block;
+
+	.image {
+		width: 100%;
+		height: 75%;
+
+		background-image: url(res/materialcards.png);
+		background-size: 500% 100%;
+
+		.clay& {
+		}
+
+		.wheat& {
+			background-position: 25%;
+		}
+
+		.ore& {
+			background-position: 50%;
+		}
+
+		.wool& {
+			background-position: 75%;
+		}
+
+		.wood& {
+			background-position: 100%;
+		}
+
+		.dev& {
+			background-image: url(res/DevCard.png);
+			background-size: 100% 100%;
+		}
+	}
+
+	.count {
+		text-align: center;
+		font-size: 1.5em;
+		font-weight: bold;
+		color: black;
+		width: 100%;
+		height: 25%;
+	}
 }

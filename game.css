@@ -324,29 +324,27 @@ html, body {
 	background-size: 300% 400%;
 	background-image: url(res/roads.png);
 
+	.path.trailing & {
+		@xpos: 0%;
+
+		.color_position_y(@xpos)
+	}
+
 	.path.leading & {
 		@xpos: 50%;
-		background-position: @xpos 0%;
 
 		.color_position_y(@xpos)
 	}
 
 	.path.flat & {
 		@xpos: 100%;
-		background-position: @xpos 0%;
-
-		.color_position_y(@xpos)
-	}
-
-	.path.trailing & {
-		@xpos: 0%;
-		background-position: @xpos 0%;
 
 		.color_position_y(@xpos)
 	}
 }
 
 .color_position_y(@xpos) {
+	background-position: @xpos 0%;
 	.red& {
 		background-position: @xpos 33.33%;
 	}
