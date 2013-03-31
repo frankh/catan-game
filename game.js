@@ -162,7 +162,7 @@ $(document).ready(function() {
 		$('.player_row.template')
 		    .clone()
 		    .removeClass('template')
-		    .appendTo('.summary table')
+		    .appendTo('.summary')
 	}
 	$('.player_row.template').remove();
 	$('.hex_row.template').remove();

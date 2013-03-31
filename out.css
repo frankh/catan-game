@@ -48,11 +48,6 @@
 .template {
   display: none !important;
 }
-.summary table {
-  width: 100%;
-  height: 100%;
-  border-collapse: collapse;
-}
 .player_row {
   font-weight: bold;
   color: black;
@@ -63,30 +58,59 @@
 .summary_head_row {
   height: 30%;
 }
-.summary_head_row th {
+.summary_head_row .intermediate {
   position: relative;
+  width: 100%;
+  height: 100%;
 }
-.summary_head_padding {
-  width: 40% !important;
+.summary_head {
+  height: 100%;
+  width: 8%;
+  display: inline-block;
 }
-.summary_head_points {
-  width: 20% !important;
+.summary_head.padding {
+  width: 38%;
 }
-.summary_head_cards div {
+.summary_head .image {
+  width: 100%;
+  height: 80%;
+  margin-top: 20%;
   background-image: url(res/playerview-icons.bmp);
   background-size: 400% 100%;
 }
-.summary_head_dev_cards div {
+.dev_cards.summary_head .image {
+  background-position: 33.33%;
+}
+.dev_knights.summary_head .image {
+  background-position: 66.66%;
+}
+.dev_roads.summary_head .image {
+  background-position: 100%;
+}
+.summary_head.points {
+  width: 20%;
+  line-height: 1.2;
+  margin-top: 2%;
+  vertical-align: top;
+  color: black;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+.summary_headcards .intermediate div {
+  background-image: url(res/playerview-icons.bmp);
+  background-size: 400% 100%;
+}
+.summary_head_dev_cards .intermediate div {
   background-image: url(res/playerview-icons.bmp);
   background-size: 400% 100%;
   background-position: 33.33%;
 }
-.summary_head_knights div {
+.summary_head_knights .intermediate div {
   background-image: url(res/playerview-icons.bmp);
   background-size: 400% 100%;
   background-position: 66.66%;
 }
-.summary_head_road div {
+.summary_head_road .intermediate div {
   background-image: url(res/playerview-icons.bmp);
   background-size: 400% 100%;
   background-position: 100%;
@@ -95,7 +119,7 @@
   color: black;
   font-size: 1.5em;
 }
-.summary_head_row th div {
+.summary_head_row th .intermediate div {
   width: auto;
   top: 0;
   left: 0;
@@ -108,14 +132,24 @@
   margin-left: 10%;
   margin-right: 10%;
 }
+.ihatecss {
+  width: 100%;
+  height: 100%;
+}
 .summary_player_name {
   color: black;
+}
+.summary_player_name .intermediate {
   position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  min-width: 100%;
 }
 .summary_player_name .icon {
   width: 16%;
-  margin-top: 4%;
-  margin-bottom: 4%;
+  margin-top: 2%;
+  margin-bottom: 3%;
   margin-left: 4%;
   top: 0;
   left: 0;
@@ -228,23 +262,46 @@
 }
 .build_section .actions div.enabled {
   background-position: 0 50%;
+  cursor: pointer;
+}
+.build_section .actions div.enabled.roll {
+  -webkit-animation-name: actionflash;
+  -moz-animation-name: actionflash;
+  -webkit-animation-duration: 0.7s;
+  -moz-animation-duration: 0.7s;
+  -webkit-animation-timing-function: steps(2, end);
+  -moz-animation-timing-function: steps(2, end);
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
 }
 .build_section .actions div.clicked {
   background-position: 0 100%;
+}
+@-webkit-keyframes actionflash {
+  to {
+    background-position: 0 150%;
+  }
+}
+@-moz-keyframes actionflash {
+  to {
+    background-position: 0 150%;
+  }
 }
 .hand_container {
   height: 15%;
   width: 97%;
 }
 .hand_container .hand {
+  padding: 4%;
   left: 1%;
-  width: 100%;
-  height: 93%;
+  width: 92%;
+  height: 73%;
   background-color: white;
 }
 .card {
   height: 100%;
   width: 15%;
+  display: inline-block;
 }
 .card .image {
   width: 100%;
@@ -255,7 +312,24 @@
 .wheat.card .image {
   background-position: 25%;
 }
+.ore.card .image {
+  background-position: 50%;
+}
+.wool.card .image {
+  background-position: 75%;
+}
+.wood.card .image {
+  background-position: 100%;
+}
+.dev.card .image {
+  background-image: url(res/DevCard.png);
+  background-size: 100% 100%;
+}
 .card .count {
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: black;
   width: 100%;
   height: 25%;
 }

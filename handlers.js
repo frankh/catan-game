@@ -36,9 +36,9 @@ var handler_players =function(msg) {
 			var player = globals.PLAYER;
 			var player_row = $('.player_row.unused:eq(0)')
 			                    .removeClass('unused')
-			                    .addClass('player_'+player.color);
-			player_row.find('.summary_player_name .name').text(player.name);
-			player_row.find('.summary_player_name .icon').addClass(player.icon);
+			                    .addClass(player.color);
+			player_row.find('.summary_player.name .name').text(player.name);
+			player_row.find('.summary_player.name .icon').addClass(player.icon);
 
 		}
 	}

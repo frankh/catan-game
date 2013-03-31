@@ -53,77 +53,117 @@
 	display: none !important;
 }
 
-.summary table {
-	width: 100%;
-	height: 100%;
-
-	border-collapse: collapse;
-}
-
-.player_row {
-	font-weight: bold;
-	color:black;
-}
-
-.player_row td:nth-child(n+2) {
-	text-align: center;
-}
-
 .summary_head_row {
 	height: 30%;
 
-	th .intermediate {
+	.intermediate {
 		position: relative;
 		width: 100%;
 		height: 100%;
 	}
 }
 
-.summary_head_padding {
-	width: 40% !important;
+.summary_head {
+	height: 100%;
+	width: 8%;
+	display: inline-block;
+
+	&.padding {
+		width: 38%;
+	}
+
+	.image {
+		width: 100%;
+		height: 80%;
+		margin-top: 20%;
+
+		background-image: url(res/playerview-icons.bmp);
+		background-size: 400% 100%;
+
+		.dev_cards& {
+    		background-position: 33.33%;
+		}
+		.knights& {
+    		background-position: 66.66%;
+		}
+		.roads& {
+    		background-position: 100%;
+		}
+	}
+
+	&.points {
+		width: 20%;
+		line-height: 1.2;
+		margin-top: 2%;
+		vertical-align: top;
+		color: black;
+		font-size: 1.2em;
+		font-weight: bold;
+	}
 }
 
-.summary_head_points {
-	width: 20% !important;
-}
+.player_row {
+	font-weight: bold;
+	color:black;
+	height: 17%;
+	width: 100%;
 
-.summary_head_cards .intermediate div {
-	background-image: url(res/playerview-icons.bmp);
-	background-size: 400% 100%;
-}
+	&.unused {
+		visibility: hidden;
+	}
 
-.summary_head_dev_cards .intermediate div {
-	background-image: url(res/playerview-icons.bmp);
-	background-size: 400% 100%;
-    background-position: 33.33%;
-}
-.summary_head_knights .intermediate div {
-	background-image: url(res/playerview-icons.bmp);
-	background-size: 400% 100%;
-    background-position: 66.66%;
-}
-.summary_head_road .intermediate div {
-	background-image: url(res/playerview-icons.bmp);
-	background-size: 400% 100%;
-    background-position: 100%;
-}
-.summary_head_points {
-	color: black;
-	font-size: 1.5em;
-}
+	& > div:nth-child(n+2) {
+		text-align: center;
+	}
 
-.summary_head_row th .intermediate div {
-	width: auto;
-	.fit-to-margin;
-	margin-top: 15%;
-	margin-bottom: 20%;
-	margin-left: 10%;
-	margin-right: 10%;
-}
+	&.red {
+		background-color: @lred;
+	}
+	&.blue {
+		background-color: @lblue;
+	}
+	&.green {
+		background-color: @lgreen;
+	}
+	&.yellow {
+		background-color: @lyellow;
+	}
+	.summary_player {
+		display: inline-block;
+		width: 8%;
+		vertical-align: top;
+		line-height: 2;
 
-.ihatecss {
-	width:100%;
-	height:100%;
+		&.name {
+			height: 100%;
+			position: relative;
+			width: 38%;
+			display: inline-block;
+
+			.name {
+				display: inline-block;
+				height: 100%;
+				vertical-align: top;
+				line-height: 2;
+			}
+
+			.icon {
+				display: inline-block;
+				width: 16%;
+				margin: 3%;
+				height: 70%;
+				background-size: 100% 100%;
+				&.human {
+					background-image: url(res/human_icon.png);
+				}
+			}
+		}
+
+
+		&.points {
+			width: 20%;
+		}
+	}
 }
 
 .summary_player_name {
@@ -154,26 +194,6 @@
 		left: 25%;
 		top: 22%;
 	}
-}
-
-.player_row.unused {
-	visibility: hidden;
-}
-
-.player_red {
-	background-color: @lred;
-}
-
-.player_blue {
-	background-color: @lblue;
-}
-
-.player_green {
-	background-color: @lgreen;
-}
-
-.player_yellow {
-	background-color: @lyellow;
 }
 
 .build_position_y(@xpos) {
