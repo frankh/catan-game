@@ -7,7 +7,7 @@ globals.SOUNDS = [];
 var build_on_vert = function($vert, building, color) {
 	$vert.removeClass('build');
 	if( !$vert.hasClass(building) ) {
-		//globals.SOUNDS.push(new Audio("res/15 - build drop.wav").play());
+		globals.SOUNDS.push(new Audio("../res/15 - build drop.wav").play());
 		$vert.removeClass('unbuilt');
 		$vert.removeClass('settlement');
 		$vert.addClass(building);
@@ -21,7 +21,7 @@ var build_on_vert = function($vert, building, color) {
 var build_road = function($path, color) {
 	$path.removeClass('build');
 	if( !$path.hasClass('built') ) {
-		//globals.SOUNDS.push(new Audio("res/15 - build drop.wav").play());
+		globals.SOUNDS.push(new Audio("../res/15 - build drop.wav").play());
 		$path.addClass('built');
 		$path.addClass(color);
 	}
