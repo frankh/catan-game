@@ -138,6 +138,7 @@ $(window).load(function() {
 			assign_player  : handler_assign_player,
 			available_moves: handler_available_moves,
 			current_player : handler_current_player,
+			roll           : handler_roll,
 		}
 
 		handlers[msg.type](msg);

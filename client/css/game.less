@@ -137,6 +137,7 @@ html, body {
 	left: 7%;
 
 	text-align: center;
+	visibility: hidden;
 
 }
 
@@ -171,8 +172,10 @@ html, body {
 	float: right;
 	position: relative;
 
-	top: 45%;
-	left: -45%;
+	top: 44.8%;
+	left: -43.7%;
+
+	z-index: 100;
 }
 
 .rolling_die:nth-child(1) {
@@ -184,17 +187,50 @@ html, body {
 }
 
 .rolling_die {
-	.animation-name(rolldie);
-	.animation-duration(1s);
-	.animation-timing-function(steps(15, end));
-	.animation-iteration-count(infinite);
 	display: inline-block;
 
 	width: 50%;
 	height: 68.0%;
 
-	background-image: url(../res/DiceAnim.png);
 	background-size: auto 100%;
+	background-image: url(../res/dicelarge.png);
+
+	visibility: hidden;
+
+	&.show {
+		visibility: visible;
+	}
+
+	&.rolling {
+		.animation-name(rolldie);
+		.animation-duration(1s);
+		.animation-timing-function(steps(15, end));
+		.animation-iteration-count(infinite);
+		background-image: url(../res/DiceAnim.png);
+	}
+	&.rolling:nth-child(2) {
+		.animation-duration(1.3s);
+		.animation-delay(-0.3s);
+	}
+}
+
+.value_1 {
+	background-position: 0%;
+}
+.value_2 {
+	background-position: 20%;
+}
+.value_3 {
+	background-position: 40%;
+}
+.value_4 {
+	background-position: 60%;
+}
+.value_5 {
+	background-position: 80%;
+}
+.value_6 {
+	background-position: 100%;
 }
 
 @keyframes rolldie {

@@ -447,12 +447,27 @@ def generate_board(port_start_offset=0):
 
 	return board
 
+tile_resource_map = {
+	'forest': 'wood',
+	'fields': 'wheat',
+	'hills': 'clay',
+	'pasture': 'wool',
+	'mountains': 'ore',
+	'desert': None
+}
+
 class Player(object):
 	def __init__(self, connection, name, game):
 		self.connection = connection
 		self.game = game
 		self.name = name
-		self.cards = []
+		self.cards = {
+			'wood': 0,
+			'wheat': 0,
+			'clay': 0,
+			'wool': 0,
+			'ore': 0,
+		}
 		self.dev_cards = []
 		self.num_soldiers = 0
 		self.longest_road = 0
@@ -478,7 +493,7 @@ class Player(object):
 			'type': 'player',
 			'name': self.name,
 			'icon': 'human',
-			'num_cards': len(self.cards),
+			'num_cards': sum(self.cards.values()),
 			'cards': self.cards,
 			'num_dev_cards': len(self.dev_cards),
 			'dev_cards': self.dev_cards,
@@ -603,7 +618,9 @@ class Game(object):
 				while move['type'] != 'roll':
 					raise Exception('invalid')
 
-				die1, die2 = random.randint(1, 6), random.randint(1, 6)
+				self.do_move(self.current_player, move)
+
+
 
 	def do_move(self, player, move):
 		if move['type'] == 'place':
@@ -618,7 +635,43 @@ class Game(object):
 			if location.built is not None:
 				raise Exception('Tried to build over existing building')
 
+			# TODO check building type
 			location.built = Building(player, move['build'])
+
+		elif move['type'] == 'roll':
+			die1, die2 = random.randint(1, 6), random.randint(1, 6)
+			result = die1 + die2
+
+			gen_hexes = [hx for hx in self.board.land_hexes if hx.value == result]
+			for hx in gen_hexes:
+				res = tile_resource_map[hx.tile]
+
+				if res:
+					for vert in hx.vertices:
+						if vert.built:
+							building = vert.built.building
+							res_count = 0
+
+							if building == 'settlement':
+								res_count = 1
+							elif building == 'city':
+								res_count = 2
+							else:
+								raise Exception('invalid building type')
+
+							if hx.being_robbed:
+								#TODO
+								pass
+							else:
+								# TODO message
+								vert.built.owner.cards[res] += res_count
+
+			self.broadcast({
+				'type': 'roll',
+				'values': [die1, die2],
+				'result': result,
+				'gen_hexes': [hx.as_dict() for hx in gen_hexes],
+			})
 
 		self.broadcast({
 			'type': 'game',
@@ -717,6 +770,11 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 			)
 			self.close()
 			return
+
+		self.write_message(json.dumps({
+			'type': 'assign_player',
+			'player': self.player.as_dict(),
+		}));
 
 		self.write_message(json.dumps({
 			'type': 'game',

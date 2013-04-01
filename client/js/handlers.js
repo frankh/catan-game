@@ -27,19 +27,40 @@ var handler_board =function(msg) {
 	}
 };
 
-var handler_players =function(msg) {
-	if( !globals.PLAYER ) {
-		globals.PLAYERS = msg.players;
-		
-		for( var i in globals.PLAYERS ) {
-			globals.PLAYER = globals.PLAYERS[i];
-			var player = globals.PLAYER;
-			var player_row = $('.player_row.unused:eq(0)')
-			                    .removeClass('unused')
-			                    .addClass(player.color);
-			player_row.find('.summary_player.name .name').text(player.name);
-			player_row.find('.summary_player.name .icon').addClass(player.icon);
+globals.RESOURCE_TYPES = {
+	'wheat': true,
+	'clay': true,
+	'wood': true,
+	'ore': true,
+	'wool': true,
+}
 
+var handler_players =function(msg) {
+	$('.player_row')
+		.removeClass('blue')
+		.removeClass('red')
+		.removeClass('green')
+		.removeClass('yellow')
+		.addClass('unused');
+
+	globals.PLAYERS = msg.players;
+	
+	for( var i in globals.PLAYERS ) {
+		var player = globals.PLAYERS[i];
+		var player_row = $('.player_row.unused:eq(0)')
+		                    .removeClass('unused')
+		                    .addClass(player.color);
+		player_row.find('.summary_player.name .name').text(player.name);
+		player_row.find('.summary_player.name .icon').addClass(player.icon);
+		player_row.find('.summary_player.name .icon').addClass(player.icon);
+		player_row.find('.summary_player.cards').text(player.num_cards);
+
+		if( player.player_id == globals.PLAYER.player_id ) {
+			globals.PLAYER = player;
+
+			for( var res_type in globals.RESOURCE_TYPES ) {
+				$('.hand .card.'+res_type+' .count').text(player.cards[res_type]);
+			}
 		}
 	}
 };
@@ -143,10 +164,59 @@ var handler_moves =function(msg) {
 
 		if( move.type == 'roll' ) {
 			console.log('roll');
-			$('.actions .roll').addClass('enabled');
+			$('.actions .roll')
+				.addClass('enabled')
+				.click(function() {
+					globals.SOCKET.send(JSON.stringify({
+						type: 'do_move',
+						move: {
+							type: 'roll'
+						}
+					}));
+					$(this).removeClass('enabled').unbind();
 
+					$('.rolling_die').addClass('rolling').addClass('show');
+					globals.SOUNDS.push(new Audio("../res/03 - dice roll.wav").play());
+			 });
 		}
 	}
+};
+
+var handler_roll = function(msg) {
+	var values = msg.values;
+
+	$('.corner_dice').css('visibility', 'hidden');
+
+	$('.rolling_die')
+	   .addClass('rolling')
+	   .addClass('show')
+	   .delay(1000)
+	   .promise()
+	   .done(function() {
+		$('.rolling_die').removeClass('rolling')
+		$('.rolling_die:eq(0)').addClass('value_'+values[0]);
+		$('.rolling_die:eq(1)').addClass('value_'+values[1]);
+
+		$('.rolling_die')
+		   .delay(1000)
+		   .promise()
+		   .done(function() {
+		   	$(this).removeClass('show')
+			       .add($('.corner_dice .die'))
+		           .removeClass('value_1')
+		           .removeClass('value_2')
+		           .removeClass('value_3')
+		           .removeClass('value_4')
+		           .removeClass('value_5')
+		           .removeClass('value_6');
+
+			$('.corner_dice .die:eq(0)').addClass('value_'+values[0]);
+			$('.corner_dice .die:eq(1)').addClass('value_'+values[1]);
+
+			$('.corner_dice .dice_value').text(msg.result);
+			$('.corner_dice').css('visibility', 'visible');
+		});
+	});
 };
 
 var handler_forced_action = function(msg) {
