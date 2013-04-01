@@ -105,7 +105,12 @@ $(window).load(function() {
 		return;
 	}
 
-	SOCKET = new WebSocket("ws://localhost:8080/socket/temp/1");
+	var sockaddr = document.domain;
+	if( document.domain == 'localhost' ) {
+		sockaddr += ':8080';
+	}
+
+	SOCKET = new WebSocket("ws://"+sockaddr+"/socket/temp/1");
 
 	$('.overlay').text('Connecting');
 
