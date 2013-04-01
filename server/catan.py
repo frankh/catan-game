@@ -7,7 +7,14 @@ import itertools
 from functools import lru_cache
 from pprint import pprint, pformat
 
-log = logging.getLogger('catan')
+class Logger(object):
+	def setLevel(self, level):
+		pass
+
+	def debug(self, msg):
+		print('DEBUG:', msg)
+
+log = Logger()
 log.setLevel(logging.DEBUG)
 
 def flatten(l):
@@ -78,6 +85,30 @@ class Building(object):
 			'owner'   : self.owner.as_dict(),
 			'building': self.building,
 		}
+
+	@property
+	def resource_cost(self):
+		d = {
+			'wool': 0,
+			'wheat': 0,
+			'clay': 0,
+			'wood': 0,
+			'ore': 0,
+		}
+
+		if self.building == 'settlement':
+			d['wheat'] = 1
+			d['wool'] = 1
+			d['clay'] = 1
+			d['wood'] = 1
+		elif self.building == 'road':
+			d['clay'] = 1
+			d['wood'] = 1
+		elif self.building == 'city':
+			d['ore'] = 3
+			d['wheat'] = 2
+
+		return d
 
 # Make it easier to keep track of which sea is where.
 def Sea(hex1, hex2):
@@ -453,7 +484,8 @@ tile_resource_map = {
 	'hills': 'clay',
 	'pasture': 'wool',
 	'mountains': 'ore',
-	'desert': None
+	'desert': None,
+	None: None,
 }
 
 class Player(object):
@@ -474,6 +506,33 @@ class Player(object):
 		self.has_longest_road = 0
 		self.victory_points = 0
 		self.ready = False
+
+	def get_connected_locations(self):
+		current_verts = [v for v in self.game.board.vertices if v.built and v.built.owner == self]
+		visited_verts = set(current_verts)
+		visited_paths = set()
+
+		while current_verts:
+			vert = current_verts.pop()
+			visited_verts.add(vert)
+
+			visited_paths.update(p for p in vert.paths if not p.built)
+
+			for p in vert.paths:
+				if p.built and p.built.owner == self:
+					current_verts += [v for v in p.verts if v not in visited_verts]
+
+		return visited_verts, visited_paths
+
+	def get_connected_vertices(self):
+		visited_verts, visited_paths = self.get_connected_locations()
+
+		return visited_verts
+
+	def get_connected_paths(self):
+		visited_verts, visited_paths = self.get_connected_locations()
+
+		return visited_paths
 
 	def send(self, msg):
 		self.connection.write_message(json.dumps(msg))
@@ -552,6 +611,42 @@ class Game(object):
 			})
 
 	def turn(self):
+
+		plurals = {
+			'locations': 'location'
+		}
+
+		def is_valid(move, valid_moves):
+			for valid in valid_moves:
+				def valid_key():
+					for key in valid:
+						plural = False
+
+						if key in plurals:
+							plural = True
+
+						if (plurals[key] if plural else key) not in move:
+							return False
+
+						if plural:
+							if move[plurals[key]] not in valid[key]:
+								return False
+						else:
+							if move[key] != valid[key]:
+								return False
+					return True
+
+				if move['type'] != valid['type']:
+					continue
+
+				if not valid_key():
+					print(move, 'not in', valid_moves)
+					continue
+
+				return True
+
+			return False
+
 		while True:
 			self.current_player = next(self.turn_generator)
 			pl = self.current_player
@@ -577,15 +672,7 @@ class Game(object):
 
 				move = yield valid_moves
 
-				def is_valid(move):
-					for valid in valid_moves:
-						if move['type'] == valid['type'] \
-						and move['location'] in valid['locations'] \
-						and move['build'] == valid['build']:
-							return True
-					return False
-
-				while not is_valid(move):
+				while not is_valid(move, valid_moves):
 					raise Exception('invalid')
 					move = yield valid_moves
 
@@ -593,6 +680,12 @@ class Game(object):
 				print('road', self.current_player.id)
 
 				placed_vertex = self.board.Vertex.get(move['location']['id'])
+				if pl.num_buildings == 2:
+					# Give starting resources
+					for hx in placed_vertex.hexes:
+						res = tile_resource_map[hx.tile]
+						if res:
+							pl.cards[res] += 1
 
 				## PLACE ROAD
 				valid_moves = [{
@@ -603,7 +696,7 @@ class Game(object):
 				}]
 
 				move = yield valid_moves
-				while not is_valid(move):
+				while not is_valid(move, valid_moves):
 					raise Exception('invalid')
 					move = yield valid_moves
 
@@ -615,11 +708,66 @@ class Game(object):
 				}]
 				
 				move = yield valid_moves
-				while move['type'] != 'roll':
-					raise Exception('invalid')
+				while not is_valid(move, valid_moves):
+					log.debug('invalid move')
+					move = yield valid_moves
 
 				self.do_move(self.current_player, move)
 
+				#Actual turn!
+				while move['type'] != 'end_turn':
+					valid_moves = [{
+						'type': 'end_turn'
+					}]
+
+					cards = self.current_player.cards
+
+					if cards['wood'] and cards['clay']:
+						# can build road
+						valid_paths = [p for p in pl.get_connected_paths() if not p.built]
+
+						valid_moves.append({
+							'type': 'build',
+							'build': 'road',
+							'locations': [p.id_dict() for p in valid_paths]
+						})
+
+						if cards['wool'] and cards['wheat']:
+							#can build settlement
+							valid_verts = [v for v in pl.get_connected_vertices() if v.is_free()]
+							valid_moves.append({
+								'type': 'build',
+								'build': 'settlement',
+								'locations': [v.id_dict() for v in valid_verts]
+							})
+
+					if cards['wheat'] >= 2 and cards['ore'] >= 3:
+						# can build city
+						valid_verts = [v for v in pl.get_connected_vertices() 
+						                       if v.built 
+						                      and v.built.building == 'settlement'
+						                      and v.built.owner == pl]
+
+						valid_moves.append({
+							'type': 'build',
+							'build': 'city',
+							'locations': [v.id_dict() for v in valid_verts]
+						})
+
+
+					if cards['wheat'] and cards['wool'] and cards['ore']:
+						# can build dev card
+						valid_moves.append({
+							'type': 'build',
+							'build': 'dev_card'
+						})
+
+					move = yield valid_moves
+					while not is_valid(move, valid_moves):
+						log.debug('invalid move')
+						move = yield valid_moves
+
+					self.do_move(pl, move)
 
 
 	def do_move(self, player, move):
@@ -637,6 +785,28 @@ class Game(object):
 
 			# TODO check building type
 			location.built = Building(player, move['build'])
+
+		elif move['type'] == 'build':
+			print('building', move)
+			location = None
+
+			if( move['location']['type'] == 'vertex'):
+				location = self.board.Vertex.get(move['location']['id'])
+
+			elif( move['location']['type'] == 'path'):
+				location = self.board.Path.get(move['location']['id'])
+
+			if location.built is not None:
+				if move['build'] != 'city' or location.built.building != 'settlement':
+					raise Exception('Tried to build over existing building')
+
+			# TODO check building type
+			location.built = Building(player, move['build'])
+
+			player.cards = {
+				key: val - location.built.resource_cost[key] 
+				     for key, val in player.cards.items()
+			}
 
 		elif move['type'] == 'roll':
 			die1, die2 = random.randint(1, 6), random.randint(1, 6)
@@ -783,6 +953,7 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 		log.debug(username+" joined "+game_id)
 
 	def on_message(self, message):
+		print('message')
 		try:
 			log.debug(str('temp')+'>'+pformat(json.loads(message)))
 		except:

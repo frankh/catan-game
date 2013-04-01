@@ -199,11 +199,11 @@
 .build_position_y(@xpos) {
 	background-position: @xpos 0%;
 
-	.enabled& {
+	&.enabled {
 		background-position: @xpos 50%;
 	}
 
-	.clicked& {
+	&.clicked {
 		background-position: @xpos 100%;
 	}
 }
@@ -228,6 +228,10 @@
 			height: 25%;
 			background-size: 400% 300%;
 			background-image: url(../res/buildbuttons.png);
+
+			&.enabled {
+				cursor: pointer;
+			}
 
 			&.road {
 				@xpos: 0;

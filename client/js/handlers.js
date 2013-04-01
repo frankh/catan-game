@@ -84,6 +84,9 @@ var handler_current_player = function(msg) {
 
 var handler_moves =function(msg) {
 	var moves = msg.moves;
+
+	$('.enabled').removeClass('enabled').unbind();
+
 	for( var i in moves ) {
 		var move = moves[i];
 
@@ -163,10 +166,13 @@ var handler_moves =function(msg) {
 		}
 
 		if( move.type == 'roll' ) {
-			console.log('roll');
+			globals.SOUNDS.push(new Audio("../res/01 - start turn.wav").play());
+			show_message(PLAYER.name + ', it is now your turn');
 			$('.actions .roll')
 				.addClass('enabled')
 				.click(function() {
+					clear_message();
+
 					globals.SOCKET.send(JSON.stringify({
 						type: 'do_move',
 						move: {
@@ -178,6 +184,95 @@ var handler_moves =function(msg) {
 					$('.rolling_die').addClass('rolling').addClass('show');
 					globals.SOUNDS.push(new Audio("../res/03 - dice roll.wav").play());
 			 });
+		}
+
+		if( move.type == 'end_turn' ) {
+			$('.actions .end_turn')
+				.addClass('enabled')
+				.click(function() {
+					globals.SOCKET.send(JSON.stringify({
+						type: 'do_move',
+						move: {
+							type: 'end_turn'
+						}
+					}));
+					$(this).removeClass('enabled').unbind();
+					globals.SOUNDS.push(new Audio("../res/02 - end turn.wav").play());
+					clear_message();
+					$('.enabled').removeClass('enabled').unbind();
+			 });
+		}
+
+		if( move.type == 'build' ) {
+			var start_build = function(move) {
+				return function() {
+					if( !(move.locations.length) ) {
+						show_message('There is nowhere to place this '+move.build);
+						return;
+					} 
+					
+					show_message('Select where to build your '+move.build);
+
+					var place_locations = $();
+					for( var j in move.locations ) {
+						var location = move.locations[j];
+
+						if( location.type == 'vertex' ) {
+						 	location = get_vertex(location.id);
+							location.addClass(move.build);
+						 } else if( location.type == 'path' ) {
+						 	location = get_path(location.id);
+						 }
+
+						location.addClass(globals.PLAYER.color);
+
+						place_locations = place_locations.add(location);
+					}
+
+					// function wrapper to keep move and location in scope
+					var do_build = function(move) {
+						return function() {
+							place_locations.unbind();
+							place_locations.removeClass('build');
+							place_locations.removeClass(move.build);
+							place_locations.removeClass(globals.PLAYER.color);
+
+							clear_message();
+
+							var loc_type = 'path';
+
+							if( $(this).is('.vertex') ) {
+								loc_type = 'vertex';
+								build_on_vert($(this), move.build, globals.PLAYER.color);
+							} else {
+								build_road($(this), globals.PLAYER.color);
+							}
+
+							globals.SOCKET.send(JSON.stringify({
+								type: 'do_move',
+								move: {
+									type: 'build',
+									build: move.build,
+									location: {
+										type: loc_type,
+										id: loc_type == 'path' ? get_path_id($(this)) : get_vertex_id($(this))
+									}
+								}
+							}));
+						}
+					};
+					place_locations.unbind('click');
+					place_locations.addClass('build');
+					place_locations.addClass(globals.PLAYER.color);
+					place_locations.addClass(move.build);
+					place_locations.click(do_build(move));
+				};
+			};
+
+
+			$('.build .'+move.build)
+				.addClass('enabled')
+				.click(start_build(move));
 		}
 	}
 };

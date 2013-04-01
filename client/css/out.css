@@ -1,0 +1,328 @@
+.fit-to-margin {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  height: auto;
+}
+.message_box {
+  width: 20%;
+  height: 10%;
+  color: black;
+  border: solid 1px black;
+  background-color: white;
+  position: absolute;
+  display: none;
+}
+.interface_container {
+  width: 100%;
+  height: 100%;
+  padding-left: 0.3em;
+}
+.game_interface h1 {
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+  font-family: verdana;
+  font-size: 1.3em;
+}
+.status_container {
+  height: 25%;
+}
+.status {
+  background-color: white;
+  border: solid black 1px;
+  overflow-y: scroll;
+  width: 97%;
+  height: 85%;
+}
+.summary_container {
+  height: 25%;
+}
+.summary {
+  width: 97%;
+  height: 85%;
+  background-color: white;
+  border: solid black 1px;
+}
+.template {
+  display: none !important;
+}
+.summary_head_row {
+  height: 30%;
+}
+.summary_head_row .intermediate {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.summary_head {
+  height: 100%;
+  width: 8%;
+  display: inline-block;
+}
+.summary_head.padding {
+  width: 38%;
+}
+.summary_head .image {
+  width: 100%;
+  height: 80%;
+  margin-top: 20%;
+  background-image: url(../res/playerview-icons.bmp);
+  background-size: 400% 100%;
+}
+.dev_cards.summary_head .image {
+  background-position: 33.33%;
+}
+.knights.summary_head .image {
+  background-position: 66.66%;
+}
+.roads.summary_head .image {
+  background-position: 100%;
+}
+.summary_head.points {
+  width: 20%;
+  line-height: 1.2;
+  margin-top: 2%;
+  vertical-align: top;
+  color: black;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+.player_row {
+  font-weight: bold;
+  color: black;
+  height: 17%;
+  width: 100%;
+}
+.player_row.unused {
+  visibility: hidden;
+}
+.player_row > div:nth-child(n+2) {
+  text-align: center;
+}
+.player_row.red {
+  background-color: #e89394;
+}
+.player_row.blue {
+  background-color: #b4d5fa;
+}
+.player_row.green {
+  background-color: #a5e999;
+}
+.player_row.yellow {
+  background-color: #f7f599;
+}
+.player_row .summary_player {
+  display: inline-block;
+  width: 8%;
+  vertical-align: top;
+  line-height: 2;
+}
+.player_row .summary_player.name {
+  height: 100%;
+  position: relative;
+  width: 38%;
+  display: inline-block;
+}
+.player_row .summary_player.name .name {
+  display: inline-block;
+  height: 100%;
+  vertical-align: top;
+  line-height: 2;
+}
+.player_row .summary_player.name .icon {
+  display: inline-block;
+  width: 16%;
+  margin: 3%;
+  height: 70%;
+  background-size: 100% 100%;
+}
+.player_row .summary_player.name .icon.human {
+  background-image: url(../res/human_icon.png);
+}
+.player_row .summary_player.points {
+  width: 20%;
+}
+.summary_player_name {
+  color: black;
+}
+.summary_player_name .intermediate {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  min-width: 100%;
+}
+.summary_player_name .icon {
+  width: 16%;
+  margin-top: 2%;
+  margin-bottom: 3%;
+  margin-left: 4%;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  height: auto;
+  background-size: 100% 100%;
+}
+.summary_player_name .icon.human {
+  background-image: url(../res/human_icon.png);
+}
+.summary_player_name .name {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  height: auto;
+  left: 25%;
+  top: 22%;
+}
+.build_container {
+  height: 30%;
+}
+.build_section {
+  width: 100%;
+  height: 100%;
+}
+.build_section .build {
+  float: left;
+  width: 60%;
+  padding: 1%;
+  height: 90%;
+}
+.build_section .build div {
+  width: 100%;
+  height: 25%;
+  background-size: 400% 300%;
+  background-image: url(../res/buildbuttons.png);
+}
+.build_section .build div.road {
+  background-position: 0 0%;
+}
+.build_section .build div.road.enabled {
+  background-position: 0 50%;
+}
+.clicked.build_section .build div.road {
+  background-position: 0 100%;
+}
+.build_section .build div.settlement {
+  background-position: 33.33% 0%;
+}
+.build_section .build div.settlement.enabled {
+  background-position: 33.33% 50%;
+}
+.clicked.build_section .build div.settlement {
+  background-position: 33.33% 100%;
+}
+.build_section .build div.city {
+  background-position: 66.66% 0%;
+}
+.build_section .build div.city.enabled {
+  background-position: 66.66% 50%;
+}
+.clicked.build_section .build div.city {
+  background-position: 66.66% 100%;
+}
+.build_section .build div.dev_card {
+  background-position: 100% 0%;
+}
+.build_section .build div.dev_card.enabled {
+  background-position: 100% 50%;
+}
+.clicked.build_section .build div.dev_card {
+  background-position: 100% 100%;
+}
+.build_section .actions {
+  float: right;
+  height: 100%;
+  width: 37%;
+  padding-right: 1%;
+}
+.build_section .actions div {
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  font-size: 1.2em;
+  line-height: 2.2;
+  width: 100%;
+  height: 15%;
+  margin-bottom: 8%;
+  background-size: 100% 300%;
+  background-image: url(../res/actionbuttons.png);
+}
+.build_section .actions div.enabled {
+  background-position: 0 50%;
+  cursor: pointer;
+}
+.build_section .actions div.enabled.roll {
+  -webkit-animation-name: actionflash;
+  -moz-animation-name: actionflash;
+  -webkit-animation-duration: 0.7s;
+  -moz-animation-duration: 0.7s;
+  -webkit-animation-timing-function: steps(2, end);
+  -moz-animation-timing-function: steps(2, end);
+  -webkit-animation-iteration-count: infinite;
+  -moz-animation-iteration-count: infinite;
+}
+.build_section .actions div.clicked {
+  background-position: 0 100%;
+}
+@-webkit-keyframes actionflash {
+  to {
+    background-position: 0 150%;
+  }
+}
+@-moz-keyframes actionflash {
+  to {
+    background-position: 0 150%;
+  }
+}
+.hand_container {
+  height: 15%;
+  width: 97%;
+}
+.hand_container .hand {
+  padding: 4%;
+  left: 1%;
+  width: 92%;
+  height: 73%;
+  background-color: white;
+}
+.card {
+  height: 100%;
+  width: 15%;
+  display: inline-block;
+}
+.card .image {
+  width: 100%;
+  height: 75%;
+  background-image: url(../res/materialcards.png);
+  background-size: 500% 100%;
+}
+.wheat.card .image {
+  background-position: 25%;
+}
+.ore.card .image {
+  background-position: 50%;
+}
+.wool.card .image {
+  background-position: 75%;
+}
+.wood.card .image {
+  background-position: 100%;
+}
+.dev.card .image {
+  background-image: url(../res/DevCard.png);
+  background-size: 100% 100%;
+}
+.card .count {
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: black;
+  width: 100%;
+  height: 25%;
+}

@@ -189,6 +189,15 @@ $(document).ready(function() {
 		i += 1
 	});
 
+	// Add click class when mouse pressed on something.
+	$('.enabled').live('mousedown', function() {
+		$(this).addClass('clicked');
+	});
+
+	$(window).mouseup(function() {
+		$('.clicked').removeClass('clicked');
+	});
+
 });
 
 var get_path = function(path_id) {
