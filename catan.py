@@ -760,7 +760,6 @@ socket_app = tornado.web.Application([
 
 if __name__ == '__main__':
 	try:
-		tornado.options.enable_pretty_logging()
 		socket_app.listen(8080)
 		log.debug('Listening on port 8080')
 		iol = tornado.ioloop.IOLoop.instance()
