@@ -52,42 +52,6 @@ class Board(object):
 			'paths'   : [p.as_dict()  for p  in self.paths     ],
 		}
 
-class Building(object):
-	def __init__(self, owner, building):
-		self.owner = owner
-		self.building = building
-
-	def as_dict(self):
-		return {
-			'type'    : 'building',
-			'owner'   : self.owner.as_dict(),
-			'building': self.building,
-		}
-
-	@property
-	def resource_cost(self):
-		d = {
-			'wool': 0,
-			'wheat': 0,
-			'clay': 0,
-			'wood': 0,
-			'ore': 0,
-		}
-
-		if self.building == 'settlement':
-			d['wheat'] = 1
-			d['wool'] = 1
-			d['clay'] = 1
-			d['wood'] = 1
-		elif self.building == 'road':
-			d['clay'] = 1
-			d['wood'] = 1
-		elif self.building == 'city':
-			d['ore'] = 3
-			d['wheat'] = 2
-
-		return d
-
 # Make it easier to keep track of which sea is where.
 def Sea(hex1, hex2):
 	hex1, hex2 = sorted([hex1, hex2])
