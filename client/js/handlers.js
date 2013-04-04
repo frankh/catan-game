@@ -100,7 +100,7 @@ var handler_moves =function(msg) {
 					var vertex = get_vertex(location.id);
 
 					vertex.addClass('build');
-					vertex.addClass('settlement');
+					vertex.addClass('build_settlement');
 					vertex.addClass(globals.PLAYER.color);
 
 					place_vertices = place_vertices.add(vertex);
@@ -109,7 +109,7 @@ var handler_moves =function(msg) {
 				place_vertices.click(function() {
 					place_vertices.unbind();
 					place_vertices.removeClass('build');
-					place_vertices.removeClass('settlement');
+					place_vertices.removeClass('build_settlement');
 					place_vertices.removeClass(globals.PLAYER.color);
 
 					build_on_vert($(this), 'settlement', globals.PLAYER.color);
@@ -219,7 +219,7 @@ var handler_moves =function(msg) {
 
 						if( location.type == 'vertex' ) {
 						 	location = get_vertex(location.id);
-							location.addClass(move.build);
+							location.addClass('build_'+move.build);
 						 } else if( location.type == 'path' ) {
 						 	location = get_path(location.id);
 						 }
@@ -234,7 +234,7 @@ var handler_moves =function(msg) {
 						return function() {
 							place_locations.unbind();
 							place_locations.removeClass('build');
-							place_locations.removeClass(move.build);
+							place_locations.removeClass('build_'+move.build);
 							place_locations.removeClass(globals.PLAYER.color);
 
 							clear_message();
