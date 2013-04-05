@@ -1,9 +1,11 @@
 import random
 import json
+from collections import defaultdict
 
 from board_generation import generate_board
 import dice_gen
 
+resources = {'wood','wheat','clay','wool','ore',}
 
 class Building(object):
 	def __init__(self, owner, building):
@@ -145,14 +147,23 @@ class Game(object):
 		self.current_player = None
 		self.started = False
 		self.dice_gen = dice_gen.RandomDiceGen()
+		self.turn_number = 0
+		self.active_trades = defaultdict(dict)
 
 	def maybe_start(self):
+		"""
+		Start the game if everyone is ready, the game is full and we
+		haven't already started.
+		"""
 		if not [p for p in self.players if not p.ready]\
 		   and len(self.players) == self.max_players   \
 		   and not self.started:
 			self.start()
 
 	def start(self):
+		"""
+		Start the game!
+		"""
 		self.started = True
 		self.turn_generator = self.turns(random.choice(self.players))
 		self.gen = self.turn()
@@ -163,15 +174,146 @@ class Game(object):
 		})
 
 	def broadcast(self, message):
+		"""
+		Sends a message to all the players in the game.
+		"""
 		for player in self.players:
 			player.send(message)
 
 	def recv_move(self, player, move):
+		"""
+		Sent every time the client performs a move.
+
+		If it's not the current player's turn do nothing, there are
+		no valid out of turn moves in Catan.
+
+		Otherwise send to the generator, which will validate and performs
+		the move, update the current player if necessary, and return the (new)
+		current players valid moves which we then send back to the player.
+		"""
 		if player == self.current_player:
 			moves = self.gen.send(move)
 			self.current_player.send({
 				'type': 'moves',
 				'moves': moves
+			})
+
+	def recv_trade(self, player, trade):
+		"""
+		Sent every time the client updates the player's trade offer.
+
+		trade shoud look like: 
+		{
+			'give': {
+				'ore': 2,
+				..etc (ONLY non 0 values)
+			},
+			'want': {
+				'wheat': 1,
+				..etc (ONLY non 0 values)
+			},
+			'player_id': <None> or <player_id>,
+			'turn': <turn_number>
+		}
+
+		The player's active trade is set to this trade if it is valid.
+		Invalid trades (invalid player, invalid resource etc) are silently 
+		dropped.
+
+		If the player_id is not None, and the specified player's active trade
+		mirrors this trade, the trade is done. Note that this means the 
+		target active trade must also specify this player id and the turn
+		numbers must match.
+
+		For the trade to go through it must be one of the players turns.
+		"""
+		def valid_trade(player, trade):
+			"""
+			Returns true if the format of the trade is as expected, 
+			otherwise false.
+			"""
+			try:
+				pl_id = trade['player_id']
+				if pl_id is not None:
+					pl = self.players[int(pl_id)]
+
+				turn = int(trade['turn'])
+				if turn != self.turn_number:
+					# Outdated trade
+					return False
+
+				# Make sure all the resources are real ones.
+				for key in itertools.chain(trade['give'], trade['want']):
+					if key not in resources:
+						return False
+
+				# Check if player has enough resources.
+				for res in trade['give']:
+					if player.cards[res] < trade['give']['res']:
+						return False
+
+				return True
+			except (KeyError, TypeError, IndexError, ValueError):
+				return False
+
+		if not valid_trade(player, trade):
+			# Just silently ignore invalid trades for now.
+			# Most likely scenario is a wierd edge-case bug that
+			# wouldn't be worth telling user about
+			return
+
+		self.active_trades[player] = trade
+
+		traded = False
+		t_player = None
+		if trade['player_id']:
+			t_player = self.players[int(trade['player_id'])]
+
+			matched_trade = self.active_trades[t_player.id]
+
+			# Both players must have initiated the trade this turn
+			# Both players must be giving what the other wants
+			# The trades must be targetting each other
+			# Can only trade on your turn.
+			# Theoretically the matched trade could no longer be valid
+			# if the player has somehow changed number of cards in their
+			# hand (not sure how that would be possible...but make sure)
+			if  matched_trade \
+			and matched_trade['turn'] == trade['turn'] \
+			and matched_trade['give'] == trade['want'] \
+			and matched_trade['want'] == trade['give'] \
+			and int(matched_trade['player_id']) == player.id \
+			and self.current_player in (player, t_player) \
+			and valid_trade(t_player, matched_trade):
+				# Do the trade!
+				# Both players must have enough cards because of the 
+				# valid_trade checks
+				for res in trade['give']:
+					player.cards[res] -= trade['give'][res]
+					t_player.cards[res] += trade['give'][res]
+				for res in trade['want']:
+					player.cards[res] += trade['want'][res]
+					t_player.cards[res] -= trade['want'][res]
+
+				self.broadcast({
+					'type': 'trade',
+					'trade': {
+						'give': trade['give'],
+						'want': trade['want'],
+						'player_from': player.as_dict(),
+						'player_to': t_player.as_dict(),
+					}
+				})
+
+				traded = True
+				
+		# Only send the trade offer if we haven't performed the trade.
+		# The client should reset the trade offers of the 2 parties in a trade.
+		if not traded:
+			self.broadcast({
+				'type': 'trade_offer',
+				'player': player.as_dict(),
+				'trade': trade,
 			})
 
 	def turn(self):
@@ -180,6 +322,7 @@ class Game(object):
 			'locations': 'location'
 		}
 
+		# Determine if a move is in the list of valid moves.
 		def is_valid(move, valid_moves):
 			for valid in valid_moves:
 				def valid_key():
@@ -212,6 +355,7 @@ class Game(object):
 			return False
 
 		while True:
+			self.turn += 1
 			self.current_player = next(self.turn_generator)
 			pl = self.current_player
 			
@@ -223,7 +367,6 @@ class Game(object):
 			move = None
 
 			if pl.num_buildings < 2:
-				print('settle', self.current_player.id)
 				# Starting phase.
 
 				## PLACE SETTLEMENT
@@ -241,7 +384,6 @@ class Game(object):
 					move = yield valid_moves
 
 				self.do_move(self.current_player, move)
-				print('road', self.current_player.id)
 
 				placed_vertex = self.board.Vertex.get(move['location']['id'])
 				if pl.num_buildings == 2:
@@ -265,11 +407,12 @@ class Game(object):
 					move = yield valid_moves
 
 				self.do_move(self.current_player, move)
-				print('done', self.current_player.id)
 			else:
 				valid_moves = [{
 					'type': 'roll',
 				}]
+
+				#TODO dev cards
 				
 				move = yield valid_moves
 				while not is_valid(move, valid_moves):
@@ -436,8 +579,8 @@ class Game(object):
 		self.maybe_start()
 
 	def add_player(self, player):
-		self.players.append(player)
 		player.id = len(self.players)
+		self.players.append(player)
 		player.color = player_colors[player.id]
 
 		if len(self.players) == self.max_players:
@@ -447,4 +590,5 @@ class Game(object):
 		return {
 			'board': self.board.as_dict(),
 			'players': [p.as_dict() for p in self.players],
+			'turn': self.turn_number,
 		}

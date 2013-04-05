@@ -108,6 +108,9 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 		elif( message['type'] == 'do_move' ):
 			move = message['move']
 			self.game.recv_move(self.player, move)
+		elif( message['type'] == 'trade' ):
+			self.game.recv_trade(self.player, message['trade'])
+			# { 'type': 'trade', 'trade': {'give': {}, 'want': {}, 'turn': 1, 'player': None} }
 		
 	def write_message(self, message):
 		try:
