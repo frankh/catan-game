@@ -253,7 +253,7 @@ class Game(object):
 						return False
 
 				return True
-			except KeyError, TypeError, IndexError, ValueError:
+			except (KeyError, TypeError, IndexError, ValueError):
 				return False
 
 		if not valid_trade(player, trade):
@@ -271,19 +271,19 @@ class Game(object):
 
 			matched_trade = self.active_trades[t_player.id]
 
-			if  matched_trade \
 			# Both players must have initiated the trade this turn
-			and matched_trade['turn'] == trade['turn'] \
 			# Both players must be giving what the other wants
-			and matched_trade['give'] == trade['want'] \
-			and matched_trade['want'] == trade['give'] \
 			# The trades must be targetting each other
-			and int(matched_trade['player_id']) == player.id \
 			# Can only trade on your turn.
-			and self.current_player in (player, t_player) \
 			# Theoretically the matched trade could no longer be valid
 			# if the player has somehow changed number of cards in their
 			# hand (not sure how that would be possible...but make sure)
+			if  matched_trade \
+			and matched_trade['turn'] == trade['turn'] \
+			and matched_trade['give'] == trade['want'] \
+			and matched_trade['want'] == trade['give'] \
+			and int(matched_trade['player_id']) == player.id \
+			and self.current_player in (player, t_player) \
 			and valid_trade(t_player, matched_trade):
 				# Do the trade!
 				# Both players must have enough cards because of the 
