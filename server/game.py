@@ -130,10 +130,10 @@ class Player(object):
 		}
 
 player_colors = {
-	1: 'blue',
-	2: 'red',
-	3: 'green',
-	4: 'yellow',
+	0: 'blue',
+	1: 'red',
+	2: 'green',
+	3: 'yellow',
 }
 
 class Game(object):
@@ -355,7 +355,7 @@ class Game(object):
 			return False
 
 		while True:
-			self.turn += 1
+			self.turn_number += 1
 			self.current_player = next(self.turn_generator)
 			pl = self.current_player
 			
