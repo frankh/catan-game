@@ -2,7 +2,8 @@ import random
 import json
 from collections import defaultdict
 
-from board_generation import generate_board
+from utils import timed, cached_per_action
+from board_generation import generate_board, flatten
 import dice_gen
 
 resources = {'wood','wheat','clay','wool','ore',}
@@ -54,6 +55,7 @@ tile_resource_map = {
 }
 
 class Player(object):
+
 	def __init__(self, connection, name, game):
 		self.connection = connection
 		self.game = game
@@ -67,13 +69,15 @@ class Player(object):
 		}
 		self.dev_cards = []
 		self.num_soldiers = 0
-		self.longest_road = 0
 		self.has_longest_road = 0
-		self.victory_points = 0
+		self.has_largest_army = 0
 		self.ready = False
 
+	@cached_per_action
 	def get_connected_locations(self):
-		current_verts = [v for v in self.game.board.vertices if v.built and v.built.owner == self]
+		current_verts = [v for v in self.game.board.vertices
+		                         if v.built 
+		                        and v.built.owner is self]
 		visited_verts = set(current_verts)
 		visited_paths = set()
 
@@ -89,11 +93,13 @@ class Player(object):
 
 		return visited_verts, visited_paths
 
+	@cached_per_action
 	def get_connected_vertices(self):
 		visited_verts, visited_paths = self.get_connected_locations()
 
 		return visited_verts
 
+	@cached_per_action
 	def get_connected_paths(self):
 		visited_verts, visited_paths = self.get_connected_locations()
 
@@ -103,15 +109,98 @@ class Player(object):
 		self.connection.write_message(json.dumps(msg))
 
 	@property
+	@cached_per_action
+	def victory_points_settlements(self):
+		return len([v for v in self.game.board.vertices
+		                    if v.built 
+		                   and v.built.building == 'settlement' 
+		                   and v.built.owner == self])
+
+	@property
+	@cached_per_action
+	def victory_points_cities(self):
+		return len([v for v in self.game.board.vertices
+		                    if v.built 
+		                   and v.built.building == 'city' 
+		                   and v.built.owner == self])
+
+	@property
+	@cached_per_action
+	def victory_point_dev_cards(self):
+		return 0
+
+	@property
+	@cached_per_action
+	def victory_points(self):
+		points = 0
+
+		if self.has_longest_road:
+			points += 2
+		if self.has_largest_army:
+			points += 2
+
+		points += self.victory_points_cities
+		points += self.victory_points_settlements
+		points += self.victory_point_dev_cards
+
+		return points
+
+	@property
+	@cached_per_action
+	@timed
+	def longest_road(self):
+		cached_calls = {}
+
+		def cache(func):
+			def wrapped(v, l, visited_paths):
+				key = (v.id, l, tuple([p.id for p in visited_paths]))
+				if key in cached_calls:
+					return cached_calls[key]
+
+				cached_calls[key] = func(v, l, visited_paths)
+				return cached_calls[key]
+
+			return wrapped
+
+		@cache
+		def longest_road_from_point(v, l, visited_paths):
+			if v.built and v.built.owner is not self:
+				return l
+
+			next_paths = (p for p in v.paths 
+			                      if p.built and p.built.owner == self
+			                     and p not in visited_paths)
+
+			res = [l]
+
+			for p in next_paths:
+				next_vert = [v1 for v1 in p.verts if v1 is not v][0]
+
+				res.append(longest_road_from_point(next_vert, l+1, visited_paths | {p}))
+
+
+			return max(res)
+
+		ret = max([longest_road_from_point(v, 0, set()) for v
+		           in self.game.board.vertices 
+			       if [p for p in v.paths if p.built and p.built.owner == self]
+			      ] or [0])
+
+		return ret
+
+	@property
+	@cached_per_action
 	def num_buildings(self):
 		return len([v for v in self.game.board.vertices
 			                if v.built and v.built.owner is self])
 
 	@property
+	@cached_per_action
 	def num_roads(self):
 		return len([p for p in self.game.board.paths
 			                if p.built and p.built.owner is self])
 
+	@cached_per_action
 	def as_dict(self):
 		return {
 			'type': 'player',
@@ -130,10 +219,10 @@ class Player(object):
 		}
 
 player_colors = {
-	1: 'blue',
-	2: 'red',
-	3: 'green',
-	4: 'yellow',
+	0: 'blue',
+	1: 'red',
+	2: 'green',
+	3: 'yellow',
 }
 
 class Game(object):
@@ -147,7 +236,7 @@ class Game(object):
 		self.current_player = None
 		self.started = False
 		self.dice_gen = dice_gen.RandomDiceGen()
-		self.turn_number = 0
+		self.action_number = 0
 		self.active_trades = defaultdict(dict)
 
 	def maybe_start(self):
@@ -213,7 +302,7 @@ class Game(object):
 				..etc (ONLY non 0 values)
 			},
 			'player_id': <None> or <player_id>,
-			'turn': <turn_number>
+			'turn': <action_number>
 		}
 
 		The player's active trade is set to this trade if it is valid.
@@ -238,7 +327,7 @@ class Game(object):
 					pl = self.players[int(pl_id)]
 
 				turn = int(trade['turn'])
-				if turn != self.turn_number:
+				if turn != self.action_number:
 					# Outdated trade
 					return False
 
@@ -355,7 +444,7 @@ class Game(object):
 			return False
 
 		while True:
-			self.turn += 1
+			self.action_number += 1
 			self.current_player = next(self.turn_generator)
 			pl = self.current_player
 			
@@ -477,7 +566,12 @@ class Game(object):
 					self.do_move(pl, move)
 
 
+	def do_trade(self):
+		pass
+
 	def do_move(self, player, move):
+		self.action_number += 1
+
 		if move['type'] == 'place':
 			location = None
 
@@ -510,10 +604,10 @@ class Game(object):
 			# TODO check building type
 			location.built = Building(player, move['build'])
 
-			player.cards = {
-				key: val - location.built.resource_cost[key] 
-				     for key, val in player.cards.items()
-			}
+			# player.cards = {
+			# 	key: val - location.built.resource_cost[key] 
+			# 	     for key, val in player.cards.items()
+			# }
 
 		elif move['type'] == 'roll':
 			die1, die2 = self.dice_gen.roll()
@@ -590,5 +684,5 @@ class Game(object):
 		return {
 			'board': self.board.as_dict(),
 			'players': [p.as_dict() for p in self.players],
-			'turn': self.turn_number,
+			'turn': self.action_number,
 		}

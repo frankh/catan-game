@@ -54,6 +54,8 @@ var handler_players =function(msg) {
 		player_row.find('.summary_player.name .icon').addClass(player.icon);
 		player_row.find('.summary_player.name .icon').addClass(player.icon);
 		player_row.find('.summary_player.cards').text(player.num_cards);
+		player_row.find('.summary_player.points').text(player.victory_points);
+		player_row.find('.summary_player.roads').text(player.longest_road);
 
 		if( player.player_id == globals.PLAYER.player_id ) {
 			globals.PLAYER = player;

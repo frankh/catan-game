@@ -7,6 +7,12 @@ import itertools
 from functools import lru_cache
 from pprint import pprint, pformat
 
+import tornado.web
+import tornado.ioloop
+import tornado.options
+import tornado.httpserver
+import tornado.websocket
+
 import dice_gen
 
 from game import \
@@ -19,7 +25,8 @@ class Logger(object):
 		pass
 
 	def debug(self, msg):
-		print('DEBUG:', msg)
+		pass
+		#print('DEBUG:', msg)
 
 log = Logger()
 log.setLevel(logging.DEBUG)
@@ -31,12 +38,6 @@ class DefaultGame(Game):
 		super().__init__()
 		self.dice_gen = dice_gen.DeckDiceGen()
 		self.max_players = 1
-
-import tornado.web
-import tornado.ioloop
-import tornado.options
-import tornado.httpserver
-import tornado.websocket
 games = {
 	'1': DefaultGame()
 }
