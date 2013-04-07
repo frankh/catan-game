@@ -95,7 +95,6 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 		log.debug(username+" joined "+game_id)
 
 	def on_message(self, message):
-		print('message')
 		try:
 			log.debug(str('temp')+'>'+pformat(json.loads(message)))
 		except:
@@ -117,8 +116,7 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 		try:
 			log.debug(str('temp')+'<'+pformat(json.loads(message)))
 		except:
-			pass
-			#log.debug(str('temp')+'<'+message)
+			log.debug(str('temp')+'<'+message)
 
 		super().write_message(message);
 

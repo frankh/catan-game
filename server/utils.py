@@ -18,13 +18,13 @@ def timed(func):
 
 def cached_per_action(func):
 	"""
-	
+
 	"""
 	cache = {}
 
 	@functools.wraps(func)
 	def wrapped(self, *args, **kwargs):
-		key = get_game_func(self).action_number
+		key = self.game.action_number
 
 		if key in cache:
 			return cache[key]
