@@ -606,10 +606,10 @@ class Game(object):
 			# TODO check building type
 			location.built = Building(player, move['build'])
 
-			# player.cards = {
-			# 	key: val - location.built.resource_cost[key] 
-			# 	     for key, val in player.cards.items()
-			# }
+			player.cards = {
+				key: val - location.built.resource_cost[key] 
+				     for key, val in player.cards.items()
+			}
 
 		elif move['type'] == 'roll':
 			die1, die2 = self.dice_gen.roll()
