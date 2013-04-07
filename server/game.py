@@ -377,23 +377,7 @@ class Game(object):
 				# Do the trade!
 				# Both players must have enough cards because of the 
 				# valid_trade checks
-				for res in trade['give']:
-					player.cards[res] -= trade['give'][res]
-					t_player.cards[res] += trade['give'][res]
-				for res in trade['want']:
-					player.cards[res] += trade['want'][res]
-					t_player.cards[res] -= trade['want'][res]
-
-				self.broadcast({
-					'type': 'trade',
-					'trade': {
-						'give': trade['give'],
-						'want': trade['want'],
-						'player_from': player.as_dict(),
-						'player_to': t_player.as_dict(),
-					}
-				})
-
+				self.do_trade(trade, player, t_player)
 				traded = True
 				
 		# Only send the trade offer if we haven't performed the trade.
@@ -566,8 +550,26 @@ class Game(object):
 					self.do_move(pl, move)
 
 
-	def do_trade(self):
-		pass
+	def do_trade(self, trade, player_from, player_to):
+		self.action_number += 1
+		
+		for res in trade['give']:
+			player_from.cards[res] -= trade['give'][res]
+			player_to.cards[res] += trade['give'][res]
+		for res in trade['want']:
+			player_from.cards[res] += trade['want'][res]
+			player_to.cards[res] -= trade['want'][res]
+
+		self.broadcast({
+			'type': 'trade',
+			'trade': {
+				'give': trade['give'],
+				'want': trade['want'],
+				'player_from': player_from.as_dict(),
+				'player_to': player_to.as_dict(),
+			}
+		})
+
 
 	def do_move(self, player, move):
 		self.action_number += 1
