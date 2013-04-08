@@ -30,6 +30,9 @@ class BoardGenTest(unittest.TestCase):
 	def test_path_count(self):
 		self.assertEqual(len(self.board.paths), 72)
 
+	def test_verts_unbuilt(self):
+		for v in self.board.vertices:
+			self.assertTrue(v.isfree())
 
 if __name__ == '__main__':
 	unittest.main()
