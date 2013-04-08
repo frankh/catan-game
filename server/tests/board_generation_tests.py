@@ -15,7 +15,6 @@ class GetIdentTest(unittest.TestCase):
 		self.assertEqual(get_ident('1_2'), (1,2))
 
 		self.assertEqual(get_ident('1_2__3_4'), ((1,2), (3,4)))
-		self.assertEqual(get_ident([[1,2], [3,4]]), ((1,2), (3,4)))
 
 class BoardGenTest(unittest.TestCase):
 
