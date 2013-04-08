@@ -34,5 +34,8 @@ class BoardGenTest(unittest.TestCase):
 		for v in self.board.vertices:
 			self.assertTrue(v.is_free())
 
+	def test_path_is_coastal(self):
+		self.assertFalse(self.board.Path.get((1,2,13), (2,3,13)).is_coastal)
+
 if __name__ == '__main__':
 	unittest.main()
