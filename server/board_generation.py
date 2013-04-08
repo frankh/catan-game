@@ -302,7 +302,7 @@ def create_board():
 
 		@property
 		def is_coastal(self):
-			return bool(hx for hx in self.hexes if hx.is_sea)
+			return bool([hx for hx in self.hexes if hx.is_sea])
 
 		@property
 		def hexes(self):
