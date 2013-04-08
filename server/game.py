@@ -137,7 +137,6 @@ class Player(object):
 
 	@property
 	@cached_per_action
-	@timed
 	def longest_road(self):
 		cached_calls = {}
 
