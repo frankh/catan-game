@@ -41,6 +41,15 @@ def is_valid(move, valid_moves):
 
 	return False
 
+def get_move(valid_moves):
+	move = yield valid_moves
+
+	while not is_valid(move, valid_moves):
+		log.warning('Invalid Move')
+		move = yield valid_moves
+
+	return move
+
 def starting_phase(self):
 	pl = self.current_player
 
@@ -52,11 +61,7 @@ def starting_phase(self):
 		                                if v.is_free()]
 	}]
 
-	move = yield valid_moves
-
-	while not is_valid(move, valid_moves):
-		raise Exception('invalid')
-		move = yield valid_moves
+	move = yield from get_move(valid_moves)
 
 	self.do_move(self.current_player, move)
 
@@ -76,10 +81,7 @@ def starting_phase(self):
 		                                      if not path.built]
 	}]
 
-	move = yield valid_moves
-	while not is_valid(move, valid_moves):
-		raise Exception('invalid')
-		move = yield valid_moves
+	move = yield from get_move(valid_moves)
 
 	self.do_move(self.current_player, move)
 
@@ -90,10 +92,7 @@ def start_of_turn(self):
 
 	#TODO dev cards
 	
-	move = yield valid_moves
-	while not is_valid(move, valid_moves):
-		log.debug('invalid move')
-		move = yield valid_moves
+	move = yield from get_move(valid_moves)
 
 	self.do_move(self.current_player, move)
 
@@ -148,10 +147,7 @@ def rest_of_turn(self):
 				'build': 'dev_card'
 			})
 
-		move = yield valid_moves
-		while not is_valid(move, valid_moves):
-			log.debug('invalid move')
-			move = yield valid_moves
+		move = yield from get_move(valid_moves)
 
 		if move['type'] == 'end_turn':
 			break
