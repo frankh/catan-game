@@ -56,8 +56,8 @@ class BoardGenTest(unittest.TestCase):
 		self.assertFalse(self.board.Path.get('1_2_13__2_13_14').is_coastal)
 		self.assertTrue(path_1.is_coastal)
 
-		self.assertEqual(path_1.next_coastal_path, self.board.Path.get(
-			coast_1, coast_3))
+		# self.assertEqual(path_1.next_coastal_path, self.board.Path.get(
+		# 	coast_1, coast_3))
 
 if __name__ == '__main__':
 	unittest.main()
