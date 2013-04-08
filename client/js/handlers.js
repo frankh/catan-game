@@ -283,10 +283,10 @@ var handler_roll = function(msg) {
 	var values = msg.values;
 
 	$('.corner_dice').css('visibility', 'hidden');
+	$('.roll_dice').addClass('show');
 
 	$('.rolling_die')
 	   .addClass('rolling')
-	   .addClass('show')
 	   .delay(1000)
 	   .promise()
 	   .done(function() {
@@ -298,14 +298,14 @@ var handler_roll = function(msg) {
 		   .delay(1000)
 		   .promise()
 		   .done(function() {
-		   	$(this).removeClass('show')
-			       .add($('.corner_dice .die'))
+		   	$(this).add($('.corner_dice .die'))
 		           .removeClass('value_1')
 		           .removeClass('value_2')
 		           .removeClass('value_3')
 		           .removeClass('value_4')
 		           .removeClass('value_5')
 		           .removeClass('value_6');
+		    $(this).parent().removeClass('show')
 
 			$('.corner_dice .die:eq(0)').addClass('value_'+values[0]);
 			$('.corner_dice .die:eq(1)').addClass('value_'+values[1]);

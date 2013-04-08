@@ -177,7 +177,12 @@ html, body {
 	top: 44.8%;
 	left: -43.7%;
 
-	z-index: 100;
+	display: none;
+
+	&.show {
+		display: block;
+		z-index: 100;
+	}
 }
 
 .rolling_die:nth-child(1) {
@@ -196,12 +201,6 @@ html, body {
 
 	background-size: auto 100%;
 	background-image: url(../res/dicelarge.png);
-
-	visibility: hidden;
-
-	&.show {
-		visibility: visible;
-	}
 
 	&.rolling {
 		.animation-name(rolldie);
@@ -274,6 +273,7 @@ html, body {
 }
 
 .trade_window {
+	display: none;
 	position: absolute;
 	left: 20%;
 	top: 30%;
