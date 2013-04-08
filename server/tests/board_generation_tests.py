@@ -2,7 +2,6 @@ import unittest
 
 from board_generation import get_ident, generate_board, Sea
 
-
 class GetIdentTest(unittest.TestCase):
 	def test_get_ident(self):
 		self.assertEqual(get_ident(1), 1)
@@ -30,7 +29,6 @@ class GetIdentTest(unittest.TestCase):
 #       \__/
 #
 class BoardGenTest(unittest.TestCase):
-
 	def setUp(self):
 		self.board = generate_board()
 
@@ -62,8 +60,11 @@ class BoardGenTest(unittest.TestCase):
 		num_coastal_paths = len([p for p in self.board.paths if p.is_coastal])
 
 		cur_path = path_1
+		# Do a loop, we should come back to the start
 		for unused in range(num_coastal_paths):
 			cur_path = cur_path.next_coastal_path
+			# All next_coastal_paths should be coastal
+			self.assertTrue(cur_path.is_coastal)
 
 		self.assertEqual(cur_path, path_1)
 
