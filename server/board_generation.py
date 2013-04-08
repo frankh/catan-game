@@ -298,7 +298,7 @@ def create_board():
 
 			next_path = max(p.id for p in coastal_paths)
 
-			if max_vert(next_path) <= max_vert(self):
+			if max_vert(Path.get(next_path)) <= max_vert(self):
 				# We have wrapped around
 				next_path = min(p.id for p in coastal_paths)
 
