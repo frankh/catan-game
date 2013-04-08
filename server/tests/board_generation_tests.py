@@ -28,7 +28,7 @@ class GetIdentTest(unittest.TestCase):
 # \__/8 \__/6 \__/
 #    \__/7 \__/
 #       \__/
-
+#
 class BoardGenTest(unittest.TestCase):
 
 	def setUp(self):

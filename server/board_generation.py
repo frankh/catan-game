@@ -292,9 +292,13 @@ def create_board():
 		@property
 		def next_coastal_path(self):
 			coastal_paths = {p for p in self.paths if p.is_coastal}
+
+			def max_vert(p):
+				return max(v.id for v in p.verts)
+
 			next_path = max(p.id for p in coastal_paths)
 
-			if next_path < self.id:
+			if max_vert(next_path) <= max_vert(self):
 				# We have wrapped around
 				next_path = min(p.id for p in coastal_paths)
 
