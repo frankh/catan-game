@@ -6,7 +6,7 @@ def flatten(l):
 
 def get_ident(*ident_in):
 	if isinstance(ident_in[0], list):
-		ident_in =ident_in[0]
+		ident_in = ident_in[0]
 
 	new_ident_in = []
 
