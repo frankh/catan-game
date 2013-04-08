@@ -243,8 +243,8 @@ class Game(object):
 		Start the game!
 		"""
 		self.started = True
-		self.turn_generator = self.turns(random.choice(self.players))
-		self.gen = self.turn()
+		self.turn_order_gen = self.turn_order_generator(random.choice(self.players))
+		self.gen = self.turn_gen()
 		moves = next(self.gen)
 		self.current_player.send({
 			'type': 'moves',
@@ -378,11 +378,10 @@ class Game(object):
 				'trade': trade,
 			})
 
-	def turn(self):
-
+	def turn_gen(self):
 		while True:
 			self.action_number += 1
-			self.current_player = next(self.turn_generator)
+			self.current_player = next(self.turn_order_gen)
 
 			self.broadcast({
 				'type': 'current_player',
@@ -502,7 +501,7 @@ class Game(object):
 			'game': self.as_dict()
 		})
 
-	def turns(self, first_player):
+	def turn_order_generator(self, first_player):
 		num_players = len(self.players)
 		random.shuffle(self.players)
 		start_index = self.players.index(first_player)
