@@ -32,7 +32,7 @@ class BoardGenTest(unittest.TestCase):
 
 	def test_verts_unbuilt(self):
 		for v in self.board.vertices:
-			self.assertTrue(v.isfree())
+			self.assertTrue(v.is_free())
 
 if __name__ == '__main__':
 	unittest.main()
