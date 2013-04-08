@@ -104,8 +104,6 @@ def create_board():
 
 			objs[ident] = self
 
-			print ('created ' + str(self) + ' - ' + str(ident))
-
 		def id_dict(self):
 			d = self.as_dict()
 
@@ -404,7 +402,6 @@ def generate_board(port_start_offset=0):
 
 	# Assign tiles
 	for hx, tile in zip([hx for hx in board.land_hexes], tiles):
-		print('assigned',hx,tile)
 		hx.tile = tile
 
 	hexes = [hx for hx in board.land_hexes 
