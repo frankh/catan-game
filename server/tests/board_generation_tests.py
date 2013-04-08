@@ -59,5 +59,13 @@ class BoardGenTest(unittest.TestCase):
 		self.assertEqual(path_1.next_coastal_path, self.board.Path.get(
 			coast_1, coast_3))
 
+		num_coastal_paths = len([p for p in self.board.paths if p.is_coastal])
+
+		cur_path = path_1
+		for unused in range(num_coastal_paths):
+			cur_path = cur_path.next_coastal_path
+
+		self.assertEqual(cur_path, path_1)
+
 if __name__ == '__main__':
 	unittest.main()
