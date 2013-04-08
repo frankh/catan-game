@@ -38,6 +38,7 @@ class DefaultGame(Game):
 		super().__init__()
 		self.dice_gen = dice_gen.DeckDiceGen()
 		self.max_players = 1
+		
 games = {
 	'1': DefaultGame()
 }

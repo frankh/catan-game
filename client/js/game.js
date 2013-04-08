@@ -94,6 +94,7 @@ var _resize = function() {
 
 	resize_vertices();
 	resize_paths();
+	resize_ports();
 	position_message();
 };
 
@@ -210,6 +211,26 @@ var get_path_id = function(path) {
 	return path_id;
 }
 
+function create_port(port) {
+	var $port = $('.port.template').clone();
+	$port.removeClass('template')
+		 .appendTo('.game_board')
+		 .attr('port_id', port.id)
+		 .attr('path_id', port.path.id);
+
+}
+
+function resize_ports() {
+	$('.port').not('.template').each(function() {
+		var $path = get_path($(this).attr('path_id'));
+		$(this).position({
+			my: 'center',
+			at: 'center',
+			of: $path,
+		});
+	});
+};
+
 function create_path(path) {
 	var path_id = path.id;
 	var path = $('.path.template').clone();
@@ -322,6 +343,12 @@ function create_board(board) {
 		var path = board.paths[i];
 
 		create_path(path);
+	}
+
+	for( var i in board.ports ) {
+		var port = board.ports[i];
+
+		create_port(port);
 	}
 
 	update_board(board);

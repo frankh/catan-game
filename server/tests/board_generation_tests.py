@@ -28,9 +28,23 @@ class GetIdentTest(unittest.TestCase):
 #    \__/7 \__/
 #       \__/
 #
+
+# min 	max
+# 11    11
+# 11 	12
+# 11 	12
+# 1 	12
+# 1 	12
+# 1 	1
+# 1 	2
+# 1 	2
 class BoardGenTest(unittest.TestCase):
 	def setUp(self):
 		self.board = generate_board()
+
+	def test_nonexist(self):
+		with self.assertRaises(Exception):
+			self.board.Hex(123)
 
 	def test_hex_count(self):
 		self.assertEqual(len(self.board.land_hexes), 19)
@@ -54,19 +68,28 @@ class BoardGenTest(unittest.TestCase):
 		self.assertFalse(self.board.Path.get('1_2_13__2_13_14').is_coastal)
 		self.assertTrue(path_1.is_coastal)
 
+		def max_path_hex(p):
+			def max_land_hex(v):
+				return max(h.id for h in v.hexes if not h.is_sea)
+			return max(max_land_hex(v) for v in p.verts)
+
 		self.assertEqual(path_1.next_coastal_path, self.board.Path.get(
 			coast_1, coast_3))
 
 		num_coastal_paths = len([p for p in self.board.paths if p.is_coastal])
 
 		cur_path = path_1
+		paths = []
 		# Do a loop, we should come back to the start
 		for unused in range(num_coastal_paths):
 			cur_path = cur_path.next_coastal_path
+			
+			paths.append(cur_path)
 			# All next_coastal_paths should be coastal
 			self.assertTrue(cur_path.is_coastal)
 
 		self.assertEqual(cur_path, path_1)
+		self.assertEqual(len(paths), len(set(paths)))
 
 if __name__ == '__main__':
 	unittest.main()

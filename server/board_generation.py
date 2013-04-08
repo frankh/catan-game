@@ -41,15 +41,17 @@ class Board(object):
 		self.hexes = list(Hex.objects.values())
 		self.vertices = list(Vertex.objects.values())
 		self.paths = list(Path.objects.values())
+		self.ports = []
 
 		self.land_hexes = [hx for hx in self.hexes if not hx.is_sea]
 
 	def as_dict(self):
 		return {
 			'type'    : 'board',
-			'hexes'   : [hx.as_dict() for hx in self.land_hexes],
-			'vertices': [v.as_dict()  for v  in self.vertices  ],
-			'paths'   : [p.as_dict()  for p  in self.paths     ],
+			'hexes'   : [hx.as_dict() for hx   in self.land_hexes],
+			'vertices': [v.as_dict()  for v    in self.vertices  ],
+			'paths'   : [p.as_dict()  for p    in self.paths     ],
+			'ports'   : [port         for port in self.ports     ],
 		}
 
 # Make it easier to keep track of which sea is where.
@@ -231,6 +233,7 @@ def create_board():
 
 	class Vertex(CatanObj):
 		built = None
+		port = None
 		probabilities = {
 			0 : 0,
 			2 : 1,
@@ -249,8 +252,6 @@ def create_board():
 		def probability(self):
 			return sum(Vertex.probabilities[hx.value] for hx in self.hexes
 			                                                 if not hx.is_sea)
-
-
 		@property
 		def paths(self):
 			return [p for p in Path.objects.values() if self in p.verts]
@@ -291,18 +292,38 @@ def create_board():
 
 		@property
 		def next_coastal_path(self):
-			coastal_paths = {p for p in self.paths if p.is_coastal}
+			paths = [p for p in self.paths if p.is_coastal]
 
-			def max_vert(p):
-				return max(v.id for v in p.verts)
+			def max_path_hex(p):
+				def max_land_hex(v):
+					return max(h.id for h in v.hexes if not h.is_sea)
+				return max(max_land_hex(v) for v in p.verts)
 
-			next_path = max(p.id for p in coastal_paths)
+			def min_path_hex(p):
+				def min_land_hex(v):
+					return min(h.id for h in v.hexes if not h.is_sea)
+				return min(min_land_hex(v) for v in p.verts)
 
-			if max_vert(Path.get(next_path)) <= max_vert(self):
+			p1_max_hex = max_path_hex(paths[0])
+			p2_max_hex = max_path_hex(paths[1])
+			p1_min_hex = min_path_hex(paths[0])
+			p2_min_hex = min_path_hex(paths[1])
+
+			next_path_idx = 0
+
+			if p2_max_hex > p1_max_hex:
+				next_path_idx = 1
+			elif p2_max_hex == p1_max_hex:
+				if p2_min_hex > p1_min_hex:
+					next_path_idx = 1
+
+			if max_path_hex(paths[next_path_idx]) == 12 \
+			and max_path_hex(paths[1-next_path_idx]) in (12, 1) \
+			and max_path_hex(self) == 12 or max_path_hex(self) == 1:
 				# We have wrapped around
-				next_path = min(p.id for p in coastal_paths)
+				next_path_idx = 1 - next_path_idx
 
-			return Path.get(next_path)
+			return paths[next_path_idx]
 
 		@property
 		def is_coastal(self):
@@ -361,7 +382,7 @@ def generate_board(port_start_offset=0):
 		['mountains']	* 3,
 	]
 
-	ports = [
+	port_types = [
 		['general']	* 4,
 		['wheat']	* 1,
 		['wood']	* 1,
@@ -389,21 +410,40 @@ def generate_board(port_start_offset=0):
 	values = flatten(values)
 	random.shuffle(values)
 
-	ports = flatten(ports)
-	random.shuffle(ports)
+	port_types = flatten(port_types)
+	random.shuffle(port_types)
+
+
+	ports = []
+	port_spacing = [3,3,4,3,3,4,3,3,4]
 
 	# Assign ports
 	port_path = port_start
-	for port in ports:
+	for port_type in port_types:
 		port_hex = [hx for hx in port_path.hexes 
 		                      if not hx.is_sea][0]
 
-		port_path.port = port
-		port_hex.port = port
+		# if port_path.port:
+		# 	raise Exception('Path already has a port')
+
+		port_path.port = port_type
+		port_hex.port = port_type
 		port_hex.port_path = port_path
 
-		for i in range(3):
+		for vert in port_path.verts:
+			vert.port = port_type
+
+		ports.append({
+			'id': len(ports),
+			'port_type': port_type,
+			'path': port_path.as_dict(),
+			'hex': port_hex.as_dict(),
+		})
+
+		for i in range(port_spacing.pop(0)):
 			port_path = port_path.next_coastal_path
+
+	board.ports = ports
 
 	# Assign tiles
 	for hx, tile in zip([hx for hx in board.land_hexes], tiles):
