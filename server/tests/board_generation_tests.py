@@ -50,14 +50,14 @@ class BoardGenTest(unittest.TestCase):
 	def test_path_is_coastal(self):
 		coast_1 = (1 , 12        , Sea(1 , 12))
 		coast_2 = (12, Sea(1, 12), Sea(11, 12))
-		coast_3 = (1 , Sea(1, 12), Sea(1 , 1 ))
+		coast_3 = (1 , Sea(1, 1 ), Sea(1 , 12))
 		path_1 = self.board.Path.get(coast_1, coast_2)
 
 		self.assertFalse(self.board.Path.get('1_2_13__2_13_14').is_coastal)
 		self.assertTrue(path_1.is_coastal)
 
-		# self.assertEqual(path_1.next_coastal_path, self.board.Path.get(
-		# 	coast_1, coast_3))
+		self.assertEqual(path_1.next_coastal_path, self.board.Path.get(
+			coast_1, coast_3))
 
 if __name__ == '__main__':
 	unittest.main()

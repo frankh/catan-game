@@ -312,7 +312,8 @@ def create_board():
 		@property
 		def paths(self):
 			return {p for p in Path.objects.values()
-			                if p.verts & self.verts}
+			                if p.verts & self.verts
+			               and p is not self}
 
 		def __init__(self, vert1, vert2):
 			super().__init__(vert1, vert2)
