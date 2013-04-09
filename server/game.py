@@ -8,6 +8,11 @@ import dice_gen
 
 from const import tile_resource_map, resources
 
+from turn_generators import \
+	starting_phase, \
+	start_of_turn,  \
+	rest_of_turn
+
 class Building(object):
 	def __init__(self, owner, building):
 		self.owner = owner
@@ -387,11 +392,6 @@ class Game(object):
 				'type': 'current_player',
 				'player': self.current_player.as_dict()
 			})
-
-			from turn_generators import \
-				starting_phase, \
-				start_of_turn,  \
-				rest_of_turn
 
 			if self.current_player.num_buildings < 2:
 				yield from starting_phase(self)
