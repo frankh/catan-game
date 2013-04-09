@@ -154,5 +154,28 @@ class GameTest(unittest.TestCase):
 		self.assertEqual(self.player1.cards['ore'], p1_cards['ore']+1)
 		self.assertEqual(self.player1.cards['wheat'], p1_cards['wheat']-1)
 
+	def test_8_cant_give(self):
+		"""
+		You shouldn't be able to do trades where you give something for
+		nothing
+		"""
+		action = self.game.action_number
+
+		self.game.recv_trade(self.player1, {
+			'give': {'ore': 1},
+			'want': {},
+			'player_id': self.player2.id,
+			'turn': self.game.action_number,
+		})
+		self.game.recv_trade(self.player2, {
+			'give': {},
+			'want': {'ore': 1},
+			'player_id': self.player1.id,
+			'turn': self.game.action_number,
+		})
+
+		self.assertEqual(action, self.game.action_number)
+
+
 if __name__ == '__main__':
 	unittest.main()

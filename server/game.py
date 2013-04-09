@@ -342,6 +342,12 @@ class Game(object):
 					if player.cards[res] < trade['give'][res]:
 						return False
 
+				def all_zero(dict):
+					return max(list(dict.values()) or [0]) == 0
+
+				if all_zero(trade['give']) or all_zero(trade['want']):
+					return False
+
 				return True
 			except (KeyError, TypeError, IndexError, ValueError) as e:
 				return False
