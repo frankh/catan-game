@@ -265,6 +265,11 @@ class Game(object):
 		for player in self.players:
 			player.send(message)
 
+	def get_player(self, player_id):
+		for player in self.players:
+			if player.id == player_id:
+				return player
+
 	def recv_move(self, player, move):
 		"""
 		Sent every time the client performs a move.
@@ -320,7 +325,7 @@ class Game(object):
 			try:
 				pl_id = trade['player_id']
 				if pl_id is not None:
-					pl = self.players[int(pl_id)]
+					pl = self.get_player(int(pl_id))
 
 				turn = int(trade['turn'])
 				if turn != self.action_number or not self.can_trade:
@@ -347,15 +352,14 @@ class Game(object):
 			# wouldn't be worth telling user about
 			return
 
-		self.active_trades[player] = trade
+		self.active_trades[player.id] = trade
 
 		traded = False
 		t_player = None
-		if trade['player_id']:
-			t_player = self.players[int(trade['player_id'])]
+		if trade['player_id'] is not None:
+			t_player = self.get_player(int(trade['player_id']))
 
 			matched_trade = self.active_trades[t_player.id]
-
 			# Both players must have initiated the trade this turn
 			# Both players must be giving what the other wants
 			# The trades must be targetting each other
@@ -404,10 +408,11 @@ class Game(object):
 
 	def do_trade(self, trade, player_from, player_to):
 		self.action_number += 1
-		
+
 		for res in trade['give']:
 			player_from.cards[res] -= trade['give'][res]
 			player_to.cards[res] += trade['give'][res]
+
 		for res in trade['want']:
 			player_from.cards[res] += trade['want'][res]
 			player_to.cards[res] -= trade['want'][res]
@@ -442,7 +447,6 @@ class Game(object):
 			location.built = Building(player, move['build'])
 
 		elif move['type'] == 'build':
-			print('building', move)
 			location = None
 
 			if( move['location']['type'] == 'vertex'):

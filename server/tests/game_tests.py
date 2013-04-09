@@ -127,5 +127,32 @@ class GameTest(unittest.TestCase):
 		})
 		self.assertTrue(self.c2.trade_offer)
 
+	def test_7_trade(self):
+		self.player1.cards['wheat'] += 1
+		self.player2.cards['ore'] += 1
+
+		p1_cards = dict(self.player1.cards)
+		p2_cards = dict(self.player2.cards)
+		action = self.game.action_number
+
+		self.game.recv_trade(self.player1, {
+			'give': {'wheat': 1},
+			'want': {'ore': 1},
+			'player_id': self.player2.id,
+			'turn': self.game.action_number,
+		})
+		self.game.recv_trade(self.player2, {
+			'give': {'ore': 1},
+			'want': {'wheat': 1},
+			'player_id': self.player1.id,
+			'turn': self.game.action_number,
+		})
+
+		self.assertNotEqual(action, self.game.action_number)
+		self.assertEqual(self.player2.cards['wheat'], p2_cards['wheat']+1)
+		self.assertEqual(self.player2.cards['ore'], p2_cards['ore']-1)
+		self.assertEqual(self.player1.cards['ore'], p1_cards['ore']+1)
+		self.assertEqual(self.player1.cards['wheat'], p1_cards['wheat']-1)
+
 if __name__ == '__main__':
 	unittest.main()
