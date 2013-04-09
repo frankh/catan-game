@@ -86,6 +86,8 @@ def starting_phase(self):
 	self.do_move(self.current_player, move)
 
 def start_of_turn(self):
+	self.can_trade = False
+
 	valid_moves = [{
 		'type': 'roll',
 	}]
@@ -97,6 +99,8 @@ def start_of_turn(self):
 	self.do_move(self.current_player, move)
 
 def rest_of_turn(self):
+	self.can_trade = True
+
 	pl = self.current_player
 
 	#Actual turn!

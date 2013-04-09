@@ -8,6 +8,7 @@ from utils import random_move
 class TestConnection(object):
 	def __init__(self, game):
 		self.moves = None
+		self.trade_offer = None
 		self.player = Player(self, 'test_player1', game)
 
 	def on_message(self, message):
@@ -18,6 +19,8 @@ class TestConnection(object):
 
 		if message['type'] == 'moves':
 			self.moves = message['moves']
+		if message['type'] == 'trade_offer':
+			self.trade_offer = message['trade']
 
 class TestGame(Game):
 	def __init__(self, max_players=2):
@@ -94,12 +97,35 @@ class GameTest(unittest.TestCase):
 		conn.moves = None
 
 	def test_4_cant_trade_yet(self):
-		self.skipTest('todo')
+		self.game.recv_trade(self.player1, {
+			'give': { 'ore': 1 },
+			'want': { 'wood': 1 },
+			'player_id': None,
+			'turn': self.game.action_number,
+		})
 
-	test_5_finish_placement = test_3_placement2
+		self.assertFalse(self.c2.trade_offer)
+
+	def test_5_finish_placement(self):
+		conn = self.c1 if self.c1.moves else self.c2
+
+		self.game.recv_move(conn.player, random_move(conn.moves))
+		self.game.recv_move(conn.player, random_move(conn.moves))
+		self.assertEqual(conn.player.num_buildings, 2)
+		self.assertIn(conn.player.longest_road, (1,2))
+
+
+		self.assertEqual(random_move(conn.moves)['type'], 'roll')
+		self.game.recv_move(conn.player, random_move(conn.moves))
 
 	def test_6_can_trade(self):
-		self.skipTest('todo')
+		self.game.recv_trade(self.player1, {
+			'give': self.player1.cards,
+			'want': self.player2.cards,
+			'player_id': self.player2.id,
+			'turn': self.game.action_number,
+		})
+		self.assertTrue(self.c2.trade_offer)
 
 if __name__ == '__main__':
 	unittest.main()

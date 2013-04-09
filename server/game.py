@@ -1,5 +1,6 @@
 import random
 import json
+import itertools
 from collections import defaultdict
 
 from utils import timed, cached_per_action
@@ -229,6 +230,7 @@ class Game(object):
 		self.board = generate_board()
 		self.current_player = None
 		self.started = False
+		self.can_trade = False
 		self.dice_gen = dice_gen.RandomDiceGen()
 		self.action_number = 0
 		self.active_trades = defaultdict(dict)
@@ -321,7 +323,7 @@ class Game(object):
 					pl = self.players[int(pl_id)]
 
 				turn = int(trade['turn'])
-				if turn != self.action_number:
+				if turn != self.action_number or not self.can_trade:
 					# Outdated trade
 					return False
 
@@ -332,11 +334,11 @@ class Game(object):
 
 				# Check if player has enough resources.
 				for res in trade['give']:
-					if player.cards[res] < trade['give']['res']:
+					if player.cards[res] < trade['give'][res]:
 						return False
 
 				return True
-			except (KeyError, TypeError, IndexError, ValueError):
+			except (KeyError, TypeError, IndexError, ValueError) as e:
 				return False
 
 		if not valid_trade(player, trade):
