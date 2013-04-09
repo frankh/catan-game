@@ -3,7 +3,7 @@ import itertools
 
 class RandomDiceGen(object):
 	def roll(self):
-		return random.randInt(1,6), random.randInt(1,6)
+		return random.randint(1,6), random.randint(1,6)
 
 class DeckDiceGen(object):
 	def __init__(self, cutoff=5):

@@ -96,8 +96,7 @@ class GameTest(unittest.TestCase):
 	def test_4_cant_trade_yet(self):
 		self.skipTest('todo')
 
-	def test_5_finish_placement(self):
-		self.skipTest('todo')
+	test_5_finish_placement = test_3_placement2
 
 	def test_6_can_trade(self):
 		self.skipTest('todo')
