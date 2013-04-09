@@ -176,6 +176,23 @@ class GameTest(unittest.TestCase):
 
 		self.assertEqual(action, self.game.action_number)
 
+	def test_9_negetive_trade(self):
+		action = self.game.action_number
+		self.game.recv_trade(self.player1, {
+			'give': {'ore': -1},
+			'want': {'wheat': -1},
+			'player_id': self.player2.id,
+			'turn': self.game.action_number,
+		})
+		self.game.recv_trade(self.player2, {
+			'give': {'wheat': -1},
+			'want': {'ore': -1},
+			'player_id': self.player1.id,
+			'turn': self.game.action_number,
+		})
+
+		self.assertEqual(action, self.game.action_number)
+
 
 if __name__ == '__main__':
 	unittest.main()

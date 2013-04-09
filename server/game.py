@@ -342,10 +342,18 @@ class Game(object):
 					if player.cards[res] < trade['give'][res]:
 						return False
 
+				# Make sure both giving and wanting something.
 				def all_zero(dict):
 					return max(list(dict.values()) or [0]) == 0
 
 				if all_zero(trade['give']) or all_zero(trade['want']):
+					return False
+
+				# Make sure people dont try and cheat by offering negative values...
+				def has_negative(dict):
+					return min(list(dict.values()) or [0]) < 0
+
+				if has_negative(trade['give']) or has_negative(trade['want']):
 					return False
 
 				return True
