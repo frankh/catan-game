@@ -1,6 +1,7 @@
 import functools
 
 import time
+import random
 
 def timed(func):
 	@functools.wraps(func)
@@ -35,3 +36,11 @@ def cached_per_action(func):
 		return ret
 
 	return wrapped
+
+def random_move(moves):
+	move = random.choice(moves)
+	if 'locations' in move:
+		move['location'] = random.choice(move['locations'])
+		del move['locations']
+
+	return move
