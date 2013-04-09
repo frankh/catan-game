@@ -176,7 +176,7 @@ class GameTest(unittest.TestCase):
 
 		self.assertEqual(action, self.game.action_number)
 
-	def test_9_negetive_trade(self):
+	def test_9_0_negative_trade(self):
 		action = self.game.action_number
 		self.game.recv_trade(self.player1, {
 			'give': {'ore': -1},
@@ -193,6 +193,39 @@ class GameTest(unittest.TestCase):
 
 		self.assertEqual(action, self.game.action_number)
 
+	def test_9_1_outdated_trade(self):
+		self.player1.cards['wheat'] += 1
+		self.player2.cards['ore'] += 1
+
+		self.game.recv_trade(self.player1, {
+			'give': {'wheat': 1},
+			'want': {'ore': 1},
+			'player_id': self.player2.id,
+			'turn': self.game.action_number,
+		})
+
+		self.game.recv_move(self.game.current_player, {'type': 'end_turn'})
+		self.game.recv_move(self.game.current_player, {'type': 'roll'})
+
+		action = self.game.action_number
+
+		self.game.recv_trade(self.player2, {
+			'give': {'ore': 1},
+			'want': {'wheat': 1},
+			'player_id': self.player1.id,
+			'turn': self.game.action_number,
+		})
+
+		self.assertEqual(action, self.game.action_number)
+
+		self.game.recv_trade(self.player1, {
+			'give': {'wheat': 1},
+			'want': {'ore': 1},
+			'player_id': self.player2.id,
+			'turn': self.game.action_number,
+		})
+
+		self.assertNotEqual(action, self.game.action_number)
 
 if __name__ == '__main__':
 	unittest.main()
