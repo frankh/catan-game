@@ -74,6 +74,20 @@
             transform: rotate(@angle);
 }
 
+.hex_robber(@bkgd_img) {
+    background-image: @bkgd_img;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: 60% 100%;
+
+    .being_robbed& {
+        background-image: url(../res/robber.png), @bkgd_img;
+        background-position: 50%, 50%;
+        background-repeat: no-repeat, no-repeat;
+        background-size: 10% 42%, 60% 100%;
+    }
+}
+
 .hex {
 	position:relative;
     width: 200%;
@@ -81,6 +95,36 @@
     overflow: hidden;
     visibility: hidden;
     .rotate(120deg);
+
+    .hex_in2 {
+        width: 100%;
+        height: 100%;
+        background-image: url(../res/hex-desert.bmp);
+        visibility: visible;
+        .rotate(-60deg);
+        -webkit-filter: ~"saturate(0.8)";
+        filter: ~"saturate(0.8)";
+
+        .hex_desert& {
+            .hex_robber(url(../res/hex-desert.bmp));
+        }
+        .hex_pasture& {
+            .hex_robber(url(../res/hex-pasture.bmp));
+        }
+        .hex_hills& {
+            .hex_robber(url(../res/hex-hills.bmp));
+        }
+        .hex_mountains& {
+            .hex_robber(url(../res/hex-mountains.bmp));
+        }
+        .hex_forest& {
+            .hex_robber(url(../res/hex-forest.bmp));
+        }
+        .hex_fields& {
+            .hex_robber(url(../res/hex-fields.bmp));
+        }
+    }
+
 }
 
 .hex_in1 {
@@ -88,41 +132,4 @@
     width: 100%;
     height: 100%;
     .rotate(-60deg)
-}
-
-.hex_in2 {
-    width: 100%;
-    height: 100%;
-    background-image: url(../res/hex-desert.bmp);
-    background-position: 50%;
-	background-repeat: no-repeat;
-	background-size: 60% 100%;
-    visibility: visible;
-    .rotate(-60deg);
-    -webkit-filter: ~"saturate(0.8)";
-    filter: ~"saturate(0.8)";
-}
-
-.hex_fields .hex_in2 {
-    background-image: url(../res/hex-fields.bmp);
-}
-
-.hex_desert .hex_in2 {
-    background-image: url(../res/hex-desert.bmp);
-}
-
-.hex_pasture .hex_in2 {
-    background-image: url(../res/hex-pasture.bmp);
-}
-
-.hex_hills .hex_in2 {
-    background-image: url(../res/hex-hills.bmp);
-}
-
-.hex_mountains .hex_in2 {
-    background-image: url(../res/hex-mountains.bmp);
-}
-
-.hex_forest .hex_in2 {
-    background-image: url(../res/hex-forest.bmp);
 }

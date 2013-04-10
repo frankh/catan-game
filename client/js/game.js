@@ -403,6 +403,16 @@ function create_board(board) {
 }
 
 function update_board(board) {
+	$('.being_robbed').removeClass('being_robbed');
+	for( var i in board.hexes ) {
+		var hex = board.hexes[i];
+		var $hex = $('.hex[hex_id='+hex.id+']');
+
+		if( hex.being_robbed ) {
+			$hex.addClass('being_robbed');
+		}
+	}
+
 	for( var i in board.vertices ) {
 		var vert = board.vertices[i];
 		var $vert = get_vertex(vert.id);
