@@ -524,6 +524,9 @@ class Game(object):
 				key: val - location.built.resource_cost[key] 
 				     for key, val in player.cards.items()
 			}
+		elif move['type'] == 'roll':
+			#Rolling is done in turn generator so that it can trigger the robber
+			pass
 		else:
 			raise Exception('invalid move')
 

@@ -164,6 +164,8 @@ def start_of_turn(self):
 			'gen_hexes': [hx.as_dict() for hx in gen_hexes],
 		})
 
+		self.do_move(self.current_player, move)
+
 def rest_of_turn(self):
 	self.can_trade = True
 

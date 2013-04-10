@@ -1,7 +1,7 @@
 import itertools
 import random
 import json
-import logging
+import log
 from collections import defaultdict, Iterable
 import itertools
 from functools import lru_cache
@@ -20,17 +20,7 @@ from game import \
 	Game
 
 
-class Logger(object):
-	def setLevel(self, level):
-		pass
-
-	def debug(self, msg):
-		pass
-		#print('DEBUG:', msg)
-
-log = Logger()
-log.setLevel(logging.DEBUG)
-
+log = log.getLogger('catan')
 
 class DefaultGame(Game):
 
