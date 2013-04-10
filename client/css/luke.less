@@ -1,0 +1,116 @@
+@import "shared.less";
+.box-sizing() {
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+}
+
+/* Styles for top other players boxes */
+.trade_display {
+    height: 100%;
+    font-weight: bold;
+    .box-sizing;
+    border-right: 2px solid black;
+    .name_bar {
+        width:100%;
+        height: 20%;
+    }
+    .computer_player {
+        background: url(../res/ai_icon.png) no-repeat left center;
+        background-size: auto 80%;
+        padding-left: 15%;
+        width: 100%;
+        .box-sizing;
+    }
+    .wants, .needs {
+        width:50%;
+        height: 80%;
+        text-align: center;
+        float: left;
+    }
+    .wants {
+        background: url(../res/divider.bmp) no-repeat right center;
+    }
+}
+/* You can cut this next colouring bit */
+.player1 .name_bar {
+    background-color: @lred;
+    border-left: unit(0.2%,em) solid @lred;
+}
+.player2 .name_bar {
+    background-color: @lblue;
+    border-left: unit(0.2%,em) solid @lblue;
+}
+.player3 .name_bar {
+    background-color: @lgreen;
+    border-left: unit(0.2%,em) solid @lgreen;
+}
+/* END cuttable bit */
+
+.trade_display:last-child {
+    border: none;
+}
+
+.this_player .player_name_bar {
+    width: 90%;
+    height: 7%;
+    background: @lblue url(../res/human_icon.png) no-repeat left center;
+    background-size: auto 100%;
+    padding-left: 10%;
+    margin-bottom: 1%;
+}
+/* Styles for match/decline buttons */
+.trade_buttons {
+    margin-bottom: 1%;
+    .button {
+        width: 45%;
+        float: left;
+        background: url(../res/actionbuttons.png) no-repeat center center;
+        background-size: 100% 300%;
+        color: #fff;
+        text-align: center;
+        font-size: 0.7em;
+        padding: 0.2em;
+        -webkit-box-sizing: border-box;
+        &:hover {
+            background-position: center bottom;
+        }
+    }
+    .match {
+        margin-right: 10%;
+    }
+}
+.button.disabled {
+    background-position: center top;
+    &:hover {
+        background-position: center top;
+    }
+}
+.button:active {
+    background: url(../res/);
+}
+
+.want_section {
+    background: url(../res/divider_large.bmp) no-repeat right center;
+}
+
+/* Width styles */
+.one .trade_display,
+.one.trade_buttons > div {
+    width:50%;
+    margin: 0 auto;
+}
+.two .trade_display,
+.two.trade_buttons > div {
+    width:50%;
+    float:left;
+}
+.three .trade_display {
+    width:33.3%;
+    float:left;
+}
+.three.trade_buttons > div {
+    width: 29.3%;
+    float: left;
+    margin: 0 2%;
+}
