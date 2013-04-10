@@ -5,6 +5,7 @@ import json
 from game import Game, Player
 from utils import random_move
 import const
+import dice_gen
 
 class TestConnection(object):
 	def __init__(self, game):
@@ -27,6 +28,7 @@ class TestGame(Game):
 	def __init__(self, max_players=2):
 		super().__init__()
 		self.max_players = max_players
+		self.dice_gen = dice_gen.NoRobberDiceGen()
 
 class GameTest(unittest.TestCase):
 

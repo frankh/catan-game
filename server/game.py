@@ -524,41 +524,8 @@ class Game(object):
 				key: val - location.built.resource_cost[key] 
 				     for key, val in player.cards.items()
 			}
-
-		elif move['type'] == 'roll':
-			die1, die2 = self.dice_gen.roll()
-			result = die1 + die2
-
-			gen_hexes = [hx for hx in self.board.land_hexes if hx.value == result]
-			for hx in gen_hexes:
-				res = tile_resource_map[hx.tile]
-
-				if res:
-					for vert in hx.vertices:
-						if vert.built:
-							building = vert.built.building
-							res_count = 0
-
-							if building == 'settlement':
-								res_count = 1
-							elif building == 'city':
-								res_count = 2
-							else:
-								raise Exception('invalid building type')
-
-							if hx.being_robbed:
-								#TODO
-								pass
-							else:
-								# TODO message
-								vert.built.owner.cards[res] += res_count
-
-			self.broadcast({
-				'type': 'roll',
-				'values': [die1, die2],
-				'result': result,
-				'gen_hexes': [hx.as_dict() for hx in gen_hexes],
-			})
+		else:
+			raise Exception('invalid move')
 
 		self.broadcast({
 			'type': 'game',

@@ -5,6 +5,16 @@ class RandomDiceGen(object):
 	def roll(self):
 		return random.randint(1,6), random.randint(1,6)
 
+class NoRobberDiceGen(RandomDiceGen):
+	def roll(self):
+		d1 = 3
+		d2 = 4
+
+		while d1+d2 == 7:
+			d1, d2 = random.randint(1,6), random.randint(1,6)
+
+		return d1, d2
+		
 class DeckDiceGen(object):
 	def __init__(self, cutoff=5):
 		self.deck = list(itertools.product([1,2,3,4,5,6], [1,2,3,4,5,6]))

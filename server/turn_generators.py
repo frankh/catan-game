@@ -85,6 +85,36 @@ def starting_phase(self):
 
 	self.do_move(self.current_player, move)
 
+def rolled_robber(self):
+	#TODO discards
+	yield from move_robber(self)
+
+def move_robber(self):
+	valid_moves = [{
+		'type': 'move_robber',
+		'locations': [hx.id_dict() for hx in self.board.land_hexes],
+	}]
+
+	move = yield from get_move(valid_moves)
+	self.do_move(self.current_player, move)
+
+	hx = self.board.Hex.get(move['location']['id'])
+	target_players = {v.built.owner for v in hx.vertices if v.built}
+	target_players -= {self.current_player}
+
+	target_players = {player for player in target_players 
+	 			      if max(val for val in player.cards.values()) == 0}
+
+	if target_players:
+		valid_moves = [{
+			'type': 'steal_from',
+			'player': player
+		} for player in target_players]
+
+		move = yield from get_move(valid_moves)
+		self.do_move(self.current_player, move)
+
+
 def start_of_turn(self):
 	self.can_trade = False
 
@@ -96,7 +126,43 @@ def start_of_turn(self):
 	
 	move = yield from get_move(valid_moves)
 
-	self.do_move(self.current_player, move)
+	if move['type'] == 'roll':
+		die1, die2 = self.dice_gen.roll()
+		result = die1 + die2
+
+		if result == 7:
+			yield from rolled_robber(self)
+
+		gen_hexes = [hx for hx in self.board.land_hexes if hx.value == result]
+		for hx in gen_hexes:
+			res = tile_resource_map[hx.tile]
+
+			if res:
+				for vert in hx.vertices:
+					if vert.built:
+						building = vert.built.building
+						res_count = 0
+
+						if building == 'settlement':
+							res_count = 1
+						elif building == 'city':
+							res_count = 2
+						else:
+							raise Exception('invalid building type')
+
+						if hx.being_robbed:
+							#TODO
+							pass
+						else:
+							# TODO message
+							vert.built.owner.cards[res] += res_count
+
+		self.broadcast({
+			'type': 'roll',
+			'values': [die1, die2],
+			'result': result,
+			'gen_hexes': [hx.as_dict() for hx in gen_hexes],
+		})
 
 def rest_of_turn(self):
 	self.can_trade = True

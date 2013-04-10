@@ -224,6 +224,7 @@ def create_board():
 		def as_dict(self):
 			return {
 				'id': self.id,
+				'type': 'hex',
 				'tile': self.tile,
 				'value': self.value,
 				'port': self.port,
