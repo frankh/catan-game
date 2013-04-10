@@ -18,4 +18,5 @@ if __name__ == '__main__':
 
 	print('Using random seed', seed)
 	random.seed(seed)
+	sys.stdout.flush()
 	unittest.main(verbosity=2)
