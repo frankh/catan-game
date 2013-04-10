@@ -70,6 +70,15 @@ class Player(object):
 		self.ready = False
 
 	@cached_per_action
+	def get_ports(self):
+		return { v.port for v in self.get_built_verts() if v.port }
+
+	@cached_per_action
+	def get_built_verts(self):
+		return [v for v in self.game.board.vertices
+			            if v.built and v.built.owner is self]
+
+	@cached_per_action
 	def get_connected_locations(self):
 		current_verts = [v for v in self.game.board.vertices
 		                         if v.built 
@@ -327,6 +336,37 @@ class Game(object):
 				if pl_id is not None:
 					pl = self.get_player(int(pl_id))
 
+				port = False
+				if 'port' in trade:
+					port = trade['port']
+
+				if port:
+					if pl_id is not None:
+						# Can't have both port and target player.
+						return False
+
+					if player is not self.current_player:
+						# Can't port trade on other turn
+						return False
+
+					if len([val for val in trade['give'].values() if val > 0]) != 1:
+						# Can't trade 2 different resources at once with port.
+						return False
+
+					trade_res, trade_count = [(key,val) for (key, val)
+					                                   in trade['give'].items() 
+					                                   if val > 0][0]
+
+					# You can only trade at the best rate you have.
+					if trade_res in player.get_ports():
+						if trade_count != 2:
+							return False
+					elif 'general' in player.get_ports():
+						if trade_count != 3:
+							return False
+					elif trade_count != 4:
+						return False
+
 				turn = int(trade['turn'])
 				if turn != self.action_number or not self.can_trade:
 					# Outdated trade
@@ -393,7 +433,10 @@ class Game(object):
 				# valid_trade checks
 				self.do_trade(trade, player, t_player)
 				traded = True
-				
+		elif trade.get('port', False):
+			self.do_trade(trade, player)
+			traded = True
+
 		# Only send the trade offer if we haven't performed the trade.
 		# The client should reset the trade offers of the 2 parties in a trade.
 		if not traded:
@@ -402,6 +445,30 @@ class Game(object):
 				'player': player.as_dict(),
 				'trade': trade,
 			})
+
+	def do_trade(self, trade, player_from, player_to=None):
+		self.action_number += 1
+
+		for res in trade['give']:
+			player_from.cards[res] -= trade['give'][res]
+			if player_to:
+				player_to.cards[res] += trade['give'][res]
+
+		for res in trade['want']:
+			player_from.cards[res] += trade['want'][res]
+			if player_to:
+				player_to.cards[res] -= trade['want'][res]
+
+		self.broadcast({
+			'type': 'trade',
+			'trade': {
+				'give': trade['give'],
+				'want': trade['want'],
+				'player_from': player_from.as_dict(),
+				'player_to': player_to.as_dict() if player_to else None,
+				'port': trade.get('port', None)
+			}
+		})
 
 	def turn_gen(self):
 		while True:
@@ -418,29 +485,6 @@ class Game(object):
 			else:
 				yield from start_of_turn(self)
 				yield from rest_of_turn(self)
-
-
-	def do_trade(self, trade, player_from, player_to):
-		self.action_number += 1
-
-		for res in trade['give']:
-			player_from.cards[res] -= trade['give'][res]
-			player_to.cards[res] += trade['give'][res]
-
-		for res in trade['want']:
-			player_from.cards[res] += trade['want'][res]
-			player_to.cards[res] -= trade['want'][res]
-
-		self.broadcast({
-			'type': 'trade',
-			'trade': {
-				'give': trade['give'],
-				'want': trade['want'],
-				'player_from': player_from.as_dict(),
-				'player_to': player_to.as_dict(),
-			}
-		})
-
 
 	def do_move(self, player, move):
 		self.action_number += 1

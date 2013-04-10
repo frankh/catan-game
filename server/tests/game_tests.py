@@ -4,6 +4,7 @@ import json
 
 from game import Game, Player
 from utils import random_move
+import const
 
 class TestConnection(object):
 	def __init__(self, game):
@@ -119,6 +120,9 @@ class GameTest(unittest.TestCase):
 		self.game.recv_move(conn.player, random_move(conn.moves))
 
 	def test_6_can_trade(self):
+		self.player1.cards['wood'] += 1
+		self.player2.cards['wood'] += 1
+
 		self.game.recv_trade(self.player1, {
 			'give': self.player1.cards,
 			'want': self.player2.cards,
@@ -226,6 +230,87 @@ class GameTest(unittest.TestCase):
 		})
 
 		self.assertNotEqual(action, self.game.action_number)
+
+	def test_9_2_port_trade(self):
+		action = self.game.action_number
+		pl = self.game.current_player
+
+		for res in const.resources:
+			pl.cards[res] += 5
+
+		# Don't let trade 1:1
+		self.game.recv_trade(pl, {
+			'give': {'ore': 1},
+			'want': {'wheat': 1},
+			'player_id': None,
+			'port': True,
+			'turn': self.game.action_number,
+		})
+		self.assertEqual(action, self.game.action_number)
+
+		# Don't let trade at 5:1 either
+		self.game.recv_trade(pl, {
+			'give': {'ore': 5},
+			'want': {'wheat': 1},
+			'player_id': None,
+			'port': True,
+			'turn': self.game.action_number,
+		})
+		self.assertEqual(action, self.game.action_number)
+
+		if not pl.get_ports():
+			# Can trade at 4:1
+			self.game.recv_trade(pl, {
+				'give': {'ore': 4},
+				'want': {'wheat': 1},
+				'player_id': None,
+				'port': True,
+				'turn': self.game.action_number,
+			})
+			self.assertNotEqual(action, self.game.action_number)
+			action = self.game.action_number
+
+		if 'general' in pl.get_ports():
+			# Don't let trade at 4:1 with a port
+			self.game.recv_trade(pl, {
+				'give': {'ore': 4},
+				'want': {'wheat': 1},
+				'player_id': None,
+				'port': True,
+				'turn': self.game.action_number,
+			})
+			self.assertEqual(action, self.game.action_number)
+
+			# Can trade at 3:1 with a port
+			self.game.recv_trade(pl, {
+				'give': {'ore': 3},
+				'want': {'wheat': 1},
+				'player_id': None,
+				'port': True,
+				'turn': self.game.action_number,
+			})
+			self.assertNotEqual(action, self.game.action_number)
+			action = self.game.action_number
+
+		if pl.get_ports() - {'general'}:
+			for port_res in (pl.get_ports() - {'general'}):
+				get_res = 'wheat'
+				if port_res == get_res:
+					get_res = 'ore'
+
+				# Can trade at 2:1
+				self.game.recv_trade(pl, {
+					'give': { port_res: 2},
+					'want': { get_res: 1},
+					'player_id': None,
+					'port': True,
+					'turn': self.game.action_number,
+				})
+				self.assertNotEqual(action, self.game.action_number)
+				action = self.game.action_number
+
+
+
 
 if __name__ == '__main__':
 	unittest.main()

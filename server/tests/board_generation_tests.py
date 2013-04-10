@@ -28,16 +28,6 @@ class GetIdentTest(unittest.TestCase):
 #    \__/7 \__/
 #       \__/
 #
-
-# min 	max
-# 11    11
-# 11 	12
-# 11 	12
-# 1 	12
-# 1 	12
-# 1 	1
-# 1 	2
-# 1 	2
 class BoardGenTest(unittest.TestCase):
 	def setUp(self):
 		self.board = generate_board()
