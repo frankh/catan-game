@@ -143,13 +143,59 @@ html, body {
 
 }
 
+.port_types(@xpos) {
+
+	&.general {
+		background-position: @xpos 0;
+	}
+
+	&.wheat {
+		background-position: @xpos 20%;
+	}
+
+	&.wood {
+		background-position: @xpos 40%;
+	}
+
+	&.wool {
+		background-position: @xpos 60%;
+	}
+
+	&.clay {
+		background-position: @xpos 80%;
+	}
+
+	&.ore {
+		background-position: @xpos 100%;
+	}
+}
+
 .port {
 	position: absolute;
-	width: 10%;
-	height: 10%;
+	width: 18%;
+	height: 13%;
 
-	background-image: url(../res/port-question-0deg.png);
-	background-size: 100% 100%;
+	background-image: url(../res/ports.png);
+	background-size: 600% 600%;
+
+	&.top_mid {
+		.port_types(0);
+	}
+	&.top_right {
+		.port_types(20%);
+	}
+	&.bottom_right {
+		.port_types(40%);
+	}
+	&.bottom_mid {
+		.port_types(60%);
+	}
+	&.bottom_left {
+		.port_types(80%);
+	}
+	&.top_left {
+		.port_types(100%);
+	}
 }
 
 .die {
