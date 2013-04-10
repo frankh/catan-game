@@ -272,7 +272,24 @@ class GameTest(unittest.TestCase):
 			self.assertNotEqual(action, self.game.action_number)
 			action = self.game.action_number
 
-		if 'general' in pl.get_ports():
+		elif pl.get_ports() - {'general'}:
+			for port_res in (pl.get_ports() - {'general'}):
+				get_res = 'wheat'
+				if port_res == get_res:
+					get_res = 'ore'
+
+				# Can trade at 2:1
+				self.game.recv_trade(pl, {
+					'give': { port_res: 2},
+					'want': { get_res: 1},
+					'player_id': None,
+					'port': True,
+					'turn': self.game.action_number,
+				})
+				self.assertNotEqual(action, self.game.action_number)
+				action = self.game.action_number
+
+		elif 'general' in pl.get_ports():
 			# Don't let trade at 4:1 with a port
 			self.game.recv_trade(pl, {
 				'give': {'ore': 4},
@@ -293,26 +310,6 @@ class GameTest(unittest.TestCase):
 			})
 			self.assertNotEqual(action, self.game.action_number)
 			action = self.game.action_number
-
-		if pl.get_ports() - {'general'}:
-			for port_res in (pl.get_ports() - {'general'}):
-				get_res = 'wheat'
-				if port_res == get_res:
-					get_res = 'ore'
-
-				# Can trade at 2:1
-				self.game.recv_trade(pl, {
-					'give': { port_res: 2},
-					'want': { get_res: 1},
-					'player_id': None,
-					'port': True,
-					'turn': self.game.action_number,
-				})
-				self.assertNotEqual(action, self.game.action_number)
-				action = self.game.action_number
-
-
-
 
 if __name__ == '__main__':
 	unittest.main()
