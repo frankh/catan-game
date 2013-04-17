@@ -140,6 +140,7 @@ $(window).load(function() {
 			available_moves: handler_available_moves,
 			current_player : handler_current_player,
 			roll           : handler_roll,
+			can_trade      : handler_can_trade,
 		}
 
 		handlers[msg.type](msg);

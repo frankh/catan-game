@@ -239,10 +239,22 @@ class Game(object):
 		self.board = generate_board()
 		self.current_player = None
 		self.started = False
-		self.can_trade = False
+		self._can_trade = False
 		self.dice_gen = dice_gen.RandomDiceGen()
 		self.action_number = 0
 		self.active_trades = defaultdict(dict)
+
+	@property
+	def can_trade(self):
+		return self._can_trade
+	@can_trade.setter
+	def can_trade(self, value):
+		self._can_trade = value
+
+		self.broadcast({
+			'type': 'can_trade',
+			'can_trade': self.can_trade
+		})
 
 	def maybe_start(self):
 		"""

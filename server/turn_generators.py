@@ -92,7 +92,8 @@ def rolled_robber(self):
 def move_robber(self):
 	valid_moves = [{
 		'type': 'move_robber',
-		'locations': [hx.id_dict() for hx in self.board.land_hexes],
+		'locations': [hx.id_dict() for hx in self.board.land_hexes
+		                                  if not hx.being_robbed],
 	}]
 
 	move = yield from get_move(valid_moves)

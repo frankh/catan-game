@@ -2,7 +2,7 @@
 
 var globals = this;
 
-var handler_game =function(msg) {
+var handler_game = function(msg) {
 	handler_board(msg.game);
 	handler_players(msg.game);
 
@@ -17,7 +17,18 @@ var handler_game =function(msg) {
 	}));
 };
 
-var handler_board =function(msg) {
+var handler_can_trade = function(msg) {
+	var can_trade = msg.can_trade;
+
+	if( !can_trade ) {
+		$('.trade_window').hide();
+		$('#trade_button').removeClass('enabled');
+	} else {
+		$('#trade_button').addClass('enabled');
+	}
+}
+
+var handler_board = function(msg) {
 	if( !globals.BOARD ) {
 		globals.BOARD = msg.board;
 		create_board(globals.BOARD);
@@ -35,7 +46,7 @@ globals.RESOURCE_TYPES = {
 	'wool': true,
 }
 
-var handler_players =function(msg) {
+var handler_players = function(msg) {
 	$('.player_row')
 		.removeClass('blue')
 		.removeClass('red')
