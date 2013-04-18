@@ -2,3 +2,5 @@ __pycache__
 pyserv.bat
 *.pyc
 *.pyd
+env/
+nohup.out
