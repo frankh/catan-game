@@ -4,3 +4,4 @@ pyserv.bat
 *.pyd
 env/
 nohup.out
+*.css
