@@ -2,12 +2,15 @@
 
 var globals = this;
 
-var handler_game = function(msg) {
-	handler_board(msg.game);
-	handler_players(msg.game);
+var HANDLERS = function(){};
+globals.HANDLERS = HANDLERS;
+
+HANDLERS.game = function(msg) {
+	HANDLERS.board(msg.game);
+	HANDLERS.players(msg.game);
 
 	if( msg.game.current_player ) {
-		handler_current_player({
+		HANDLERS.current_player({
 			player: msg.game.current_player
 		});
 	}
@@ -17,7 +20,7 @@ var handler_game = function(msg) {
 	}));
 };
 
-var handler_can_trade = function(msg) {
+HANDLERS.can_trade = function(msg) {
 	var can_trade = msg.can_trade;
 
 	if( !can_trade ) {
@@ -28,7 +31,7 @@ var handler_can_trade = function(msg) {
 	}
 }
 
-var handler_board = function(msg) {
+HANDLERS.board = function(msg) {
 	if( !globals.BOARD ) {
 		globals.BOARD = msg.board;
 		create_board(globals.BOARD);
@@ -46,7 +49,7 @@ globals.RESOURCE_TYPES = {
 	'wool': true,
 }
 
-var handler_players = function(msg) {
+HANDLERS.players = function(msg) {
 	$('.player_row')
 		.removeClass('blue')
 		.removeClass('red')
@@ -78,7 +81,7 @@ var handler_players = function(msg) {
 	}
 };
 
-var handler_current_player = function(msg) {
+HANDLERS.current_player = function(msg) {
 	var player = msg.player;
 
 	var $bar = $('.game_current_player_notification');
@@ -95,10 +98,10 @@ var handler_current_player = function(msg) {
 	                  .addClass(player.icon);
 };
 
-var handler_moves =function(msg) {
+HANDLERS.moves = function(msg) {
 	var moves = msg.moves;
 
-	$('.enabled').removeClass('enabled').unbind();
+	$('.enabled').not('#trade_button').removeClass('enabled').unbind();
 
 	for( var i in moves ) {
 		var move = moves[i];
@@ -290,7 +293,7 @@ var handler_moves =function(msg) {
 	}
 };
 
-var handler_roll = function(msg) {
+HANDLERS.roll = function(msg) {
 	var values = msg.values;
 
 	$('.corner_dice').css('visibility', 'hidden');
@@ -327,14 +330,14 @@ var handler_roll = function(msg) {
 	});
 };
 
-var handler_forced_action = function(msg) {
+HANDLERS.forced_action = function(msg) {
 };
 
-var handler_assign_player = function(msg) {
+HANDLERS.assign_player = function(msg) {
 	globals.PLAYER = msg.player;
 };
 
-var handler_available_moves = function(msg) {
+HANDLERS.available_moves = function(msg) {
 };
 
 var position_message = function() {

@@ -107,11 +107,15 @@ $(window).load(function() {
 	}
 
 	var sockaddr = document.domain;
+	var sockprot = 'ws:';
 	if( document.domain == 'localhost' ) {
 		sockaddr += ':8080';
 	}
+	if (loc.protocol === "https:") {
+    	sockprot = "wss:";
+	}
 
-	SOCKET = new WebSocket("ws://"+sockaddr+"/socket/temp/1");
+	SOCKET = new WebSocket(sockprot+"//"+sockaddr+"/socket/temp/1");
 
 	$('.overlay').text('Connecting');
 
@@ -130,20 +134,8 @@ $(window).load(function() {
 
 	SOCKET.onmessage = function(msg) {
 		var msg = JSON.parse(msg.data);
-
-		handlers = {
-			game           : handler_game,
-			moves          : handler_moves,
-			board          : handler_board,
-			forced_action  : handler_forced_action,
-			assign_player  : handler_assign_player,
-			available_moves: handler_available_moves,
-			current_player : handler_current_player,
-			roll           : handler_roll,
-			can_trade      : handler_can_trade,
-		}
-
-		handlers[msg.type](msg);
+		
+		HANDLERS[msg.type](msg);
 	}
 });
 
