@@ -91,9 +91,21 @@ var preload = function() {
 		queue.done(func(res));
 	}
 
+	queue.done(function() {
+		$('audio').each(function() {
+			this.load();
+		});
+	});
 
 };
 
+var play_sound = function(sound) {
+	var aud = $('#audio-'+sound)[0];
+	if( !aud.muted ) {
+		aud.load();
+		aud.play();
+	}
+}
 
 var resize = function() {
 	if( !BOARD )
@@ -212,6 +224,10 @@ $(window).resize(resize);
 
 $(document).ready(function() {
 	preload();
+
+	$('audio').each(function() {
+		this.muted = true;
+	});
 
 	for( var i = 1; i < 5; i++ ) {
 		$('.hex_row.template td.template')
@@ -463,6 +479,9 @@ function create_board(board) {
 	}
 
 	update_board(board);
+	$('audio').each(function() {
+		this.muted = false;
+	});
 }
 
 function update_board(board) {

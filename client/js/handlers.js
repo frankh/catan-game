@@ -182,7 +182,7 @@ HANDLERS.moves = function(msg) {
 		}
 
 		if( move.type == 'roll' ) {
-			globals.SOUNDS.push(new Audio("../res/01 - start turn.wav").play());
+			play_sound('start_turn');
 			show_message(PLAYER.name + ', it is now your turn');
 			$('.actions .roll')
 				.addClass('enabled')
@@ -198,7 +198,7 @@ HANDLERS.moves = function(msg) {
 					$(this).removeClass('enabled').unbind();
 
 					$('.rolling_die').addClass('rolling').addClass('show');
-					globals.SOUNDS.push(new Audio("../res/03 - dice roll.wav").play());
+					play_sound('dice_roll');
 			 });
 		}
 
@@ -213,7 +213,7 @@ HANDLERS.moves = function(msg) {
 						}
 					}));
 					$(this).removeClass('enabled').unbind();
-					globals.SOUNDS.push(new Audio("../res/02 - end turn.wav").play());
+					play_sound('end_turn');
 					clear_message();
 					$('.enabled').removeClass('enabled').unbind();
 			 });
