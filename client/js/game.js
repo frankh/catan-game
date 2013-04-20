@@ -111,7 +111,7 @@ $(window).load(function() {
 	if( document.domain == 'localhost' ) {
 		sockaddr += ':8080';
 	}
-	if (loc.protocol === "https:") {
+	if (document.location.protocol === "https:") {
     	sockprot = "wss:";
 	}
 
