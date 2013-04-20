@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 echo "Compiling all LESS files to CSS"
 for file in *.less
 do
