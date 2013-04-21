@@ -10,6 +10,7 @@
 		<script src="js/lib/jquery-ui-1.10.2.custom.js"></script>
 		<script src="js/building.js"></script>
 		<script src="js/moves.js"></script>
+		<script src="js/trade.js"></script>
 		<script src="js/vertex.js"></script>
 		<script src="js/handlers.js"></script>
 		<script src="js/game.js"></script>
@@ -45,8 +46,8 @@
 							<div class='name_bar computer_player'>Al</div>
 							<div class='player1 wants'>GIVE
 								<div class='resource one wood'></div>
-								<div class='resource two stone'></div>
-								<div class='resource three brick'></div>
+								<div class='resource two ore'></div>
+								<div class='resource three clay'></div>
 							</div>
 							<div class='player1 needs'>WANT</div>
 						</div>
@@ -89,11 +90,11 @@
 								<div class='sel_res'></div>
 							</div>
 							<div class='avail_resources'>
-								<div class='avail brick'></div>
-								<div class='avail grain'></div>
-								<div class='avail stone'></div>
-								<div class='avail sheep'></div>
-								<div class='avail wood'></div>
+								<div class='avail clay' restype='clay'></div>
+								<div class='avail wheat' restype='wheat'></div>
+								<div class='avail ore' restype='ore'></div>
+								<div class='avail wool' restype='wool'></div>
+								<div class='avail wood' restype='wood'></div>
 							</div>
 						</div>
 						<div class='give_section'>
@@ -106,19 +107,19 @@
 								<div class='sel_res'></div>
 							</div>
 							<div class='avail_resources'>
-								<div class='avail brick'>
+								<div class='avail clay' restype='clay'>
 									<span>1</span>
 								</div>
-								<div class='avail grain'>
+								<div class='avail wheat' restype='wheat'>
 									<span>0</span>
 								</div>
-								<div class='avail stone'>
+								<div class='avail ore' restype='ore'>
 									<span>0</span>
 								</div>
-								<div class='avail sheep'>
+								<div class='avail wool' restype='wool'>
 									<span>0</span>
 								</div>
-								<div class='avail wood'>
+								<div class='avail wood' restype='wood'>
 									<span>0</span>
 								</div>
 							</div>

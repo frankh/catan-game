@@ -44,8 +44,8 @@
                 background-color: #333;
                 &:hover {
                     z-index:20!important;
-                    width:50%;
-                    height:80%;
+                    width:40%;
+                    height:60%;
                 }
                 &.one {
                 left: 5%;
@@ -95,9 +95,57 @@
             background: url(../res/divider.bmp) no-repeat right center;
         }
     }
+
+    .sel_res {
+        background-size: 500% 100%;
+        
+        &.clay {
+            background-image: url('../res/resource_icons.png');
+            background-position: 0% top;
+        }
+        &.wheat {
+            background-image: url('../res/resource_icons.png');
+            background-position: 25% top;
+        }
+        &.ore {
+            background-image: url('../res/resource_icons.png');
+            background-position: 50% top;
+        }
+        &.wool {
+            background-image: url('../res/resource_icons.png');
+            background-position: 75% top;
+        }
+        &.wood {
+            background-image: url('../res/resource_icons.png');
+            background-position: 100% top;
+        }
+    }
     .avail_resources {
-        margin: 4% 8%;
         .box-sizing;
+        margin: 4% 8%;
+    }
+    .wants,
+    .avail_resources {
+        .clay {
+            .resource-test;
+            background-position: 0% top;
+        }
+        .wheat {
+            .resource-test;
+            background-position: 25% top;
+        }
+        .ore {
+            .resource-test;
+            background-position: 50% top;
+        }
+        .wool {
+            .resource-test;
+            background-position: 75% top;
+        }
+        .wood {
+            .resource-test;
+            background-position: 100% top;
+        }
     }
     .avail {
         width: 16%;
@@ -112,26 +160,6 @@
             width: 100%;
             text-align: center;
         }
-    }
-    .brick {
-        .resource-test;
-        background-position: 0% top;
-    }
-    .grain {
-        .resource-test;
-        background-position: 25% top;
-    }
-    .stone {
-        .resource-test;
-        background-position: 50% top;
-    }
-    .sheep {
-        .resource-test;
-        background-position: 75% top;
-    }
-    .wood {
-        .resource-test;
-        background-position: 100% top;
     }
     .hide_trade {
         width: 20%;

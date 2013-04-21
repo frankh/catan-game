@@ -60,6 +60,7 @@ var preload = function() {
 		'../res/ai_icon.png',
 		'../res/divider.bmp',
 		'../res/actionbuttons.png',
+		'../res/resource_icons.png',
 		'../res/divider_large.bmp',
 		'../res/scroll-button-down.bmp',
 		'../res/scroll-button-up.bmp',
