@@ -117,17 +117,16 @@ class GameTest(unittest.TestCase):
 		self.assertEqual(conn.player.num_buildings, 2)
 		self.assertIn(conn.player.longest_road, (1,2))
 
-
 		self.assertEqual(random_move(conn.moves)['type'], 'roll')
 		self.game.recv_move(conn.player, random_move(conn.moves))
 
 	def test_6_can_trade(self):
 		self.player1.cards['wood'] += 1
-		self.player2.cards['wood'] += 1
+		self.player2.cards['wheat'] += 1
 
 		self.game.recv_trade(self.player1, {
-			'give': self.player1.cards,
-			'want': self.player2.cards,
+			'give': {'wood': 1},
+			'want': {'ore': 4},
 			'player_id': self.player2.id,
 			'turn': self.game.action_number,
 		})
@@ -310,6 +309,28 @@ class GameTest(unittest.TestCase):
 			})
 			self.assertNotEqual(action, self.game.action_number)
 			action = self.game.action_number
+
+	def test_9_3_cant_give_same_res(self):
+		self.player1.cards['ore'] += 1
+		self.player2.cards['ore'] += 1
+
+		action = self.game.action_number
+
+		self.game.recv_trade(self.player2, {
+			'give': {'ore': 1},
+			'want': {'ore': 1},
+			'player_id': self.player1.id,
+			'turn': self.game.action_number,
+		})
+
+		self.game.recv_trade(self.player1, {
+			'give': {'ore': 1},
+			'want': {'ore': 1},
+			'player_id': self.player2.id,
+			'turn': self.game.action_number,
+		})
+
+		self.assertEqual(action, self.game.action_number)
 
 if __name__ == '__main__':
 	unittest.main()

@@ -394,6 +394,10 @@ class Game(object):
 					if player.cards[res] < trade['give'][res]:
 						return False
 
+					# You can't have a resource in both give and want
+					if res in trade['want'] and trade['give'][res] > 0 and trade['want'][res] > 0:
+						return False
+
 				# Make sure both giving and wanting something.
 				def all_zero(dict):
 					return max(list(dict.values()) or [0]) == 0
@@ -583,4 +587,5 @@ class Game(object):
 			'board': self.board.as_dict(),
 			'players': [p.as_dict() for p in self.players],
 			'turn': self.action_number,
+			'started': self.started,
 		}

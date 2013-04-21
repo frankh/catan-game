@@ -97,9 +97,10 @@ def move_robber(self):
 	}]
 
 	move = yield from get_move(valid_moves)
-	self.do_move(self.current_player, move)
+	[hx for hx in self.board.land_hexes if hx.being_robbed][0].being_robbed = False
 
 	hx = self.board.Hex.get(move['location']['id'])
+	hx.being_robbed = True
 	target_players = {v.built.owner for v in hx.vertices if v.built}
 	target_players -= {self.current_player}
 
@@ -131,6 +132,12 @@ def start_of_turn(self):
 		die1, die2 = self.dice_gen.roll()
 		result = die1 + die2
 
+		self.broadcast({
+			'type': 'roll',
+			'values': [die1, die2],
+			'result': result,
+		})
+
 		if result == 7:
 			yield from rolled_robber(self)
 
@@ -159,10 +166,8 @@ def start_of_turn(self):
 							vert.built.owner.cards[res] += res_count
 
 		self.broadcast({
-			'type': 'roll',
-			'values': [die1, die2],
-			'result': result,
-			'gen_hexes': [hx.as_dict() for hx in gen_hexes],
+			'type': 'resource_generation',
+			'hexes': [hx.as_dict() for hx in gen_hexes],
 		})
 
 		self.do_move(self.current_player, move)

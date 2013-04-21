@@ -87,7 +87,7 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 
 	def on_message(self, message):
 		try:
-			log.debug(str('temp')+'>'+pformat(json.loads(message)))
+			log.debug(str('temp')+'>'+pformat(json.loads(message)['type']))
 		except:
 			log.debug(str('temp')+'>'+message)
 
@@ -105,7 +105,7 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 		
 	def write_message(self, message):
 		try:
-			log.debug(str('temp')+'<'+pformat(json.loads(message)))
+			log.debug(str('temp')+'<'+pformat(json.loads(message)['type']))
 		except:
 			log.debug(str('temp')+'<'+message)
 

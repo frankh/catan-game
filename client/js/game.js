@@ -225,6 +225,8 @@ $(window).resize(resize);
 $(document).ready(function() {
 	preload();
 
+	$('.trade_window').hide();
+
 	$('audio').each(function() {
 		this.muted = true;
 	});
