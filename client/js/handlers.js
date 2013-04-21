@@ -3,10 +3,13 @@
 var globals = this;
 
 var TURN_NUMBER = -1;
+var NUM_PLAYERS = -1;
 var HANDLERS = function(){};
 globals.HANDLERS = HANDLERS;
 
 HANDLERS.game = function(msg) {
+	NUM_PLAYERS = msg.game.max_players;
+
 	HANDLERS.board(msg.game);
 	HANDLERS.players(msg.game);
 	TURN_NUMBER = msg.game.turn;
@@ -38,6 +41,22 @@ HANDLERS.can_trade = function(msg) {
 
 HANDLERS.board = function(msg) {
 	if( !globals.BOARD ) {
+		for( var i = 1; i < NUM_PLAYERS; i++ ) {
+			$('.trade_display.template')
+				.clone()
+				.removeClass('template')
+				.addClass('player'+i)
+				.appendTo('.trade_window .other_players')
+				.find('wants,needs').addClass('player'+i)
+		}
+
+		switch(NUM_PLAYERS-1) {
+			case 1: $('.trade_window .other_players').addClass('one'); break;
+			case 2: $('.trade_window .other_players').addClass('two'); break;
+			case 3: $('.trade_window .other_players').addClass('three'); break;
+			default: break;
+		}
+
 		globals.BOARD = msg.board;
 		create_board(globals.BOARD);
 		resize();
@@ -112,6 +131,27 @@ HANDLERS.current_player = function(msg) {
 	$bar.find('.icon').removeClass('ai')
 	                  .removeClass('human')
 	                  .addClass(player.icon);
+
+	$.each(PLAYERS, function() {
+		var player_section;
+
+		if( this.id == (PLAYER.id + 1)%NUM_PLAYERS ) {
+			// next player
+			player_section = $('.trade_display.player1');
+		} else if( this.id == (PLAYER.id - 1)%NUM_PLAYERS ) {
+			// previous player
+			player_section = $('.trade_display.player'+(NUM_PLAYERS-1));
+		} else {
+			//opposite
+			player_section = $('.trade_display.player2');
+		}
+
+		player_section.attr('player_id', this.id);
+		player_section.find('.name_bar')
+			.text(this.name)
+			.removeClass()
+			.addClass('name_bar '+this.icon);
+	});
 };
 
 HANDLERS.moves = function(msg) {

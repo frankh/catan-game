@@ -27,7 +27,7 @@ class DefaultGame(Game):
 	def __init__(self):
 		super().__init__()
 		self.dice_gen = dice_gen.DeckDiceGen()
-		self.max_players = 1
+		self.max_players = 2
 		
 games = {
 	'1': DefaultGame()

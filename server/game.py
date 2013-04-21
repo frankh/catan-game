@@ -220,6 +220,7 @@ class Player(object):
 			'has_longest_road': self.has_longest_road,
 			'victory_points': self.victory_points,
 			'player_id': self.id,
+			'id': self.id,
 			'color': self.color,
 		}
 
@@ -591,4 +592,5 @@ class Game(object):
 			'players': [p.as_dict() for p in self.players],
 			'turn': self.action_number,
 			'started': self.started,
+			'max_players': self.max_players,
 		}
