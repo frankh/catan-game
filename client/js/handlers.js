@@ -2,12 +2,14 @@
 
 var globals = this;
 
+var TURN_NUMBER = -1;
 var HANDLERS = function(){};
 globals.HANDLERS = HANDLERS;
 
 HANDLERS.game = function(msg) {
 	HANDLERS.board(msg.game);
 	HANDLERS.players(msg.game);
+	TURN_NUMBER = msg.game.turn;
 
 	if( msg.game.current_player ) {
 		HANDLERS.current_player({
@@ -28,6 +30,7 @@ HANDLERS.can_trade = function(msg) {
 	if( !can_trade ) {
 		$('.trade_window').hide();
 		$('#trade_button').removeClass('enabled');
+		TRADE.reset_trade();
 	} else {
 		$('#trade_button').addClass('enabled');
 	}
@@ -49,6 +52,17 @@ globals.RESOURCE_TYPES = {
 	'wood': true,
 	'ore': true,
 	'wool': true,
+}
+
+HANDLERS.trade_offer = function(msg) {
+	var trade = msg.trade;
+
+	if( msg.player.id == PLAYER.id ) {
+		return;
+	}
+
+	//TODO
+
 }
 
 HANDLERS.players = function(msg) {

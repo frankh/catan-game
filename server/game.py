@@ -1,6 +1,7 @@
 import random
 import json
 import itertools
+import logging
 from collections import defaultdict
 
 from utils import timed, cached_per_action
@@ -279,12 +280,13 @@ class Game(object):
 			'moves': moves
 		})
 
-	def broadcast(self, message):
+	def broadcast(self, message, exclude=()):
 		"""
 		Sends a message to all the players in the game.
 		"""
 		for player in self.players:
-			player.send(message)
+			if player not in exclude:
+				player.send(message)
 
 	def get_player(self, player_id):
 		for player in self.players:
@@ -313,7 +315,7 @@ class Game(object):
 		"""
 		Sent every time the client updates the player's trade offer.
 
-		trade shoud look like: 
+		trade should look like: 
 		{
 			'give': {
 				'ore': 2,
@@ -420,6 +422,7 @@ class Game(object):
 			# Just silently ignore invalid trades for now.
 			# Most likely scenario is a wierd edge-case bug that
 			# wouldn't be worth telling user about
+			logging.debug('Invalid trade')
 			return
 
 		self.active_trades[player.id] = trade
@@ -460,7 +463,7 @@ class Game(object):
 				'type': 'trade_offer',
 				'player': player.as_dict(),
 				'trade': trade,
-			})
+			}, exclude=[player])
 
 	def do_trade(self, trade, player_from, player_to=None):
 		self.action_number += 1

@@ -15,9 +15,10 @@ TRADE.reset_trade = function() {
 		'ore': 0,
 		'wool': 0,
 	};
-};
 
-TRADE.reset_trade();
+	TRADE.update_give_icons();
+	TRADE.update_want_icons();
+};
 
 TRADE.sum_dict = function(d) {
 	var total = 0;
@@ -75,7 +76,28 @@ TRADE.update_want_icons = function() {
 	}
 }
 
+TRADE.send_trade = function () {
+	SOCKET.send(JSON.stringify({
+		'type': 'trade',
+		'trade': {
+			'give': TRADE.give,
+			'want': TRADE.want,
+			'player_id': null,
+			'turn': TURN_NUMBER
+		}
+	}))
+}
+
+TRADE.reset_trade();
+
 $(document).ready(function() {
+	$('#trade_button').click(function() {
+		if( !$(this).hasClass('enabled') ) {
+			return;
+		}
+
+		$('.trade_window').show();
+	})
 
 	$('.give_section .sel_res').live('click', function() {
 		var $this = $(this);
@@ -87,6 +109,7 @@ $(document).ready(function() {
 		}
 
 		TRADE.update_give_icons();
+		TRADE.send_trade();
 	});
 
 	$('.want_section .sel_res').live('click', function() {
@@ -99,32 +122,34 @@ $(document).ready(function() {
 		}
 
 		TRADE.update_want_icons();
+		TRADE.send_trade();
 	});
 
 	$('.give_section .avail_resources .avail').live('click', function() {
 		var restype = $(this).attr('restype');
 
 		if( PLAYER.cards[restype] - TRADE.give[restype] <= 0 
-		 || TRADE.give_total() >= 5) {
+		 || TRADE.give_total() >= 5
+		 || TRADE.want[restype]) {
 			return;
 		}
 
 		TRADE.give[restype] += 1;
 		TRADE.update_give_icons();
+		TRADE.send_trade();
 
 	});
 
 	$('.want_section .avail_resources .avail').live('click', function() {
 		var restype = $(this).attr('restype');
 
-		if( PLAYER.cards[restype] - TRADE.want[restype] <= 0 
-		 || TRADE.want_total() >= 5) {
+		if( TRADE.want_total() >= 5
+		 || TRADE.give[restype]) {
 			return;
 		}
 
 		TRADE.want[restype] += 1;
 		TRADE.update_want_icons();
-		console.log(TRADE.want);
-
+		TRADE.send_trade();
 	});
 });
