@@ -492,6 +492,7 @@ class Game(object):
 
 		self.broadcast({
 			'type': 'trade',
+			'turn': self.action_number,
 			'trade': {
 				'give': trade['give'],
 				'want': trade['want'],

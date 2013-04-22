@@ -108,7 +108,7 @@ MOVES.end_turn = function(move) {
 			$(this).removeClass('enabled').unbind();
 			play_sound('end_turn');
 			clear_message();
-			$('.enabled').removeClass('enabled').unbind();
+			$('.enabled').not('#trade_button').removeClass('enabled').unbind();
 	 });
 };
 

@@ -78,7 +78,7 @@ TRADE.update_want_icons = function() {
 
 TRADE.update_other_trades = function() {
 	$('.trade_display').find('.resource').remove();
-	
+
 	for( var player_id in ACTIVE_TRADES ) {
 		var trade = ACTIVE_TRADES[player_id];
 		var $trade = $('.trade_display[player_id='+player_id+']');
@@ -110,9 +110,12 @@ TRADE.update_other_trades = function() {
 			}
 
 
-			if( this == 'want' && res_num == 0 ) {
+			if( res_num == 0 ) {
 				can_match = false;
+				is_matched = false;
 			}
+
+
 
 			if( is_matched ) {
 				$('.trade_buttons .match')
@@ -147,7 +150,9 @@ TRADE.send_trade = function (player_id) {
 			'player_id': player_id,
 			'turn': TURN_NUMBER
 		}
-	}))
+	}));
+
+	TRADE.update_other_trades();
 }
 
 TRADE.reset_trade();

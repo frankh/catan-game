@@ -100,6 +100,7 @@ HANDLERS.trade_offer = function(msg) {
 
 HANDLERS.trade = function(msg) {
 	var trade = msg.trade;
+	TURN_NUMBER = msg.turn;
 
 	PLAYERS[trade.player_from.id] = trade.player_from;
 	if( trade.player_to ) {
