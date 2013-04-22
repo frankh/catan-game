@@ -424,6 +424,14 @@ class Game(object):
 			# Most likely scenario is a wierd edge-case bug that
 			# wouldn't be worth telling user about
 			logging.debug('Invalid trade')
+			self.broadcast({
+				'type': 'trade_offer',
+				'player': player.as_dict(),
+				'trade': {
+					'give': {},
+					'want': {},
+				},
+			}, exclude=[player])
 			return
 
 		self.active_trades[player.id] = trade
@@ -445,6 +453,7 @@ class Game(object):
 			and matched_trade['turn'] == trade['turn'] \
 			and matched_trade['give'] == trade['want'] \
 			and matched_trade['want'] == trade['give'] \
+			and matched_trade['player_id'] is not None \
 			and int(matched_trade['player_id']) == player.id \
 			and self.current_player in (player, t_player) \
 			and valid_trade(t_player, matched_trade):

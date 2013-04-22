@@ -65,6 +65,24 @@
 	width: 100%;
 	height: 13.8%;
 }
+
+.hex.generating {
+    opacity: 0.7;
+    .animation-name(resource-generating);
+    .animation-duration(1s);
+    .animation-timing-function(linear);
+    .animation-iteration-count(1);
+}
+
+@-webkit-keyframes resource-generating {
+    from {
+        .rotate(120deg);
+    }
+    to {
+        .rotate(480deg);
+    }
+}
+
 /* 787x826 */
 
 .rotate(@angle) {

@@ -20,18 +20,26 @@
         font-weight: bold;
         .box-sizing;
         border-right: 2px solid black;
+
         .name_bar {
             width:100%;
             height: 20%;
-        }
-        .computer_player {
-            background: url(../res/ai_icon.png) no-repeat left center;
+
             background-size: auto 80%;
+            background-repeat: no-repeat;
+            background-position: left;
             padding-left: 15%;
             width: 100%;
             .box-sizing;
+
+            &.ai {
+               background-image: url(../res/ai_icon.png);
+            }
+            &.human {
+               background-image: url(../res/human_icon.png);
+            }
         }
-        .wants, .needs {
+        .want, .give {
             width: 50%;
             height: 70%;
             text-align: center;
@@ -91,7 +99,7 @@
             }*/
 
         }
-        .wants {
+        .give {
             background: url(../res/divider.bmp) no-repeat right center;
         }
     }
@@ -99,24 +107,30 @@
     .sel_res {
         background-size: 500% 100%;
         
-        &.clay {
+        .resource-icon() {
             background-image: url('../res/resource_icons.png');
+            // Make resource on top of unselected
+            position: relative;
+        }
+
+        &.clay {
+            .resource-icon();
             background-position: 0% top;
         }
         &.wheat {
-            background-image: url('../res/resource_icons.png');
+            .resource-icon();
             background-position: 25% top;
         }
         &.ore {
-            background-image: url('../res/resource_icons.png');
+            .resource-icon();
             background-position: 50% top;
         }
         &.wool {
-            background-image: url('../res/resource_icons.png');
+            .resource-icon();
             background-position: 75% top;
         }
         &.wood {
-            background-image: url('../res/resource_icons.png');
+            .resource-icon();
             background-position: 100% top;
         }
     }
@@ -124,7 +138,7 @@
         .box-sizing;
         margin: 4% 8%;
     }
-    .wants,
+    .want, .give,
     .avail_resources {
         .clay {
             .resource-test;

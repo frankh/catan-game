@@ -2,10 +2,20 @@
 
 var globals = this;
 
+var PLAYERS;
 var TURN_NUMBER = -1;
 var NUM_PLAYERS = -1;
+var ACTIVE_TRADES = {};
 var HANDLERS = function(){};
 globals.HANDLERS = HANDLERS;
+
+var num_to_string = {
+	1: 'one',
+	2: 'two',
+	3: 'three',
+	4: 'four',
+	5: 'five',
+}
 
 HANDLERS.game = function(msg) {
 	NUM_PLAYERS = msg.game.max_players;
@@ -41,21 +51,24 @@ HANDLERS.can_trade = function(msg) {
 
 HANDLERS.board = function(msg) {
 	if( !globals.BOARD ) {
+		$('.trade_buttons').addClass(num_to_string[NUM_PLAYERS-1]);
+
 		for( var i = 1; i < NUM_PLAYERS; i++ ) {
 			$('.trade_display.template')
-				.clone()
-				.removeClass('template')
-				.addClass('player'+i)
-				.appendTo('.trade_window .other_players')
-				.find('wants,needs').addClass('player'+i)
+			.clone()
+			.removeClass('template')
+			.addClass('player'+i)
+			.appendTo('.trade_window .other_players')
+			.find('want,give').addClass('player'+i);
+
+			$('.trade_match_decline.template')
+			.clone()
+			.removeClass('template')
+			.appendTo('.trade_buttons')
+			.addClass('player'+i);
 		}
 
-		switch(NUM_PLAYERS-1) {
-			case 1: $('.trade_window .other_players').addClass('one'); break;
-			case 2: $('.trade_window .other_players').addClass('two'); break;
-			case 3: $('.trade_window .other_players').addClass('three'); break;
-			default: break;
-		}
+		$('.trade_window .other_players').addClass(num_to_string[NUM_PLAYERS-1]);
 
 		globals.BOARD = msg.board;
 		create_board(globals.BOARD);
@@ -79,12 +92,35 @@ HANDLERS.trade_offer = function(msg) {
 	if( msg.player.id == PLAYER.id ) {
 		return;
 	}
+	
+	ACTIVE_TRADES[msg.player.id] = trade;
 
-	//TODO
+	TRADE.update_other_trades();
+};
 
+HANDLERS.trade = function(msg) {
+	var trade = msg.trade;
+
+	PLAYERS[trade.player_from.id] = trade.player_from;
+	if( trade.player_to ) {
+		PLAYERS[trade.player_to.id] = trade.player_to;
+	}
+
+	update_players();
+
+	delete ACTIVE_TRADES[trade.player_from.id];
+	delete ACTIVE_TRADES[trade.player_to.id];
+
+	TRADE.update_other_trades();
+
+	if( trade.player_from.id == PLAYER.id 
+	 || (trade.player_to && trade.player_to.id == PLAYER.id) ) {
+		TRADE.reset_trade();
+	}
 }
 
-HANDLERS.players = function(msg) {
+
+var update_players = function() {
 	$('.player_row')
 		.removeClass('blue')
 		.removeClass('red')
@@ -92,10 +128,8 @@ HANDLERS.players = function(msg) {
 		.removeClass('yellow')
 		.addClass('unused');
 
-	globals.PLAYERS = msg.players;
-	
-	for( var i in globals.PLAYERS ) {
-		var player = globals.PLAYERS[i];
+	for( var i in PLAYERS ) {
+		var player = PLAYERS[i];
 		var player_row = $('.player_row.unused:eq(0)')
 		                    .removeClass('unused')
 		                    .addClass(player.color);
@@ -106,14 +140,20 @@ HANDLERS.players = function(msg) {
 		player_row.find('.summary_player.points').text(player.victory_points);
 		player_row.find('.summary_player.roads').text(player.longest_road);
 
-		if( player.player_id == globals.PLAYER.player_id ) {
-			globals.PLAYER = player;
+		if( player.player_id == PLAYER.player_id ) {
+			PLAYER = player;
 
-			for( var res_type in globals.RESOURCE_TYPES ) {
+			for( var res_type in RESOURCE_TYPES ) {
 				$('.hand .card.'+res_type+' .count').text(player.cards[res_type]);
 			}
 		}
 	}
+}
+
+HANDLERS.players = function(msg) {
+	PLAYERS = msg.players;
+
+	update_players();
 };
 
 HANDLERS.current_player = function(msg) {
@@ -134,23 +174,27 @@ HANDLERS.current_player = function(msg) {
 
 	$.each(PLAYERS, function() {
 		var player_section;
+		var player_class;
 
 		if( this.id == (PLAYER.id + 1)%NUM_PLAYERS ) {
 			// next player
-			player_section = $('.trade_display.player1');
+			player_class = 'player1';
 		} else if( this.id == (PLAYER.id - 1)%NUM_PLAYERS ) {
 			// previous player
-			player_section = $('.trade_display.player'+(NUM_PLAYERS-1));
+			player_class = 'player'+(NUM_PLAYERS-1);
 		} else {
 			//opposite
-			player_section = $('.trade_display.player2');
+			player_class = 'player2';
 		}
 
+		player_section = $('.trade_display.'+player_class);
 		player_section.attr('player_id', this.id);
 		player_section.find('.name_bar')
 			.text(this.name)
 			.removeClass()
 			.addClass('name_bar '+this.icon);
+
+		$('.trade_match_decline.'+player_class).attr('player_id', this.id);
 	});
 };
 
@@ -206,6 +250,13 @@ HANDLERS.roll = function(msg) {
 
 HANDLERS.resource_generation = function(msg) {
 	console.log(msg);
+	$.each(msg.hexes, function() {
+		var $hex = get_hex(this.id);
+		$hex.addClass('generating');
+		setTimeout(function() {
+			$hex.removeClass('generating');
+		}, 1000);
+	});
 };
 
 HANDLERS.assign_player = function(msg) {

@@ -76,13 +76,75 @@ TRADE.update_want_icons = function() {
 	}
 }
 
-TRADE.send_trade = function () {
+TRADE.update_other_trades = function() {
+	$('.trade_display').find('.resource').remove();
+	
+	for( var player_id in ACTIVE_TRADES ) {
+		var trade = ACTIVE_TRADES[player_id];
+		var $trade = $('.trade_display[player_id='+player_id+']');
+
+		$.each(['give', 'want'], function() {
+			var res_num = 0;
+			var can_match = true;
+			var is_matched = true;
+
+			var opp = {
+				give: 'want',
+				want: 'give'
+			}
+
+			for( var res in trade[this] ) {
+				for( var i = 0; i < trade[this][res]; i++ ) {
+					res_num++;
+					var $res = $('<div class="resource '+res+' '+num_to_string[res_num]+'"></div>');
+					$trade.find('.'+this).append($res);
+				}
+
+				if( this == 'want' && PLAYER.cards[res] < trade[this][res] ) {
+					can_match = false;
+				}
+
+				if( trade[this][res] != TRADE[opp[this]][res] ) {
+					is_matched = false;
+				}
+			}
+
+
+			if( this == 'want' && res_num == 0 ) {
+				can_match = false;
+			}
+
+			if( is_matched ) {
+				$('.trade_buttons .match')
+				.text('Confirm')
+				.removeClass('disabled')
+				.addClass('confirm');
+			} else if( can_match ) {
+				$('.trade_buttons .match')
+				.text('Match')
+				.removeClass('disabled')
+				.removeClass('confirm');
+			} else {
+				$('.trade_buttons .match')
+				.text('Match')
+				.removeClass('confirm')
+				.addClass('disabled');
+			}
+		});
+	}
+};
+
+TRADE.send_trade = function (player_id) {
+	if( player_id === undefined ) {
+		player_id = null;
+	}
+
 	SOCKET.send(JSON.stringify({
 		'type': 'trade',
 		'trade': {
 			'give': TRADE.give,
 			'want': TRADE.want,
-			'player_id': null,
+			'player_id': player_id,
 			'turn': TURN_NUMBER
 		}
 	}))
@@ -151,5 +213,23 @@ $(document).ready(function() {
 		TRADE.want[restype] += 1;
 		TRADE.update_want_icons();
 		TRADE.send_trade();
+	});
+
+	$('.trade_buttons .match:not(.disabled)').live('click', function() {
+		var $trade_buttons = $(this).closest('.trade_match_decline');
+		var player_id = parseInt($trade_buttons.attr('player_id'));
+		TRADE.want = ACTIVE_TRADES[player_id].give;
+		TRADE.give = ACTIVE_TRADES[player_id].want;
+
+		TRADE.update_want_icons();
+		TRADE.update_give_icons();
+		TRADE.send_trade();
+	});
+
+	$('.trade_buttons .match.confirm:not(.disabled)').live('click', function() {
+		var $trade_buttons = $(this).closest('.trade_match_decline');
+		var player_id = parseInt($trade_buttons.attr('player_id'));
+
+		TRADE.send_trade(player_id);
 	});
 });

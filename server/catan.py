@@ -58,7 +58,7 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 			
 		game = games[game_id]
 		self.game = game
-		self.player = Player(self, username, game)
+		self.player = Player(self, 'Player {0}'.format(len(game.players)+1), game)
 		game.add_player(self.player)
 
 		if game.password and game.password != password:
