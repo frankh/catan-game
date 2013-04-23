@@ -9,6 +9,30 @@ var ACTIVE_TRADES = {};
 var HANDLERS = function(){};
 globals.HANDLERS = HANDLERS;
 
+HANDLERS.queue = {
+	wait: {},
+	todo: [],
+
+	wait_for: function(evt) {
+		this.wait[evt] = true;
+	},
+	finish: function(evt) {
+		delete this.wait[evt];
+
+		while( $.isEmptyObject(this.wait) && this.todo.length ) {
+			this.todo.pop()();
+		}
+	},
+	add: function(func, args) {
+		var that = this;
+		this.todo.push(function() {
+			func.apply(that, args);
+		});
+		// Call finished so that func runs if wait is empty
+		this.finish();
+	}
+};
+
 var num_to_string = {
 	1: 'one',
 	2: 'two',
@@ -208,12 +232,13 @@ HANDLERS.moves = function(msg) {
 		var move = moves[i];
 
 		MOVES[move.type](move);
-
 	}
 };
 
 HANDLERS.roll = function(msg) {
 	var values = msg.values;
+
+	HANDLERS.queue.wait_for('dice_roll');
 
 	$('.corner_dice').css('visibility', 'hidden');
 	$('.roll_dice').addClass('show');
@@ -245,6 +270,8 @@ HANDLERS.roll = function(msg) {
 
 			$('.corner_dice .dice_value').text(msg.result);
 			$('.corner_dice').css('visibility', 'visible');
+
+			HANDLERS.queue.finish('dice_roll');
 		});
 	});
 };
@@ -252,11 +279,13 @@ HANDLERS.roll = function(msg) {
 HANDLERS.resource_generation = function(msg) {
 	console.log(msg);
 	$.each(msg.hexes, function() {
+		HANDLERS.queue.wait_for('resource_generation');
 		var $hex = get_hex(this.id);
-		$hex.addClass('generating');
-		setTimeout(function() {
+		$hex.addClass('generating')
+		.delay(1000).promise().done(function() {
 			$hex.removeClass('generating');
-		}, 1000);
+			HANDLERS.queue.finish('resource_generation');
+		});
 	});
 };
 

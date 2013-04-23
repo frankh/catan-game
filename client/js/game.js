@@ -216,7 +216,7 @@ $(window).load(function() {
 	SOCKET.onmessage = function(msg) {
 		var msg = JSON.parse(msg.data);
 		
-		HANDLERS[msg.type](msg);
+		HANDLERS.queue.add(HANDLERS[msg.type], [msg]);
 	}
 });
 
