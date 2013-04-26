@@ -4,9 +4,62 @@
     -moz-box-sizing:border-box;
     -webkit-box-sizing:border-box;
 }
-.resource-test() {
-    background: url('../res/materialcards.png') no-repeat center center;
-    background-size: 500% 100%;
+
+.resource-icon() {
+    .shared() {
+        background: url('../res/resource_icons.png') no-repeat center center;
+        background-size: 500% 100%;
+        border-radius: 100%;
+        position: relative;
+    }
+
+    &.clay {
+        .shared;
+        background-position: 0% top;
+    }
+    &.wheat {
+        .shared;
+        background-position: 25% top;
+    }
+    &.ore {
+        .shared;
+        background-position: 50% top;
+    }
+    &.wool {
+        .shared;
+        background-position: 75% top;
+    }
+    &.wood {
+        .shared;
+        background-position: 100% top;
+    }
+}
+.resource-card() {
+    .shared() {
+        background: url('../res/materialcards.png') no-repeat center center;
+        background-size: 500% 100%;
+    }
+
+    &.clay {
+        .shared;
+        background-position: 0% top;
+    }
+    &.wheat {
+        .shared;
+        background-position: 25% top;
+    }
+    &.ore {
+        .shared;
+        background-position: 50% top;
+    }
+    &.wool {
+        .shared;
+        background-position: 75% top;
+    }
+    &.wood {
+        .shared;
+        background-position: 100% top;
+    }
 }
 
 /* Styles for top other players boxes */
@@ -52,8 +105,8 @@
                 background-color: #333;
                 &:hover {
                     z-index:20!important;
-                    width:40%;
-                    height:60%;
+                    // width:40%;
+                    // height:60%;
                 }
                 &.one {
                 left: 5%;
@@ -104,63 +157,20 @@
         }
     }
 
-    .sel_res {
-        background-size: 500% 100%;
-        
-        .resource-icon() {
-            background-image: url('../res/resource_icons.png');
-            // Make resource on top of unselected
-            position: relative;
-        }
-
-        &.clay {
-            .resource-icon();
-            background-position: 0% top;
-        }
-        &.wheat {
-            .resource-icon();
-            background-position: 25% top;
-        }
-        &.ore {
-            .resource-icon();
-            background-position: 50% top;
-        }
-        &.wool {
-            .resource-icon();
-            background-position: 75% top;
-        }
-        &.wood {
-            .resource-icon();
-            background-position: 100% top;
-        }
-    }
     .avail_resources {
         .box-sizing;
         margin: 4% 8%;
     }
-    .want, .give,
-    .avail_resources {
-        .clay {
-            .resource-test;
-            background-position: 0% top;
-        }
-        .wheat {
-            .resource-test;
-            background-position: 25% top;
-        }
-        .ore {
-            .resource-test;
-            background-position: 50% top;
-        }
-        .wool {
-            .resource-test;
-            background-position: 75% top;
-        }
-        .wood {
-            .resource-test;
-            background-position: 100% top;
-        }
+
+    .avail_resources div {
+        .resource-card;
     }
+
+    .sel_res,
+    .want div, .give div {
+        .resource-icon
+    }
+
     .avail {
         width: 16%;
         height: 100%;

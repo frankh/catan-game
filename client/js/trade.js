@@ -223,8 +223,8 @@ $(document).ready(function() {
 	$('.trade_buttons .match:not(.disabled)').live('click', function() {
 		var $trade_buttons = $(this).closest('.trade_match_decline');
 		var player_id = parseInt($trade_buttons.attr('player_id'));
-		TRADE.want = ACTIVE_TRADES[player_id].give;
-		TRADE.give = ACTIVE_TRADES[player_id].want;
+		TRADE.want = $.extend({}, ACTIVE_TRADES[player_id].give);
+		TRADE.give = $.extend({}, ACTIVE_TRADES[player_id].want);
 
 		TRADE.update_want_icons();
 		TRADE.update_give_icons();
