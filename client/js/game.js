@@ -145,7 +145,6 @@ var _resize = function() {
 
 	// Position hexes
 	$('td:nth-child(odd) .hex').css('top', height_offset + 'px');
-
 	$('td:nth-child(odd) .hex').css('left', width_offset + 'px');
 	$('td:nth-child(3) .hex').css('left', -1 * width_offset + 'px');
 	$('td:nth-child(4) .hex').css('left', -2 * width_offset + 'px');
@@ -174,6 +173,7 @@ var _resize = function() {
 	$('.dice_value').css('font-size', 2*height/940 + 'em');
 	$('.game_current_player_notification').css('font-size', 1.5*height/940 + 'em');
 	$('.trade_window').css('font-size', 1.2*height/940 + 'em');
+	$('.resource_summary').css('font-size', 1*height/940 + 'em');
 
 	resize_vertices();
 	resize_paths();
@@ -229,6 +229,7 @@ $(document).ready(function() {
 	preload();
 
 	$('.trade_window').hide();
+	$('.resource_summary').hide();
 
 	$('audio').each(function() {
 		this.muted = true;

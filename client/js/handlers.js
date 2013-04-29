@@ -153,17 +153,36 @@ var update_players = function() {
 		.removeClass('yellow')
 		.addClass('unused');
 
+	$('.resource_player_row').not('.template').remove();
+
+	var ordered_players = [];
+
+	for( var i in PLAYERS ) {
+		var player = PLAYERS[i];
+		ordered_players[player.id] = player;
+	}
+
+	PLAYERS = ordered_players;
+
 	for( var i in PLAYERS ) {
 		var player = PLAYERS[i];
 		var player_row = $('.player_row.unused:eq(0)')
-		                    .removeClass('unused')
-		                    .addClass(player.color);
+			.removeClass('unused')
+			.addClass(player.color);
 		player_row.find('.summary_player.name .name').text(player.name);
-		player_row.find('.summary_player.name .icon').addClass(player.icon);
 		player_row.find('.summary_player.name .icon').addClass(player.icon);
 		player_row.find('.summary_player.cards').text(player.num_cards);
 		player_row.find('.summary_player.points').text(player.victory_points);
 		player_row.find('.summary_player.roads').text(player.longest_road);
+
+		var resource_row = $('.resource_player_row.template')
+			.clone()
+			.removeClass('template')
+			.attr('player_id', player.id)
+			.addClass(player.color)
+			.appendTo($('.resource_summary'));
+		resource_row.find('.name').text(player.name);
+		resource_row.find('.icon').addClass(player.icon);
 
 		if( player.player_id == PLAYER.player_id ) {
 			PLAYER = player;
@@ -282,11 +301,21 @@ HANDLERS.resource_generation = function(msg) {
 		HANDLERS.queue.wait_for('resource_generation');
 		var $hex = get_hex(this.id);
 		$hex.addClass('generating')
-		.delay(1000).promise().done(function() {
+		.delay(600).promise().done(function() {
 			$hex.removeClass('generating');
 			HANDLERS.queue.finish('resource_generation');
 		});
 	});
+
+	if( msg.hexes.length ) {
+		HANDLERS.queue.add(function() {
+			HANDLERS.queue.wait_for('resource_summary');
+			$('.resource_summary').show().delay(2000).promise().done(function() {
+				HANDLERS.queue.finish('resource_summary');
+				$('.resource_summary').hide();
+			});
+		});
+	}
 };
 
 HANDLERS.assign_player = function(msg) {

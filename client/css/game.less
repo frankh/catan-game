@@ -10,13 +10,13 @@ html, body {
 	background-color: #005090;   
 
 	-webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -o-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 
-    cursor: default;
+	cursor: default;
 	font-family: verdana;
 }
 
@@ -295,130 +295,108 @@ html, body {
 
 @keyframes rolldie {
   from {
-    background-position: 0%;
+	background-position: 0%;
   }
   to {
-    background-position: 107%;
+	background-position: 107%;
   }
 }
 @-moz-keyframes rolldie {
   from {
-    background-position: 0%;
+	background-position: 0%;
   }
   to {
-    background-position: 107%;
+	background-position: 107%;
   }
 }
 
 @-webkit-keyframes rolldie {
   from {
-    background-position: 0%;
+	background-position: 0%;
   }
   to {
-    background-position: 107%;
+	background-position: 107%;
   }
 }
 
-.want_give {
-	text-align: center;
-	font-weight: bold;
-	line-height: 3;
-	width: 80%;
-	margin-left: 10%;
-	margin-right: 10%;
-	height: 25%;
-
-	background-size: 100% 100%;
-}
-
-.trade_window {
-	display: none;
+.resource_summary {
 	position: absolute;
-	left: 20%;
+	left: 25%;
 	top: 30%;
 
 
-	width: 60%;
+	width: 50%;
 	height: 40%;
 
 	background-color: white;
 	border: solid black 1px;
 
-	z-index: 200;
+	z-index: 201;
 
-	.other_players {
+	@title_height: 11%;
+
+	.title {
+		font-size: 1.4em;
+		text-align: center;
+		line-height: 1.7;
+		
 		width: 100%;
-		height: 30%;
+		height: @title_height;
 	}
 
-	.this_player {
-		width: 100%;
-		height: 70%;
-		margin-top: -1px;
+	.resource_player_row {
+		.lcolor_background;
 
-		background-color: #ddeeff;
+		height: (100%-@title_height)/4;
 
-		border-top: solid black 1px;
-
-		.trade_buttons, .other_buttons {
-			width: 100%;
-			height: 7%;
+		&.red .player_info {
+			background-color: darken(@lred, 10%);
+		}
+		&.blue .player_info {
+			background-color: darken(@lblue, 10%);
+		}
+		&.green .player_info {
+			background-color: darken(@lgreen, 10%);
+		}
+		&.yellow .player_info {
+			background-color: darken(@lyellow, 10%);
 		}
 
-		.want_section, .give_section {
-			height: 70%;
-			width: 49%;
-			display: inline-block;
+		.player_info {
 
-			.want {
-				.want_give;
-				background-image: url(../res/watermark_want.png);
-			}
-			.give {
-				.want_give;
-				background-image: url(../res/watermark_give.png);
+			width: 25%;
+			height: 25%;
 
-			}
-
-			.avail_resources {
+			.name.icon {
+				padding-left: 17%;
 				width: 100%;
-				height: 30%;
-			}
+				height: 100%;
 
-			.selected_resources {
-				width: 100%;
-				height: 27%;
-				display: inline-block;
-				padding-left: 12%;
-				padding-top: 2%;
+				line-height: 1.56;
+				font-size: 0.8em;
+				font-weight: bold;
 
-				.sel_res {
-					width: 20%;
-					height: 100%;
-					margin-left: -6%;
-					display: inline-block;
-					border-radius: 100%;
-					border: solid gray 1px;
-					background-color: #DBDBDC;
+				background-size: auto 80%;
+				background-repeat: no-repeat;
+				background-position: left;
+
+				&.ai {
+				   background-image: url(../res/ai_icon.png);
+				}
+				&.human {
+				   background-image: url(../res/human_icon.png);
 				}
 			}
 		}
 	}
-
-	.player_name_bar {
-		width: 100%;
-		height: 7%;
-
-		.lcolor_background
-	}
-
 }
+
 .building {
 
 	.vertex.built & {
 		.animation-duration(0.15s);
 		.animation-timing-function(steps(2, end));
-	  	.animation-iteration-count(8);
+		.animation-iteration-count(8);
 
 		background-size: 400% 100%;
 
@@ -478,10 +456,10 @@ html, body {
 
 @-moz-keyframes settleplace {
   from {
-    background-image: url(../res/settlements.png);
+	background-image: url(../res/settlements.png);
   }
   to {
-    background-image: url(../res/settlements_highlight.png);
+	background-image: url(../res/settlements_highlight.png);
   }
 }
 
