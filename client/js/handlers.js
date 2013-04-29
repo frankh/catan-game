@@ -28,7 +28,7 @@ HANDLERS.queue = {
 		this.todo.push(function() {
 			func.apply(that, args);
 		});
-		// Call finished so that func runs if wait is empty
+		// Call finish so that func runs if wait is empty
 		this.finish();
 	}
 };

@@ -117,7 +117,7 @@ var resize = function() {
 	RESIZE_TIMER = setTimeout(function() {
 		_resize();
 		$('.overlay').hide();
-	}, 200);
+	}, 10);
 }
 
 var _resize = function() {
@@ -130,6 +130,7 @@ var _resize = function() {
 		height = min_height;
 	} else if ($(window).height() > min_height) {
 		$('.game_window').height("100%");
+		height = $('.game_window').height();
 	}
 
 	// Lock ratio
