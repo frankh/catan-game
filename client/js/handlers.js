@@ -1,340 +1,316 @@
-"use strict";
+(function( Catan, $, undefined ) {
+	"use strict";
+	Catan.Handlers = Catan.Handlers || {};
 
-var globals = this;
+	Catan.players = [];
+	Catan.action_number = -1;
+	Catan.num_players = -1;
+	Catan.active_trades = {};
 
-var PLAYERS;
-var TURN_NUMBER = -1;
-var NUM_PLAYERS = -1;
-var ACTIVE_TRADES = {};
-var HANDLERS = function(){};
-globals.HANDLERS = HANDLERS;
+	var Handlers = Catan.Handlers;
 
-HANDLERS.queue = {
-	wait: {},
-	todo: [],
+	var num_to_string = {
+		1: 'one',
+		2: 'two',
+		3: 'three',
+		4: 'four',
+		5: 'five',
+	};
 
-	wait_for: function(evt) {
-		this.wait[evt] = true;
-	},
-	finish: function(evt) {
-		delete this.wait[evt];
+	Catan.queue =  {
+		wait: {},
+		todo: [],
 
-		while( $.isEmptyObject(this.wait) && this.todo.length ) {
-			this.todo.pop()();
+		wait_for: function(evt) {
+			this.wait[evt] = true;
+		},
+		finish: function(evt) {
+			delete this.wait[evt];
+
+			while( $.isEmptyObject(this.wait) && this.todo.length ) {
+				this.todo.pop()();
+			}
+		},
+		add: function(func, args) {
+			var that = this;
+			this.todo.push(function() {
+				func.apply(that, args);
+			});
+			// Call finish so that func runs if wait is empty
+			this.finish();
 		}
-	},
-	add: function(func, args) {
-		var that = this;
-		this.todo.push(function() {
-			func.apply(that, args);
-		});
-		// Call finish so that func runs if wait is empty
-		this.finish();
-	}
-};
+	};
 
-var num_to_string = {
-	1: 'one',
-	2: 'two',
-	3: 'three',
-	4: 'four',
-	5: 'five',
-}
+	Handlers.game = function(msg) {
+		Catan.num_players = msg.game.max_players;
 
-HANDLERS.game = function(msg) {
-	NUM_PLAYERS = msg.game.max_players;
+		Handlers.board(msg.game);
+		Handlers.players(msg.game);
+		Catan.action_number = msg.game.action_number;
 
-	HANDLERS.board(msg.game);
-	HANDLERS.players(msg.game);
-	TURN_NUMBER = msg.game.turn;
-
-	if( msg.game.current_player ) {
-		HANDLERS.current_player({
-			player: msg.game.current_player
-		});
-	}
-
-	if( !msg.game.started ) {
-		SOCKET.send(JSON.stringify({
-			'type': 'ready',
-		}));
-	}
-};
-
-HANDLERS.can_trade = function(msg) {
-	var can_trade = msg.can_trade;
-
-	if( !can_trade ) {
-		$('.trade_window').hide();
-		$('#trade_button').removeClass('enabled');
-		TRADE.reset_trade();
-	} else {
-		$('#trade_button').addClass('enabled');
-	}
-}
-
-HANDLERS.board = function(msg) {
-	if( !globals.BOARD ) {
-		$('.trade_buttons').addClass(num_to_string[NUM_PLAYERS-1]);
-
-		for( var i = 1; i < NUM_PLAYERS; i++ ) {
-			$('.trade_display.template')
-			.clone()
-			.removeClass('template')
-			.addClass('player'+i)
-			.appendTo('.trade_window .other_players')
-			.find('want,give').addClass('player'+i);
-
-			$('.trade_match_decline.template')
-			.clone()
-			.removeClass('template')
-			.appendTo('.trade_buttons')
-			.addClass('player'+i);
+		if( msg.game.current_player ) {
+			Handlers.current_player({
+				player: msg.game.current_player
+			});
 		}
 
-		$('.trade_window .other_players').addClass(num_to_string[NUM_PLAYERS-1]);
+		if( !msg.game.started ) {
+			Catan.send({
+				'type': 'ready',
+			});
+		}
+	};
 
-		globals.BOARD = msg.board;
-		create_board(globals.BOARD);
-		resize();
-	} else {
-		update_board(msg.board);
-	}
-};
+	Handlers.board = function(msg) {
+		if( !Catan.board ) {
+			$('.trade_buttons').addClass(num_to_string[Catan.num_players-1]);
 
-globals.RESOURCE_TYPES = {
-	'wheat': true,
-	'clay': true,
-	'wood': true,
-	'ore': true,
-	'wool': true,
-}
+			for( var i = 1; i < Catan.num_players; i++ ) {
+				$('.trade_display.template')
+				.clone()
+				.removeClass('template')
+				.addClass('player'+i)
+				.appendTo('.trade_window .other_players')
+				.find('want,give').addClass('player'+i);
 
-HANDLERS.trade_offer = function(msg) {
-	var trade = msg.trade;
+				$('.trade_match_decline.template')
+				.clone()
+				.removeClass('template')
+				.appendTo('.trade_buttons')
+				.addClass('player'+i);
+			}
 
-	if( msg.player.id == PLAYER.id ) {
-		return;
-	}
-	
-	ACTIVE_TRADES[msg.player.id] = trade;
+			$('.trade_window .other_players').addClass(num_to_string[Catan.num_players-1]);
 
-	TRADE.update_other_trades();
-};
+			Catan.board = msg.board;
+			Catan.create_board(Catan.board);
+			Catan.resize();
+		} else {
+			Catan.update_board(msg.board);
+		}
+	};
 
-HANDLERS.trade = function(msg) {
-	var trade = msg.trade;
-	TURN_NUMBER = msg.turn;
+	Handlers.can_trade = function(msg) {
+		var can_trade = msg.can_trade;
 
-	PLAYERS[trade.player_from.id] = trade.player_from;
-	if( trade.player_to ) {
-		PLAYERS[trade.player_to.id] = trade.player_to;
-	}
+		if( !can_trade ) {
+			$('.trade_window').hide();
+			$('#trade_button').removeClass('enabled');
+			Catan.Trade.reset_trade();
+		} else {
+			$('#trade_button').addClass('enabled');
+		}
+	};
 
-	update_players();
+	Handlers.trade_offer = function(msg) {
+		var trade = msg.trade;
 
-	delete ACTIVE_TRADES[trade.player_from.id];
-	delete ACTIVE_TRADES[trade.player_to.id];
+		if( msg.player.id == Catan.local_player.id ) {
+			// Ignore local players offers.
+			return;
+		}
+		
+		Catan.active_trades[msg.player.id] = trade;
 
-	TRADE.update_other_trades();
+		Trade.update_other_trades();
+	};
 
-	if( trade.player_from.id == PLAYER.id 
-	 || (trade.player_to && trade.player_to.id == PLAYER.id) ) {
-		TRADE.reset_trade();
-	}
-}
+	Handlers.trade = function(msg) {
+		var trade = msg.trade;
+		Catan.action_number = msg.action_number;
 
+		Catan.players[trade.player_from.id] = trade.player_from;
+		if( trade.player_to ) {
+			Catan.players[trade.player_to.id] = trade.player_to;
+		}
 
-var update_players = function() {
-	$('.player_row')
-		.removeClass('blue')
-		.removeClass('red')
-		.removeClass('green')
-		.removeClass('yellow')
-		.addClass('unused');
+		update_players();
 
-	$('.resource_player_row').not('.template').remove();
+		delete Catan.active_trades[trade.player_from.id];
+		delete Catan.active_trades[trade.player_to.id];
 
-	var ordered_players = [];
+		Trade.update_other_trades();
 
-	for( var i in PLAYERS ) {
-		var player = PLAYERS[i];
-		ordered_players[player.id] = player;
-	}
+		if( trade.player_from.id == Catan.local_player.id 
+		 || (trade.player_to && trade.player_to.id == Catan.local_player.id) ) {
+			Trade.reset_trade();
+		}
+	};
 
-	PLAYERS = ordered_players;
+	var update_players = function() {
+		$('.player_row')
+			.removeClass('blue')
+			.removeClass('red')
+			.removeClass('green')
+			.removeClass('yellow')
+			.addClass('unused');
 
-	for( var i in PLAYERS ) {
-		var player = PLAYERS[i];
-		var player_row = $('.player_row.unused:eq(0)')
-			.removeClass('unused')
-			.addClass(player.color);
-		player_row.find('.summary_player.name .name').text(player.name);
-		player_row.find('.summary_player.name .icon').addClass(player.icon);
-		player_row.find('.summary_player.cards').text(player.num_cards);
-		player_row.find('.summary_player.points').text(player.victory_points);
-		player_row.find('.summary_player.roads').text(player.longest_road);
+		$('.resource_player_row').not('.template').remove();
 
-		var resource_row = $('.resource_player_row.template')
-			.clone()
-			.removeClass('template')
-			.attr('player_id', player.id)
-			.addClass(player.color)
-			.appendTo($('.resource_summary'));
-		resource_row.find('.name').text(player.name);
-		resource_row.find('.icon').addClass(player.icon);
+		var ordered_players = [];
 
-		if( player.player_id == PLAYER.player_id ) {
-			PLAYER = player;
+		for( var i in Catan.players ) {
+			var player = Catan.players[i];
+			ordered_players[player.id] = player;
+		}
 
-			for( var res_type in RESOURCE_TYPES ) {
-				$('.hand .card.'+res_type+' .count').text(player.cards[res_type]);
+		Catan.players = ordered_players;
+
+		for( var i in Catan.players ) {
+			var player = Catan.players[i];
+			var player_row = $('.player_row.unused:eq(0)')
+				.removeClass('unused')
+				.addClass(player.color);
+			player_row.find('.summary_player.name .name').text(player.name);
+			player_row.find('.summary_player.name .icon').addClass(player.icon);
+			player_row.find('.summary_player.cards').text(player.num_cards);
+			player_row.find('.summary_player.points').text(player.victory_points);
+			player_row.find('.summary_player.roads').text(player.longest_road);
+
+			var resource_row = $('.resource_player_row.template')
+				.clone()
+				.removeClass('template')
+				.attr('player_id', player.id)
+				.addClass(player.color)
+				.appendTo($('.resource_summary'));
+			resource_row.find('.name').text(player.name);
+			resource_row.find('.icon').addClass(player.icon);
+
+			if( player.player_id == Catan.local_player.player_id ) {
+				Catan.local_player = player;
+
+				for( var res_type in Catan.resource_types ) {
+					$('.hand .card.'+res_type+' .count').text(player.cards[res_type]);
+				}
 			}
 		}
-	}
-}
+	};
 
-HANDLERS.players = function(msg) {
-	PLAYERS = msg.players;
 
-	update_players();
-};
+	Handlers.players = function(msg) {
+		Catan.players = msg.players;
+		update_players();
+	};
 
-HANDLERS.current_player = function(msg) {
-	var player = msg.player;
+	Handlers.current_player = function(msg) {
+		var player = msg.player;
 
-	var $bar = $('.game_current_player_notification');
+		var $bar = $('.game_current_player_notification');
 
-	$bar.removeClass('blue')
-	    .removeClass('red')
-	    .removeClass('green')
-	    .removeClass('yellow')
-        .addClass(msg.player.color);
+		$bar.removeClass('blue')
+		    .removeClass('red')
+		    .removeClass('green')
+		    .removeClass('yellow')
+	        .addClass(msg.player.color);
 
-	$bar.find('.name').text(player.name);
-	$bar.find('.icon').removeClass('ai')
-	                  .removeClass('human')
-	                  .addClass(player.icon);
+		$bar.find('.name').text(player.name);
+		$bar.find('.icon').removeClass('ai')
+		                  .removeClass('human')
+		                  .addClass(player.icon);
 
-	$.each(PLAYERS, function() {
-		var player_section;
-		var player_class;
+		$.each(Catan.players, function() {
+			var player_section;
+			var player_class;
 
-		if( this.id == (PLAYER.id + 1)%NUM_PLAYERS ) {
-			// next player
-			player_class = 'player1';
-		} else if( this.id == (PLAYER.id - 1)%NUM_PLAYERS ) {
-			// previous player
-			player_class = 'player'+(NUM_PLAYERS-1);
-		} else {
-			//opposite
-			player_class = 'player2';
+			if( this.id == (Catan.local_player.id + 1)%Catan.num_players ) {
+				// next player
+				player_class = 'player1';
+			} else if( this.id == (Catan.local_player.id - 1)%Catan.num_players ) {
+				// previous player
+				player_class = 'player'+(Catan.num_players-1);
+			} else {
+				//opposite
+				player_class = 'player2';
+			}
+
+			player_section = $('.trade_display.'+player_class);
+			player_section.attr('player_id', this.id);
+			player_section.find('.name_bar')
+				.text(this.name)
+				.removeClass()
+				.addClass('name_bar '+this.icon);
+
+			$('.trade_match_decline.'+player_class).attr('player_id', this.id);
+		});
+	};
+
+	Handlers.moves = function(msg) {
+		var moves = msg.moves;
+
+		$('.enabled').not('#trade_button').removeClass('enabled').unbind();
+
+		for( var i in moves ) {
+			var move = moves[i];
+
+			Catan.Moves[move.type](move);
 		}
+	};
 
-		player_section = $('.trade_display.'+player_class);
-		player_section.attr('player_id', this.id);
-		player_section.find('.name_bar')
-			.text(this.name)
-			.removeClass()
-			.addClass('name_bar '+this.icon);
+	Handlers.roll = function(msg) {
+		var values = msg.values;
 
-		$('.trade_match_decline.'+player_class).attr('player_id', this.id);
-	});
-};
+		Catan.queue.wait_for('dice_roll');
 
-HANDLERS.moves = function(msg) {
-	var moves = msg.moves;
-
-	$('.enabled').not('#trade_button').removeClass('enabled').unbind();
-
-	for( var i in moves ) {
-		var move = moves[i];
-
-		MOVES[move.type](move);
-	}
-};
-
-HANDLERS.roll = function(msg) {
-	var values = msg.values;
-
-	HANDLERS.queue.wait_for('dice_roll');
-
-	$('.corner_dice').css('visibility', 'hidden');
-	$('.roll_dice').addClass('show');
-
-	$('.rolling_die')
-	   .addClass('rolling')
-	   .delay(1000)
-	   .promise()
-	   .done(function() {
-		$('.rolling_die').removeClass('rolling')
-		$('.rolling_die:eq(0)').addClass('value_'+values[0]);
-		$('.rolling_die:eq(1)').addClass('value_'+values[1]);
+		$('.corner_dice').css('visibility', 'hidden');
+		$('.roll_dice').addClass('show');
 
 		$('.rolling_die')
+		   .addClass('rolling')
 		   .delay(1000)
 		   .promise()
 		   .done(function() {
-		   	$(this).add($('.corner_dice .die'))
-		           .removeClass('value_1')
-		           .removeClass('value_2')
-		           .removeClass('value_3')
-		           .removeClass('value_4')
-		           .removeClass('value_5')
-		           .removeClass('value_6');
-		    $(this).parent().removeClass('show')
+			$('.rolling_die').removeClass('rolling')
+			$('.rolling_die:eq(0)').addClass('value_'+values[0]);
+			$('.rolling_die:eq(1)').addClass('value_'+values[1]);
 
-			$('.corner_dice .die:eq(0)').addClass('value_'+values[0]);
-			$('.corner_dice .die:eq(1)').addClass('value_'+values[1]);
+			$('.rolling_die')
+			   .delay(1000)
+			   .promise()
+			   .done(function() {
+			   	$(this).add($('.corner_dice .die'))
+			           .removeClass('value_1')
+			           .removeClass('value_2')
+			           .removeClass('value_3')
+			           .removeClass('value_4')
+			           .removeClass('value_5')
+			           .removeClass('value_6');
+			    $(this).parent().removeClass('show')
 
-			$('.corner_dice .dice_value').text(msg.result);
-			$('.corner_dice').css('visibility', 'visible');
+				$('.corner_dice .die:eq(0)').addClass('value_'+values[0]);
+				$('.corner_dice .die:eq(1)').addClass('value_'+values[1]);
 
-			HANDLERS.queue.finish('dice_roll');
-		});
-	});
-};
+				$('.corner_dice .dice_value').text(msg.result);
+				$('.corner_dice').css('visibility', 'visible');
 
-HANDLERS.resource_generation = function(msg) {
-	console.log(msg);
-	$.each(msg.hexes, function() {
-		HANDLERS.queue.wait_for('resource_generation');
-		var $hex = get_hex(this.id);
-		$hex.addClass('generating')
-		.delay(600).promise().done(function() {
-			$hex.removeClass('generating');
-			HANDLERS.queue.finish('resource_generation');
-		});
-	});
-
-	if( msg.hexes.length ) {
-		HANDLERS.queue.add(function() {
-			HANDLERS.queue.wait_for('resource_summary');
-			$('.resource_summary').show().delay(2000).promise().done(function() {
-				HANDLERS.queue.finish('resource_summary');
-				$('.resource_summary').hide();
+				Catan.queue.finish('dice_roll');
 			});
 		});
-	}
-};
+	};
 
-HANDLERS.assign_player = function(msg) {
-	globals.PLAYER = msg.player;
-};
+	Handlers.resource_generation = function(msg) {
+		$.each(msg.hexes, function() {
+			Catan.queue.wait_for('resource_generation');
+			var $hex = Catan.get_hex(this.id);
+			$hex.addClass('generating')
+			.delay(600).promise().done(function() {
+				$hex.removeClass('generating');
+				Catan.queue.finish('resource_generation');
+			});
+		});
 
-var position_message = function() {
-	$('.message_box').position({
-		my: 'right bottom',
-		at: 'right bottom',
-		of: $('.game_play_area')
-	});
-}
+		if( msg.hexes.length ) {
+			Catan.queue.add(function() {
+				Catan.queue.wait_for('resource_summary');
+				$('.resource_summary').show().delay(2000).promise().done(function() {
+					Catan.queue.finish('resource_summary');
+					$('.resource_summary').hide();
+				});
+			});
+		}
+	};
 
-var show_message = function(msg) {
-	$('.message_box').show().text(msg);
-	position_message();
-}
+	Handlers.assign_player = function(msg) {
+		Catan.local_player = msg.player;
+	};
 
-var clear_message = function() {
-	$('.message_box').hide();
-}
+}(window.Catan = window.Catan || {}, jQuery));

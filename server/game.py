@@ -602,7 +602,7 @@ class Game(object):
 		return {
 			'board': self.board.as_dict(),
 			'players': [p.as_dict() for p in self.players],
-			'turn': self.action_number,
+			'action_number': self.action_number,
 			'started': self.started,
 			'max_players': self.max_players,
 		}
