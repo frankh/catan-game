@@ -6,6 +6,14 @@
 
 	var current_trade = Trade.current_trade;
 
+	var num_to_string = {
+		1: 'one',
+		2: 'two',
+		3: 'three',
+		4: 'four',
+		5: 'five',
+	};
+	
 	Trade.reset_trade = function() {
 		current_trade.give = {
 			'wheat': 0,
