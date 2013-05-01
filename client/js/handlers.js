@@ -24,17 +24,40 @@
 
 		wait_for: function(evt) {
 			this.wait[evt] = true;
+			console.log('wait for '+evt);
 		},
 		finish: function(evt) {
 			delete this.wait[evt];
+			if(evt) {
+				console.log(evt + ' finished');
+			}
 
 			while( $.isEmptyObject(this.wait) && this.todo.length ) {
-				this.todo.pop()();
+				this.todo.shift()();
 			}
 		},
+		add_front: function(func, args) {
+			var that = this;
+			this.todo.unshift(function() {
+				try {
+					console.log('running '+args[0].type);
+				} catch (e) {
+					console.log('running ?');
+				}
+				func.apply(that, args);
+			});
+			// Call finish so that func runs if wait is empty
+			this.finish();
+		},
+
 		add: function(func, args) {
 			var that = this;
 			this.todo.push(function() {
+				try {
+					console.log('running '+args[0].type);
+				} catch (e) {
+					console.log('running ?');
+				}
 				func.apply(that, args);
 			});
 			// Call finish so that func runs if wait is empty
@@ -243,7 +266,11 @@
 		for( var i in moves ) {
 			var move = moves[i];
 
-			Catan.Moves[move.type](move);
+			Catan.queue.add(function(move) {
+				return function() {
+					Catan.Moves[move.type](move)
+				};
+			}(move));
 		}
 	};
 
@@ -300,7 +327,7 @@
 		});
 
 		if( msg.hexes.length ) {
-			Catan.queue.add(function() {
+			Catan.queue.add_front(function() {
 				Catan.queue.wait_for('resource_summary');
 				$('.resource_summary').show().delay(2000).promise().done(function() {
 					Catan.queue.finish('resource_summary');

@@ -117,6 +117,8 @@
 
 		SOCKET.onmessage = function(msg) {
 			var msg = JSON.parse(msg.data);
+
+			console.log('queue: '+msg.type);
 			
 			Catan.queue.add(Catan.Handlers[msg.type], [msg]);
 		}
