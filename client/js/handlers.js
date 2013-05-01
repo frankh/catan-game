@@ -8,6 +8,7 @@
 	Catan.active_trades = {};
 
 	var Handlers = Catan.Handlers;
+	var Trade = Catan.Trade;
 
 	var num_to_string = {
 		1: 'one',
