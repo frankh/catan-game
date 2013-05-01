@@ -89,7 +89,7 @@
 			aud.play();
 		}
 	}
-
+	
 	var SOCKET;
 
 	$(window).load(function() {
@@ -107,7 +107,7 @@
 	    	sockprot = "wss:";
 		}
 
-		SOCKET = new WebSocket(sockprot+"//"+sockaddr+"/socket/temp/1");
+		SOCKET = new WebSocket(sockprot+"//"+sockaddr+document.location.pathname+"socket/temp/1");
 
 		$('.overlay').text('Connecting');
 
