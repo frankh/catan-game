@@ -153,7 +153,7 @@
 				'give': current_trade.give,
 				'want': current_trade.want,
 				'player_id': player_id,
-				'turn': Catan.turn_number,
+				'turn': Catan.action_number,
 			}
 		});
 
