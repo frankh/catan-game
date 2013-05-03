@@ -46,7 +46,8 @@ class Socket(tornado.websocket.WebSocketHandler):
 
 		game = game_tokens[token]
 		self.game = game
-		self.player = game.get_player(token)
+		self.player = game.get_player_from_token(token)
+		self.player.connection = self
 
 		self.write_message(json.dumps({
 			'type': 'assign_player',
@@ -57,6 +58,8 @@ class Socket(tornado.websocket.WebSocketHandler):
 			'type': 'game',
 			'game': game.as_dict(),
 		}));
+
+		game.recv_move(self.player, {'type': 'reconnect'})
 
 		log.debug(self.player.name+" joined "+game.name)
 
@@ -88,8 +91,7 @@ class Socket(tornado.websocket.WebSocketHandler):
 
 
 	def on_close(self):
-		if hasattr(self, 'game'):
-			self.game.players.remove(self.player)
+		self.player.connection = None
 
 class Create(tornado.web.RequestHandler):
 	def post(self):

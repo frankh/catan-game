@@ -249,6 +249,8 @@ class Game(object):
 		self.dice_gen = dice_gen.RandomDiceGen()
 		self.action_number = 0
 		self.active_trades = defaultdict(dict)
+		self.max_players = max_players
+		self.name = name
 
 	@property
 	def can_trade(self):
@@ -297,6 +299,11 @@ class Game(object):
 	def get_player(self, player_id):
 		for player in self.players:
 			if player.id == player_id:
+				return player
+
+	def get_player_from_token(self, token):
+		for player in self.players:
+			if player.token == token:
 				return player
 
 	def recv_move(self, player, move):

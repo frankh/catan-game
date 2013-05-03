@@ -104,7 +104,7 @@
 			sockaddr += ':8080';
 		}
 		if (document.location.protocol === "https:") {
-	    	sockprot = "wss:";
+			sockprot = "wss:";
 		}
 
 		SOCKET = new WebSocket(sockprot+"//"+sockaddr+document.location.pathname+"socket");
