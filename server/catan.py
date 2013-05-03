@@ -113,7 +113,9 @@ class Socket(tornado.websocket.WebSocketHandler):
 
 class Create(tornado.web.RequestHandler):
 	def post(self):
-		pass
+		token = self.get_argument('token')
+		players = json.loads(self.get_argument('players'))
+
 
 socket_app = tornado.web.Application([
 	(r"/socket", Socket),
