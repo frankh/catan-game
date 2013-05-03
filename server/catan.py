@@ -1,11 +1,6 @@
-import itertools
-import random
 import json
 import log
-from collections import defaultdict, Iterable
-import itertools
-from functools import lru_cache
-from pprint import pprint, pformat
+from pprint import pformat
 
 import tornado.web
 import tornado.ioloop
@@ -15,10 +10,10 @@ import tornado.websocket
 
 import dice_gen
 
-from game import \
-	Player, \
+from game import (
+	Player,
 	Game
-
+)
 
 log = log.getLogger('catan')
 
@@ -33,7 +28,7 @@ games = {
 	'1': DefaultGame()
 }
 
-class ClientSocket(tornado.websocket.WebSocketHandler):
+class Socket(tornado.websocket.WebSocketHandler):
 
 	def open(self, username, game_id, password):
 		username = username.decode('utf-8')
@@ -116,9 +111,13 @@ class ClientSocket(tornado.websocket.WebSocketHandler):
 		if hasattr(self, 'game'):
 			self.game.players.remove(self.player)
 
+class Create(tornado.web.RequestHandler):
+	def post(self):
+		pass
+
 socket_app = tornado.web.Application([
-	(r"/socket/(?P<username>\w+)/(?P<game_id>\w+)(?:/(?P<password>\w+))?", 
-	 ClientSocket),
+	(r"/socket", Socket),
+	(r"/create", Create),
 ])
 
 if __name__ == '__main__':

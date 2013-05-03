@@ -52,9 +52,8 @@ class Building(object):
 		return d
 
 class Player(object):
-
-	def __init__(self, connection, name, game):
-		self.connection = connection
+	def __init__(self, token, name, game):
+		self.token = token
 		self.game = game
 		self.name = name
 		self.cards = {
@@ -69,6 +68,11 @@ class Player(object):
 		self.has_longest_road = 0
 		self.has_largest_army = 0
 		self.ready = False
+		self.connection = None
+
+	@property
+	def connected(self):
+		return self.connection is not None
 
 	@cached_per_action
 	def get_ports(self):
