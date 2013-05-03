@@ -9,6 +9,7 @@ import tornado.httpserver
 import tornado.websocket
 
 import dice_gen
+import settings
 
 from game import (
 	Player,
@@ -24,50 +25,28 @@ class DefaultGame(Game):
 		self.dice_gen = dice_gen.DeckDiceGen()
 		self.max_players = 2
 		
-games = {
-	'1': DefaultGame()
-}
+games = set()
+game_tokens = {}
 
 class Socket(tornado.websocket.WebSocketHandler):
+	def open(self):
+		token = self.get_cookie('game-token', None)
 
-	def open(self, username, game_id, password):
-		username = username.decode('utf-8')
-		game_id = game_id.decode('utf-8')
-		
-		if password:
-			password = password.decode('utf-8')
-
-		global games
-		if game_id not in games:
-			self.write_message(json.dumps(
-				{
-					'type': 'error',
-					'error': {
-						'type': 'NO_GAME',
-						'msg': 'Game doesn\'t exist',
-					 }
-				 })
-			)
+		global game_tokens
+		if token not in game_tokens:
+			self.write_message(json.dumps({
+				'type': 'error',
+				'error': {
+					'type': 'Invalid Token',
+					'msg': 'Invalid Token'
+				}
+			}))
 			self.close()
 			return
-			
-		game = games[game_id]
+
+		game = game_tokens[token]
 		self.game = game
-		self.player = Player(self, 'Player {0}'.format(len(game.players)+1), game)
-		game.add_player(self.player)
-
-		if game.password and game.password != password:
-			self.write_message(json.dumps(
-				{
-					'type': 'error',
-					'error': {
-						'type': 'BAD_PASSWORD',
-						'msg': 'Wrong password',
-					 }
-				 })
-			)
-			self.close()
-			return
+		self.player = game.get_player(token)
 
 		self.write_message(json.dumps({
 			'type': 'assign_player',
@@ -78,7 +57,8 @@ class Socket(tornado.websocket.WebSocketHandler):
 			'type': 'game',
 			'game': game.as_dict(),
 		}));
-		log.debug(username+" joined "+game_id)
+
+		log.debug(self.player.name+" joined "+game.name)
 
 	def on_message(self, message):
 		try:
@@ -113,8 +93,24 @@ class Socket(tornado.websocket.WebSocketHandler):
 
 class Create(tornado.web.RequestHandler):
 	def post(self):
-		token = self.get_argument('token')
+		secret = self.get_argument('secret')
+
+		if( secret != settings.secret ):
+			raise tornado.web.HTTPError(403)
+
 		players = json.loads(self.get_argument('players'))
+		game_name = self.get_argument('name')
+
+		game = Game(name=game_name, max_players=len(players))
+
+		global games
+		games.add(game)
+
+		for player in players:
+			pl_obj = Player(player['token'], player['name'], game)
+			game_tokens[player['token']] = game
+			game.add_player(pl_obj)
+
 
 
 socket_app = tornado.web.Application([
@@ -123,8 +119,8 @@ socket_app = tornado.web.Application([
 ])
 
 if __name__ == '__main__':
-	socket_app.listen(8080)
-	log.debug('Listening on port 8080')
+	socket_app.listen(settings.port)
+	log.debug('Listening on port {0}'.format(settings.port))
 	iol = tornado.ioloop.IOLoop.instance()
 	tornado.ioloop.PeriodicCallback(lambda: None,500,iol).start()
 	iol.start()

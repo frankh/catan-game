@@ -116,7 +116,8 @@ class Player(object):
 		return visited_paths
 
 	def send(self, msg):
-		self.connection.write_message(json.dumps(msg))
+		if self.connection is not None:
+			self.connection.write_message(json.dumps(msg))
 
 	@property
 	@cached_per_action
@@ -237,9 +238,8 @@ player_colors = {
 
 class Game(object):
 	started = False
-	max_players = 4
 
-	def __init__(self):
+	def __init__(self, name="unnamed game", max_players=4):
 		self.players = []
 		self.password = None
 		self.board = generate_board()
@@ -253,6 +253,7 @@ class Game(object):
 	@property
 	def can_trade(self):
 		return self._can_trade
+
 	@can_trade.setter
 	def can_trade(self, value):
 		self._can_trade = value

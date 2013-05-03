@@ -11,7 +11,8 @@ class TestConnection(object):
 	def __init__(self, game):
 		self.moves = None
 		self.trade_offer = None
-		self.player = Player(self, 'test_player1', game)
+		self.player = Player('token', 'test_player1', game)
+		self.player.connection = self
 
 	def on_message(self, message):
 		pass

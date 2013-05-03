@@ -107,7 +107,7 @@
 	    	sockprot = "wss:";
 		}
 
-		SOCKET = new WebSocket(sockprot+"//"+sockaddr+document.location.pathname+"socket/temp/1");
+		SOCKET = new WebSocket(sockprot+"//"+sockaddr+document.location.pathname+"socket");
 
 		$('.overlay').text('Connecting');
 
