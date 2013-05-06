@@ -60,6 +60,10 @@ class Socket(tornado.websocket.WebSocketHandler):
 		}));
 
 		game.recv_move(self.player, {'type': 'reconnect'})
+		self.write_message(json.dumps({
+			'type': 'can_trade',
+			'can_trade': game.can_trade,
+		}));
 
 		log.debug(self.player.name+" joined "+game.name)
 

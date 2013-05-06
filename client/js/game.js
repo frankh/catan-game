@@ -143,7 +143,7 @@
 		});
 
 		// Add click class when mouse pressed on something.
-		$('.enabled').live('mousedown', function() {
+		$('.enabled,.button').live('mousedown', function() {
 			$(this).addClass('clicked');
 		});
 

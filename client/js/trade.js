@@ -179,6 +179,10 @@
 			$('.trade_window').show();
 		})
 
+		$('.hide_trade').click(function() {
+			$('.trade_window').hide();
+		})
+
 		$('.give_section .sel_res').live('click', function() {
 			var $this = $(this);
 			for( var res in Catan.resource_types ) {
