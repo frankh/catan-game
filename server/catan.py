@@ -7,6 +7,7 @@ import tornado.ioloop
 import tornado.options
 import tornado.httpserver
 import tornado.websocket
+from tornado.escape import url_unescape
 
 import dice_gen
 import settings
@@ -29,10 +30,11 @@ games = set()
 game_tokens = {}
 
 class Socket(tornado.websocket.WebSocketHandler):
-	def open(self):
-		token = self.get_cookie('game-token', None)
+	player = None
 
+	def open(self, token):
 		global game_tokens
+		token = url_unescape(token)
 		if token not in game_tokens:
 			self.write_message(json.dumps({
 				'type': 'error',
@@ -41,6 +43,8 @@ class Socket(tornado.websocket.WebSocketHandler):
 					'msg': 'Invalid Token'
 				}
 			}))
+			print(game_tokens)
+			import pdb;pdb.set_trace()
 			self.close()
 			return
 
@@ -95,7 +99,8 @@ class Socket(tornado.websocket.WebSocketHandler):
 
 
 	def on_close(self):
-		self.player.connection = None
+		if self.player:
+			self.player.connection = None
 
 class Create(tornado.web.RequestHandler):
 	def post(self):
@@ -109,18 +114,19 @@ class Create(tornado.web.RequestHandler):
 
 		game = Game(name=game_name, max_players=len(players))
 
-		global games
+		global games, game_tokens
 		games.add(game)
 
 		for player in players:
 			pl_obj = Player(player['token'], player['name'], game)
 			game_tokens[player['token']] = game
+			print(player['token'])
 			game.add_player(pl_obj)
 
 
 
 socket_app = tornado.web.Application([
-	(r"/socket", Socket),
+	(r"/socket/(?P<token>\w+)/?", Socket),
 	(r"/create", Create),
 ])
 

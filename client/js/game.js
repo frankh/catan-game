@@ -100,6 +100,7 @@
 
 		var sockaddr = document.domain;
 		var sockprot = 'ws:';
+		var game_token = '';
 		if( document.domain == 'localhost' ) {
 			sockaddr += ':8080';
 		}
@@ -107,7 +108,12 @@
 			sockprot = "wss:";
 		}
 
-		SOCKET = new WebSocket(sockprot+"//"+sockaddr+document.location.pathname+"socket");
+		if (location.hash) {
+			game_token = location.hash.slice(1);
+			location.hash = '';
+		}
+
+		SOCKET = new WebSocket(sockprot+"//"+sockaddr+document.location.pathname+"socket/"+game_token);
 
 		$('.overlay').text('Connecting');
 
