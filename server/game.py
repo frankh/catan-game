@@ -314,13 +314,15 @@ class Game(object):
 		"""
 		Sent every time the client performs a move.
 
-		If it's not the current player's turn do nothing, there are
-		no valid out of turn moves in Catan.
+		If it's not the current player's and it's not a discard move do nothing.
 
 		Otherwise send to the generator, which will validate and performs
 		the move, update the current player if necessary, and return the (new)
 		current players valid moves which we then send back to the player.
 		"""
+		if move['type'] == 'discard' and self.wait_for_discard:
+			pass #TODO(frank)
+
 		if player == self.current_player:
 			moves = self.gen.send(move)
 			self.current_player.send({
@@ -481,6 +483,7 @@ class Game(object):
 				self.do_trade(trade, player, t_player)
 				traded = True
 		elif trade.get('port', False):
+			# If it's a port trade we already know it's valid, just do it.
 			self.do_trade(trade, player)
 			traded = True
 

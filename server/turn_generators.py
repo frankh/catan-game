@@ -86,7 +86,7 @@ def starting_phase(self):
 	self.do_move(self.current_player, move)
 
 def rolled_robber(self):
-	#TODO discards
+	# TODO(frank) discards
 	yield from move_robber(self)
 
 def move_robber(self):
