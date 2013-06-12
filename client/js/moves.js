@@ -139,6 +139,11 @@
 	};
 
 	Moves.build = function(move) {
+		if( move.build == 'dev_card' ) {
+			Moves.build_dev_card(move);
+			return;
+		}
+
 		var start_build = function(move) {
 			return function() {
 				if( !(move.locations.length) ) {
@@ -208,5 +213,22 @@
 		$('.build .'+move.build)
 			.addClass('enabled')
 			.click(start_build(move));
-	};	
+	};
+
+	Moves.build_dev_card = function(move) {
+
+		$('.build .'+move.build)
+			.addClass('enabled')
+			.click(function() {
+				Catan.send({
+					type: 'do_move',
+					move: {
+						type: 'build',
+						build: 'dev_card'
+					}
+				});
+				$(this).unbind('click');
+				$(this).removeClass('enabled');
+			});
+	};
 }(window.Catan = window.Catan || {}, jQuery));

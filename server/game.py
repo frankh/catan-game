@@ -10,6 +10,8 @@ import dice_gen
 
 from const import tile_resource_map, resources
 
+import dev_cards
+
 from turn_generators import \
 	starting_phase, \
 	start_of_turn,  \
@@ -219,7 +221,7 @@ class Player(object):
 			'num_cards': sum(self.cards.values()),
 			'cards': self.cards,
 			'num_dev_cards': len(self.dev_cards),
-			'dev_cards': self.dev_cards,
+			'dev_cards': [c.as_dict() for c in self.dev_cards],
 			'num_soldiers': self.num_soldiers,
 			'longest_road': self.longest_road,
 			'has_longest_road': self.has_longest_road,
@@ -251,6 +253,8 @@ class Game(object):
 		self.active_trades = defaultdict(dict)
 		self.max_players = max_players
 		self.name = name
+		self.dev_card_deck = dev_cards.Deck()
+
 
 	@property
 	def can_trade(self):
@@ -547,6 +551,13 @@ class Game(object):
 
 			# TODO check building type
 			location.built = Building(player, move['build'])
+
+		elif move['type'] == 'build' and move['build'] == 'dev_card':
+			player.dev_cards.append(self.dev_card_deck.draw())
+
+			player.cards['ore'] -= 1
+			player.cards['wool'] -= 1
+			player.cards['wheat'] -= 1
 
 		elif move['type'] == 'build':
 			location = None
