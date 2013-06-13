@@ -89,7 +89,7 @@ def rolled_robber(self):
 	self.waiting_for_discards = []
 
 	for player in self.players:
-		if len(player.cards) > 7:
+		if len(player.cards_list) > 7:
 			self.waiting_for_discards.append(player)
 
 	while self.waiting_for_discards:
@@ -98,7 +98,7 @@ def rolled_robber(self):
 			'number': len(player.cards) // 2,
 			'player': player.id
 		} for player in self.players]
-		yield valid_moves
+		yield from get_move(valid_moves)
 
 	yield from move_robber(self)
 
@@ -114,17 +114,18 @@ def move_robber(self):
 
 	hx = self.board.Hex.get(move['location']['id'])
 	hx.being_robbed = True
-	target_players = {v.built.owner for v in hx.vertices if v.built}
-	target_players -= {self.current_player}
+	target_vertices = {v for v in hx.vertices 
+	                           if v.built 
+	                           and v.built.owner != self.current_player}
 
-	target_players = {player for player in target_players 
-	 			      if max(val for val in player.cards.values()) > 0}
+	target_vertices = {v for v in target_vertices 
+	 			      if max(val for val in v.built.owner.cards.values()) > 0}
 
-	if target_players:
+	if target_vertices:
 		valid_moves = [{
 			'type': 'steal_from',
-			'player': player
-		} for player in target_players]
+			'vertex': vertex.as_dict(),
+		} for vertex in target_vertices]
 
 		move = yield from get_move(valid_moves)
 		self.do_move(self.current_player, move)

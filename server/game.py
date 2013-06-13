@@ -330,10 +330,8 @@ class Game(object):
 		the move, update the current player if necessary, and return the (new)
 		current players valid moves which we then send back to the player.
 		"""
-		if move['type'] == 'discard' and self.wait_for_discard:
-			pass #TODO(frank)
-
-		if player == self.current_player:
+		if player == self.current_player \
+		or move['type'] == 'discard' and self.wait_for_discard:
 			gen_val = self.gen.send(move)
 
 			if isinstance(gen_val, list):
