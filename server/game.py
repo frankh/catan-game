@@ -243,7 +243,8 @@ player_colors = {
 	2: 'green',
 	3: 'yellow',
 }
-global internal_game_id = 0
+
+internal_game_id = 0
 class Game(object):
 	started = False
 
