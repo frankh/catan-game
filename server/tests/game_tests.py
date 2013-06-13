@@ -1,9 +1,10 @@
 import unittest
 
+import random
 import json
 
 from game import Game, Player
-from utils import random_move
+from utils import random_move, repeat
 import const
 import dice_gen
 
@@ -26,16 +27,46 @@ class TestConnection(object):
 			self.trade_offer = message['trade']
 
 class TestGame(Game):
-	def __init__(self, max_players=2):
-		super().__init__()
+	def __init__(self, name, max_players=2):
+		super().__init__(name=name)
 		self.max_players = max_players
 		self.dice_gen = dice_gen.NoRobberDiceGen()
+
+class PlayerTest(unittest.TestCase):
+	@classmethod
+	def setUpClass(cls):
+		cls.game = TestGame(name="test_game_2")
+
+		cls.c1 = TestConnection(cls.game)
+		cls.c2 = TestConnection(cls.game)
+		cls.player1 = cls.c1.player
+		cls.player2 = cls.c2.player
+
+		cls.game.add_player(cls.player1)
+
+	def test_cards_list(self):
+		self.assertEqual(self.player1.cards_list, [])	
+
+		self.player1.cards['wood'] = 3
+		# Must increase action number to clear the per action cache.
+		self.game.action_number += 1
+
+		self.assertEqual(self.player1.cards_list, ['wood', 'wood', 'wood'])	
+
+	@repeat(300)
+	def test_cards_list_random(self):
+		self.game.action_number += 1
+
+		for res in const.resources:
+			self.player1.cards[res] = random.randint(0, 5)
+
+		self.assertEqual(sum(self.player1.cards.values()), len(self.player1.cards_list))
 
 class GameTest(unittest.TestCase):
 
 	@classmethod
 	def setUpClass(cls):
-		cls.game = TestGame()
+		cls.game = TestGame(name="test_game_1")
 
 		cls.c1 = TestConnection(cls.game)
 		cls.c2 = TestConnection(cls.game)

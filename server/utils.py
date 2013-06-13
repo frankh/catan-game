@@ -25,7 +25,7 @@ def cached_per_action(func):
 
 	@functools.wraps(func)
 	def wrapped(self, *args, **kwargs):
-		key = (self.id, self.game.action_number)
+		key = (self.game.id, self.id, self.game.action_number)
 
 		if key in cache:
 			return cache[key]
@@ -44,3 +44,12 @@ def random_move(moves):
 		del move['locations']
 
 	return move
+
+def repeat(n):
+	def repeat_func(func):
+		@functools.wraps(func)
+		def wrapper(*args, **kwargs):
+			return [func(*args, **kwargs) for i in range(n)]
+
+		return wrapper
+	return repeat_func

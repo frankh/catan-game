@@ -86,7 +86,20 @@ def starting_phase(self):
 	self.do_move(self.current_player, move)
 
 def rolled_robber(self):
-	# TODO(frank) discards
+	self.waiting_for_discards = []
+
+	for player in self.players:
+		if len(player.cards) > 7:
+			self.waiting_for_discards.append(player)
+
+	while self.waiting_for_discards:
+		valid_moves = [{
+			'type': 'discard',
+			'number': len(player.cards) // 2,
+			'player': player.id
+		} for player in self.players]
+		yield valid_moves
+
 	yield from move_robber(self)
 
 def move_robber(self):
@@ -105,7 +118,7 @@ def move_robber(self):
 	target_players -= {self.current_player}
 
 	target_players = {player for player in target_players 
-	 			      if max(val for val in player.cards.values()) == 0}
+	 			      if max(val for val in player.cards.values()) > 0}
 
 	if target_players:
 		valid_moves = [{

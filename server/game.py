@@ -76,6 +76,13 @@ class Player(object):
 	def connected(self):
 		return self.connection is not None
 
+	@property
+	@cached_per_action
+	def cards_list(self):
+		return flatten(
+			[res]*self.cards[res] for res in resources
+		)
+
 	@cached_per_action
 	def get_ports(self):
 		return { v.port for v in self.get_built_verts() if v.port }
@@ -140,7 +147,8 @@ class Player(object):
 	@property
 	@cached_per_action
 	def victory_point_dev_cards(self):
-		return 0
+		return len([vp for vp in self.dev_cards
+		                      if isinstance(vp, dev_cards.VictoryPoint)])
 
 	@property
 	@cached_per_action
@@ -187,9 +195,7 @@ class Player(object):
 
 			for p in next_paths:
 				next_vert = [v1 for v1 in p.verts if v1 is not v][0]
-
 				res.append(longest_road_from_point(next_vert, l+1, visited_paths | {p}))
-
 
 			return max(res)
 
@@ -218,7 +224,7 @@ class Player(object):
 			'type': 'player',
 			'name': self.name,
 			'icon': 'human',
-			'num_cards': sum(self.cards.values()),
+			'num_cards': len(self.cards_list),
 			'cards': self.cards,
 			'num_dev_cards': len(self.dev_cards),
 			'dev_cards': [c.as_dict() for c in self.dev_cards],
@@ -237,7 +243,7 @@ player_colors = {
 	2: 'green',
 	3: 'yellow',
 }
-
+global internal_game_id = 0
 class Game(object):
 	started = False
 
@@ -255,6 +261,9 @@ class Game(object):
 		self.name = name
 		self.dev_card_deck = dev_cards.Deck()
 
+		global internal_game_id
+		self.id = internal_game_id
+		internal_game_id += 1
 
 	@property
 	def can_trade(self):
@@ -324,11 +333,23 @@ class Game(object):
 			pass #TODO(frank)
 
 		if player == self.current_player:
-			moves = self.gen.send(move)
-			self.current_player.send({
-				'type': 'moves',
-				'moves': moves
-			})
+			gen_val = self.gen.send(move)
+
+			if isinstance(gen_val, list):
+				moves = gen_val
+
+				self.current_player.send({
+					'type': 'moves',
+					'moves': moves
+				})
+			else:
+				val_type, val = gen_val
+				
+				if val_type == 'discard':
+					self.broadcast({
+						'type': 'discard',
+						'discards': val
+					})
 
 	def recv_trade(self, player, trade):
 		"""
