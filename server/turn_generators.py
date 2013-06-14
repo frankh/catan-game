@@ -6,7 +6,7 @@ log = logging.getLogger('catan')
 
 
 # Determine if a move is in the list of valid moves.
-def is_valid(move, valid_moves):
+def is_valid(move, valid_moves, *validators):
 	plurals = {
 		'locations': 'location'
 	}
@@ -14,6 +14,9 @@ def is_valid(move, valid_moves):
 	for valid in valid_moves:
 		def valid_key():
 			for key in valid:
+				if key.startswith('_'):
+					continue
+
 				plural = False
 
 				if key in plurals:
@@ -34,17 +37,21 @@ def is_valid(move, valid_moves):
 			continue
 
 		if not valid_key():
-			print(move, 'not in', valid_moves)
+			continue
+
+		if not all(validator(move, valid) for validator in validators):
 			continue
 
 		return True
 
 	return False
 
-def get_move(valid_moves):
+def get_move(valid_moves, *extra_validators):
 	move = yield valid_moves
 
-	while not is_valid(move, valid_moves):
+	while not is_valid(move, valid_moves, *extra_validators):
+		import pdb;pdb.set_trace()
+		is_valid(move, valid_moves, *extra_validators)
 		log.warning('Invalid Move')
 		move = yield valid_moves
 
@@ -92,13 +99,34 @@ def rolled_robber(self):
 		if len(player.cards_list) > 7:
 			self.waiting_for_discards.append(player)
 
+	def validate_discards(move, valid_move):
+		if '_cards' not in move:
+			return False
+
+		try:
+			if sum(move['_cards'].values()) != valid_move['_number']:
+				return False
+
+			p_cards = self.get_player(move['player_id']).cards
+			d_cards = move['_cards']
+
+			for res in d_cards:
+				if res not in p_cards or p_cards[res] < d_cards[res]:
+					return False
+
+		except (TypeError, AttributeError, KeyError):
+			return False
+
+		return True
+
 	while self.waiting_for_discards:
 		valid_moves = [{
 			'type': 'discard',
-			'number': len(player.cards) // 2,
-			'player': player.id
-		} for player in self.players]
-		yield from get_move(valid_moves)
+			'_number': len(player.cards_list) // 2,
+			'player_id': player.id
+		} for player in self.waiting_for_discards]
+		move = yield from get_move(valid_moves, validate_discards)
+		self.do_move(self.get_player(move['player_id']), move)
 
 	yield from move_robber(self)
 

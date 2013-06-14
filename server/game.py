@@ -261,6 +261,7 @@ class Game(object):
 		self.max_players = max_players
 		self.name = name
 		self.dev_card_deck = dev_cards.Deck()
+		self.waiting_for_discards = []
 
 		global internal_game_id
 		self.id = internal_game_id
@@ -331,7 +332,9 @@ class Game(object):
 		current players valid moves which we then send back to the player.
 		"""
 		if player == self.current_player \
-		or move['type'] == 'discard' and self.wait_for_discard:
+		or move['type'] == 'discard' and self.waiting_for_discards:
+			move['player_id'] = player.id
+
 			gen_val = self.gen.send(move)
 
 			if isinstance(gen_val, list):
@@ -558,6 +561,8 @@ class Game(object):
 				yield from rest_of_turn(self)
 
 	def do_move(self, player, move):
+		# do_move should only be called if the move has already been validated.
+		# Do no validation here, just assume it's correct.
 		self.action_number += 1
 
 		if move['type'] == 'place':
@@ -572,7 +577,6 @@ class Game(object):
 			if location.built is not None:
 				raise Exception('Tried to build over existing building')
 
-			# TODO check building type
 			location.built = Building(player, move['build'])
 
 		elif move['type'] == 'build' and move['build'] == 'dev_card':
@@ -605,6 +609,26 @@ class Game(object):
 		elif move['type'] == 'roll':
 			#Rolling is done in turn generator so that it can trigger the robber
 			pass
+		elif move['type'] == 'discard':
+			for res in move['_cards']:
+				player.cards[res] -= move['_cards'][res]
+			self.waiting_for_discards.remove(player)
+
+		elif move['type'] == 'steal_from':
+			vertex = move['vertex']
+			vertex = Vertex.get(vertex['id'])
+			target = vertex.built.owner
+
+			stolen = random.choice(target.cards_list)
+			target.cards[stolen] -= 1
+			player.cards[stolen] += 1
+
+			self.broadcast({
+				'type': 'stolen',
+				'stealer': player.as_dict(),
+				'target': target.as_dict(),
+				'resource': stolen
+			})
 		else:
 			raise Exception('invalid move')
 

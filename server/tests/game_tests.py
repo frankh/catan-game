@@ -2,11 +2,23 @@ import unittest
 
 import random
 import json
+from collections import Counter
 
 from game import Game, Player
 from utils import random_move, repeat
 import const
 import dice_gen
+
+class TestDiceGen(object):
+	next = None
+
+	def roll(self):
+		if self.next is None:
+			return 1, 1
+
+		ret = self.next
+		self.next = None
+		return ret
 
 class TestConnection(object):
 	def __init__(self, game):
@@ -30,7 +42,7 @@ class TestGame(Game):
 	def __init__(self, name, max_players=2):
 		super().__init__(name=name)
 		self.max_players = max_players
-		self.dice_gen = dice_gen.NoRobberDiceGen()
+		self.dice_gen = TestDiceGen()
 
 class PlayerTest(unittest.TestCase):
 	@classmethod
@@ -72,6 +84,8 @@ class GameTest(unittest.TestCase):
 		cls.c2 = TestConnection(cls.game)
 		cls.player1 = cls.c1.player
 		cls.player2 = cls.c2.player
+
+		cls.dice_gen = cls.game.dice_gen
 
 	def test_1_started(self):
 		self.assertFalse(self.game.started)
@@ -363,6 +377,31 @@ class GameTest(unittest.TestCase):
 		})
 
 		self.assertEqual(action, self.game.action_number)
+
+	def test_9_4_move_robber(self):
+		self.game.recv_move(self.game.current_player, {'type': 'end_turn'})
+		self.dice_gen.next = 3, 4
+		conn = self.game.current_player.connection
+		self.game.recv_move(conn.player, {'type': 'roll'})
+		# self.game.recv_move(conn.player, random_move(conn.moves))
+
+		discard_players = [p for p in (self.player1, self.player2)
+		                           if len(p.cards_list) > 7]
+
+		if discard_players:
+			self.assertTrue(self.game.waiting_for_discards)
+		else:
+			self.assertFalse(self.game.waiting_for_discards)
+
+		for p in discard_players:
+			self.game.recv_move(p, 
+				{
+					'type': 'discard',
+					'_cards': dict(Counter(
+						random.sample(p.cards_list, len(p.cards_list) // 2)))
+				}
+			)
+
 
 if __name__ == '__main__':
 	unittest.main()
