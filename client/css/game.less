@@ -392,6 +392,16 @@ html, body {
 }
 
 .building {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 85%;
+    height: 100%;
+
+    .steal_from {
+    	border: solid red 1px;
+    	cursor: pointer;
+    }
 
 	.vertex.built & {
 		.animation-duration(0.15s);
@@ -420,9 +430,7 @@ html, body {
 			background-position: 100%;
 		}
 	}
-}
 
-.building {
 	.build.vertex:hover & {
 		background-size: 400% 100%;
 		

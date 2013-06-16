@@ -124,8 +124,11 @@ def move_robber(self):
 	if target_vertices:
 		valid_moves = [{
 			'type': 'steal_from',
-			'vertex': vertex.as_dict(),
-		} for vertex in target_vertices]
+			'locations': [{
+				'type': 'vertex',
+				'id': vertex.id
+			} for vertex in target_vertices]
+		}]
 
 		move = yield from get_move(valid_moves)
 		self.do_move(self.current_player, move)

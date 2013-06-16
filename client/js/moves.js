@@ -77,6 +77,40 @@
 		}
 	};
 
+	Moves.discard = function(move) {
+		$.each(move, function() {
+			if( this.player_id == Catan.local_player.id ) {
+				Catan.show_mesasge("You must discard "+move.number+" cards");
+			}
+		});
+	}
+
+	Moves.steal_from = function(move) {
+		Catan.show_message("Choose a player to steal from.");
+
+		$.each(move.locations, function() {
+			var vertex = Catan.get_vertex(this.id);
+
+			vertex.addClass('steal_from');
+
+			vertex.click(function() {
+				$('.steal_from').removeClass('steal_from').unbind('click');
+
+				Catan.send({
+					type: 'do_move',
+					move: {
+						type: 'steal_from',
+						location: {
+							'type': 'vertex',
+							'id': Catan.get_vertex_id(this),
+						},
+					},
+				});
+
+			})
+		});
+	}
+
 	Moves.roll = function(move) {
 		Catan.play_sound('start_turn');
 		Catan.show_message(Catan.local_player.name + ', it is now your turn');
