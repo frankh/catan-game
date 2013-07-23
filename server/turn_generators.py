@@ -50,8 +50,6 @@ def get_move(valid_moves, *extra_validators):
 	move = yield valid_moves
 
 	while not is_valid(move, valid_moves, *extra_validators):
-		import pdb;pdb.set_trace()
-		is_valid(move, valid_moves, *extra_validators)
 		log.warning('Invalid Move')
 		move = yield valid_moves
 
