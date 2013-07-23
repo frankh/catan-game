@@ -9,12 +9,12 @@ from utils import random_move, repeat
 import const
 import dice_gen
 
-class TestDiceGen(object):
+class TestDiceGen(dice_gen.NoRobberDiceGen):
 	next = None
 
 	def roll(self):
 		if self.next is None:
-			return 1, 1
+			return super().roll()
 
 		ret = self.next
 		self.next = None
