@@ -1,8 +1,31 @@
 import itertools
 import random
+import functools
 
 def flatten(l):
 	return list(itertools.chain(*l))
+
+def cached_copy(func):
+	"""
+	Wrapper that causes the function to always return the same value.
+
+	If the value is not immutable it returns a copy.
+	"""
+
+	cache = {}
+	@functools.wraps(func)
+	def wrapper(self, *args, **kwargs):
+		key = func.__qualname__, self.id
+
+		if key not in cache:
+			cache[key] = func(self, *args, **kwargs)
+
+		if isinstance(cache[key], list):
+			cache[key] = list(cache[key])
+
+		return cache[key]
+
+	return wrapper
 
 def get_ident(*ident_in):
 	if isinstance(ident_in[0], list):
@@ -199,8 +222,10 @@ def create_board():
 		}
 
 		@property
+		@cached_copy
 		def vertices(self):
-			return {v for v in Vertex.objects.values() if self in v.hexes}
+			return frozenset(v for v in Vertex.objects.values() 
+			                         if self in v.hexes)
 
 		@property
 		def is_sea(self):
@@ -250,14 +275,17 @@ def create_board():
 		}
 
 		@property
+		@cached_copy
 		def probability(self):
 			return sum(Vertex.probabilities[hx.value] for hx in self.hexes
 			                                                 if not hx.is_sea)
 		@property
+		@cached_copy
 		def paths(self):
 			return [p for p in Path.objects.values() if self in p.verts]
 
 		@property
+		@cached_copy
 		def adj_verts(self):
 			return [v for v in Vertex.objects.values()
 			           if v in itertools.chain(*[p.verts for p in self.paths])
@@ -292,6 +320,7 @@ def create_board():
 		built = None
 
 		@property
+		@cached_copy
 		def next_coastal_path(self):
 			paths = [p for p in self.paths if p.is_coastal]
 
@@ -327,19 +356,22 @@ def create_board():
 			return paths[next_path_idx]
 
 		@property
+		@cached_copy
 		def is_coastal(self):
 			return bool([hx for hx in self.hexes if hx.is_sea])
 
 		@property
+		@cached_copy
 		def hexes(self):
 			vert1, vert2 = self.verts
-			return vert1.hexes & vert2.hexes
+			return frozenset(vert1.hexes & vert2.hexes)
 
 		@property
+		@cached_copy
 		def paths(self):
-			return {p for p in Path.objects.values()
+			return frozenset(p for p in Path.objects.values()
 			                if p.verts & self.verts
-			               and p is not self}
+			               and p is not self)
 
 		def __init__(self, vert1, vert2):
 			super().__init__(vert1, vert2)
