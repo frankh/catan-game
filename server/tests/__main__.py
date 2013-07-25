@@ -83,4 +83,4 @@ if __name__ == '__main__':
 	print('Using random seed', seed)
 	random.seed(seed)
 	sys.stdout.flush()
-	unittest.TestProgram(verbosity=2, testRunner=TimeTestRunner).runTests()
+	unittest.TestProgram(verbosity=2, testRunner=TimeTestRunner, exit=True)

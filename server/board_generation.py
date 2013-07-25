@@ -28,6 +28,13 @@ def cached_copy(func):
 	return wrapper
 
 def get_ident(*ident_in):
+	"""
+	Normalise id by ordering tuples, converting string (JavaScript) notation
+	to tuple
+		e.g. 1_3_4__4_5_6 -> ((1,3,4), (4,5,6))
+		or (3, 2) -> (2, 3)
+	"""
+
 	if isinstance(ident_in[0], list):
 		ident_in = ident_in[0]
 
@@ -47,7 +54,6 @@ def get_ident(*ident_in):
 			new_ident_in.append(ident)
 
 	ident_in = new_ident_in
-
 	ident_in = tuple(sorted(ident_in))
 
 	if len(ident_in) == 1:
