@@ -16,7 +16,7 @@ def timingDecorator(func):
 	@functools.wraps(func)
 	def wrapper(self, *args, **kwargs):
 		ret = func(self, *args, **kwargs)
-		print(" (%.2fs)" % (time.time() - self.startTime))
+		self.stream.write(" (%.2fs)\n" % (time.time() - self.startTime))
 		return ret
 
 	return wrapper
