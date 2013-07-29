@@ -110,7 +110,6 @@
 
 		if (location.hash) {
 			game_token = location.hash.slice(1);
-			location.hash = '';
 		}
 
 		SOCKET = new WebSocket(sockprot+"//"+sockaddr+document.location.pathname+"socket/"+game_token);

@@ -231,6 +231,7 @@ class Player(object):
 			'num_soldiers': self.num_soldiers,
 			'longest_road': self.longest_road,
 			'has_longest_road': self.has_longest_road,
+			'ports': list(self.get_ports()),
 			'victory_points': self.victory_points,
 			'player_id': self.id,
 			'id': self.id,

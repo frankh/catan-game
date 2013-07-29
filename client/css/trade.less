@@ -157,6 +157,15 @@
 
 }
 
+.trade_button_background(@name) {
+    background-image: url("../res/port-@{name}-greyed.png");
+
+    &.enabled {
+        background-image: url("../res/port-@{name}.png");
+        cursor: pointer;
+    }
+}
+
 /* Styles for top other players boxes */
 .trade_window {
     top: 25%;
@@ -264,6 +273,42 @@
     .sel_res,
     .want div, .give div {
         .resource-icon
+    }
+
+    .port_trade_button {
+        position: absolute;
+        left: 44.8%;
+        top: 37%;
+        width: 8%;
+        height: 10.3%;
+        background-size: 100%;
+
+        .trade_button_background("4to1");
+
+        &.clay {
+            .trade_button_background("clay");
+        }
+
+        &.wool {
+            .trade_button_background("wool");
+        }
+
+        &.wood {
+            .trade_button_background("wood");
+        }
+
+        &.ore {
+            .trade_button_background("ore");
+        }
+
+        &.wheat {
+            .trade_button_background("wheat");
+        }
+
+        &.general {
+            .trade_button_background("3to1");
+        }
+
     }
 
     .avail {

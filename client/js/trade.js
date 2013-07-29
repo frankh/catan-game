@@ -1,4 +1,6 @@
 (function( Catan, $, undefined ) {
+	"use strict";
+
 	Catan.Trade = Catan.Trade || {};
 
 	var Trade = Catan.Trade;
@@ -50,6 +52,64 @@
 		return Trade.sum_dict(current_trade.want);
 	};
 
+	function get_exchange_rate_for_res(res) {
+		var rate = 4;
+
+		if( $.inArray('general', Catan.local_player.ports) >= 0 ) {
+			rate = 3;
+		}
+
+		if( $.inArray(res, Catan.local_player.ports) >= 0 ) {
+			rate = 2;
+		}
+
+		return rate;
+	}
+
+	Trade.update_port_trade = function() {
+		if( Catan.local_player === undefined ) {
+			return;
+		}
+
+		var give_res;
+
+		for( var res in Catan.resource_types ) {
+			$('.port_trade_button').removeClass(res);
+		}
+		$('.port_trade_button').removeClass('enabled');
+
+		if( $.inArray('general', Catan.local_player.ports) >= 0 ) {
+			$('.port_trade_button').addClass('general');
+		} else {
+			$('.port_trade_button').removeClass('general');
+		}
+
+		for( var res in current_trade.give ) {
+			if( current_trade.give[res] > 0 ) {
+				if( give_res !== undefined ) {
+					return;
+				}
+
+				give_res = res;
+			}
+		}
+
+		if( give_res === undefined ) {
+			return;
+		}
+
+		var rate = get_exchange_rate_for_res(give_res);
+
+		if( rate == 2 ) {
+			$('.port_trade_button').removeClass('general');
+			$('.port_trade_button').addClass(give_res);
+		}
+
+		if( Catan.local_player.cards[give_res] >= rate && current_trade.want_total() == 1) {
+			$('.port_trade_button').addClass('enabled');
+		}
+	}
+
 	Trade.update_give_icons = function() {
 		var res_num = 0;
 
@@ -71,6 +131,8 @@
 
 			$(this).find('span').text(Catan.local_player.cards[restype] - current_trade.give[restype]);
 		});
+
+		Trade.update_port_trade();
 	}
 
 	Trade.update_want_icons = function() {
@@ -88,6 +150,8 @@
 				res_num++;
 			}
 		}
+
+		Trade.update_port_trade();
 	}
 
 	Trade.update_other_trades = function() {
@@ -150,9 +214,13 @@
 		}
 	};
 
-	Trade.send_trade = function (player_id) {
+	Trade.send_trade = function (player_id, port) {
 		if( player_id === undefined ) {
 			player_id = null;
+		}
+
+		if( port === undefined ) {
+			port = false;
 		}
 
 		Catan.send({
@@ -161,6 +229,7 @@
 				'give': current_trade.give,
 				'want': current_trade.want,
 				'player_id': player_id,
+				'port': port,
 				'turn': Catan.action_number,
 			}
 		});
@@ -207,6 +276,31 @@
 
 			Trade.update_want_icons();
 			Trade.send_trade();
+		});
+
+		$('.port_trade_button.enabled').live('click', function() {
+			var give_res;
+			var want_res;
+
+			for( var res in current_trade.give ) {
+				if( current_trade.give[res] > 0 ) {
+					give_res = res;
+				}
+			}
+
+			for( var res in current_trade.want ) {
+				if( current_trade.want[res] > 0 ) {
+					want_res = res;
+				}
+			}
+
+			var rate = get_exchange_rate_for_res(give_res);
+
+			current_trade.give[give_res] = rate;
+			current_trade.want[want_res] = 1;
+
+			Trade.update_give_icons();
+			Trade.update_want_icons();
 		});
 
 		$('.give_section .avail_resources .avail').live('click', function() {
