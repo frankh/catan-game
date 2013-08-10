@@ -6,8 +6,6 @@
 	var Trade = Catan.Trade;
 	Trade.current_trade = {};
 
-	var current_trade = Trade.current_trade;
-
 	var num_to_string = {
 		1: 'one',
 		2: 'two',
@@ -17,14 +15,14 @@
 	};
 	
 	Trade.reset_trade = function() {
-		current_trade.give = {
+		Trade.current_trade.give = {
 			'wheat': 0,
 			'clay': 0,
 			'wood': 0,
 			'ore': 0,
 			'wool': 0,
 		};
-		current_trade.want = {
+		Trade.current_trade.want = {
 			'wheat': 0,
 			'clay': 0,
 			'wood': 0,
@@ -44,12 +42,12 @@
 		return total;
 	}
 
-	current_trade.give_total = function() {
-		return Trade.sum_dict(current_trade.give);
+	Trade.current_trade.give_total = function() {
+		return Trade.sum_dict(Trade.current_trade.give);
 	};
 
-	current_trade.want_total = function() {
-		return Trade.sum_dict(current_trade.want);
+	Trade.current_trade.want_total = function() {
+		return Trade.sum_dict(Trade.current_trade.want);
 	};
 
 	function get_exchange_rate_for_res(res) {
@@ -84,8 +82,8 @@
 			$('.port_trade_button').removeClass('general');
 		}
 
-		for( var res in current_trade.give ) {
-			if( current_trade.give[res] > 0 ) {
+		for( var res in Trade.current_trade.give ) {
+			if( Trade.current_trade.give[res] > 0 ) {
 				if( give_res !== undefined ) {
 					return;
 				}
@@ -105,7 +103,7 @@
 			$('.port_trade_button').addClass(give_res);
 		}
 
-		if( Catan.local_player.cards[give_res] >= rate && current_trade.want_total() == 1) {
+		if( Catan.local_player.cards[give_res] >= rate && Trade.current_trade.want_total() == 1) {
 			$('.port_trade_button').addClass('enabled');
 		}
 	}
@@ -117,8 +115,8 @@
 			.removeClass()
 			.addClass('sel_res');
 
-		for( var res in current_trade.give ) {
-			var count = current_trade.give[res];
+		for( var res in Trade.current_trade.give ) {
+			var count = Trade.current_trade.give[res];
 
 			for( var i = 0; i < count; i++ ) {
 				$('.give_section .sel_res:eq('+res_num+')').addClass(res);
@@ -129,7 +127,7 @@
 		$('.give_section .avail').each(function() {
 			var restype = $(this).attr('restype');
 
-			$(this).find('span').text(Catan.local_player.cards[restype] - current_trade.give[restype]);
+			$(this).find('span').text(Catan.local_player.cards[restype] - Trade.current_trade.give[restype]);
 		});
 
 		Trade.update_port_trade();
@@ -142,8 +140,8 @@
 			.removeClass()
 			.addClass('sel_res');
 
-		for( var res in current_trade.want ) {
-			var count = current_trade.want[res];
+		for( var res in Trade.current_trade.want ) {
+			var count = Trade.current_trade.want[res];
 
 			for( var i = 0; i < count; i++ ) {
 				$('.want_section .sel_res:eq('+res_num+')').addClass(res);
@@ -182,7 +180,7 @@
 						can_match = false;
 					}
 
-					if( trade[this][res] != current_trade[opp[this]][res] ) {
+					if( trade[this][res] != Trade.current_trade[opp[this]][res] ) {
 						is_matched = false;
 					}
 				}
@@ -226,8 +224,8 @@
 		Catan.send({
 			'type': 'trade',
 			'trade': {
-				'give': current_trade.give,
-				'want': current_trade.want,
+				'give': Trade.current_trade.give,
+				'want': Trade.current_trade.want,
 				'player_id': player_id,
 				'port': port,
 				'turn': Catan.action_number,
@@ -257,7 +255,7 @@
 			for( var res in Catan.resource_types ) {
 				if( $this.hasClass(res) ) {
 					$this.removeClass(res);
-					current_trade.give[res] -= 1;
+					Trade.current_trade.give[res] -= 1;
 				}
 			}
 
@@ -270,7 +268,7 @@
 			for( var res in Catan.resource_types ) {
 				if( $this.hasClass(res) ) {
 					$this.removeClass(res);
-					current_trade.want[res] -= 1;
+					Trade.current_trade.want[res] -= 1;
 				}
 			}
 
@@ -278,41 +276,52 @@
 			Trade.send_trade();
 		});
 
+		var pending_port_trade = null;
 		$('.port_trade_button.enabled').live('click', function() {
 			var give_res;
 			var want_res;
 
-			for( var res in current_trade.give ) {
-				if( current_trade.give[res] > 0 ) {
+			for( var res in Trade.current_trade.give ) {
+				if( Trade.current_trade.give[res] > 0 ) {
 					give_res = res;
 				}
 			}
 
-			for( var res in current_trade.want ) {
-				if( current_trade.want[res] > 0 ) {
+			for( var res in Trade.current_trade.want ) {
+				if( Trade.current_trade.want[res] > 0 ) {
 					want_res = res;
 				}
 			}
 
 			var rate = get_exchange_rate_for_res(give_res);
 
-			current_trade.give[give_res] = rate;
-			current_trade.want[want_res] = 1;
+			if( pending_port_trade 
+			 && Trade.current_trade.give == pending_port_trade.give
+			 && Trade.current_trade.want == pending_port_trade.want ) {
+				Trade.send_trade(null, true);
+			} else {
+				Trade.reset_trade();
 
-			Trade.update_give_icons();
-			Trade.update_want_icons();
+				Trade.current_trade.give[give_res] = rate;
+				Trade.current_trade.want[want_res] = 1;
+
+				Trade.update_give_icons();
+				Trade.update_want_icons();
+
+				pending_port_trade = Catan.clone_dict(Trade.current_trade);
+			}
 		});
 
 		$('.give_section .avail_resources .avail').live('click', function() {
 			var restype = $(this).attr('restype');
 
-			if( Catan.local_player.cards[restype] - current_trade.give[restype] <= 0 
-			 || current_trade.give_total() >= 5
-			 || current_trade.want[restype]) {
+			if( Catan.local_player.cards[restype] - Trade.current_trade.give[restype] <= 0 
+			 || Trade.current_trade.give_total() >= 5
+			 || Trade.current_trade.want[restype]) {
 				return;
 			}
 
-			current_trade.give[restype] += 1;
+			Trade.current_trade.give[restype] += 1;
 			Trade.update_give_icons();
 			Trade.send_trade();
 
@@ -321,12 +330,12 @@
 		$('.want_section .avail_resources .avail').live('click', function() {
 			var restype = $(this).attr('restype');
 
-			if( current_trade.want_total() >= 5
-			 || current_trade.give[restype]) {
+			if( Trade.current_trade.want_total() >= 5
+			 || Trade.current_trade.give[restype]) {
 				return;
 			}
 
-			current_trade.want[restype] += 1;
+			Trade.current_trade.want[restype] += 1;
 			Trade.update_want_icons();
 			Trade.send_trade();
 		});
@@ -335,8 +344,8 @@
 			// Match the target player's trade
 			var $trade_buttons = $(this).closest('.trade_match_decline');
 			var player_id = parseInt($trade_buttons.attr('player_id'));
-			current_trade.want = $.extend({}, Catan.active_trades[player_id].give);
-			current_trade.give = $.extend({}, Catan.active_trades[player_id].want);
+			Trade.current_trade.want = $.extend({}, Catan.active_trades[player_id].give);
+			Trade.current_trade.give = $.extend({}, Catan.active_trades[player_id].want);
 
 			Trade.update_want_icons();
 			Trade.update_give_icons();

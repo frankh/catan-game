@@ -189,4 +189,8 @@
 		$('.message_box').hide();
 	};
 
+	Catan.clone_dict = function(dict) {
+		return $.extend({}, dict);
+	}
+
 }(window.Catan = window.Catan || {}, jQuery));

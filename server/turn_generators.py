@@ -7,6 +7,9 @@ log = logging.getLogger('catan')
 
 # Determine if a move is in the list of valid moves.
 def is_valid(move, valid_moves, *validators):
+	if move is None:
+		return False
+
 	plurals = {
 		'locations': 'location'
 	}
@@ -46,16 +49,68 @@ def is_valid(move, valid_moves, *validators):
 
 	return False
 
-def get_move(valid_moves, *extra_validators):
+def get_move(self, valid_moves, *extra_validators):
 	move = yield valid_moves
 
 	while not is_valid(move, valid_moves, *extra_validators):
 		log.warning('Invalid Move')
+		if self.phase == 'main':
+			valid_moves = update_build_moves(self, valid_moves)
+
 		move = yield valid_moves
 
 	return move
 
+def update_build_moves(self, moves):
+	valid_moves = [m for m in moves if m['type'] != 'build']
+
+	pl = self.current_player
+	cards = self.current_player.cards
+
+	if cards['wood'] and cards['clay']:
+		# can build road
+		valid_paths = [p for p in pl.get_connected_paths() if not p.built]
+
+		valid_moves.append({
+			'type': 'build',
+			'build': 'road',
+			'locations': [p.id_dict() for p in valid_paths]
+		})
+
+		if cards['wool'] and cards['wheat']:
+			#can build settlement
+			valid_verts = [v for v in pl.get_connected_vertices() if v.is_free()]
+			valid_moves.append({
+				'type': 'build',
+				'build': 'settlement',
+				'locations': [v.id_dict() for v in valid_verts]
+			})
+
+	if cards['wheat'] >= 2 and cards['ore'] >= 3:
+		# can build city
+		valid_verts = [v for v in pl.get_connected_vertices() 
+		                       if v.built 
+		                      and v.built.building == 'settlement'
+		                      and v.built.owner == pl]
+
+		valid_moves.append({
+			'type': 'build',
+			'build': 'city',
+			'locations': [v.id_dict() for v in valid_verts]
+		})
+
+
+	if cards['wheat'] and cards['wool'] and cards['ore']:
+		# can build dev card
+		valid_moves.append({
+			'type': 'build',
+			'build': 'dev_card'
+		})
+
+	return valid_moves
+
 def starting_phase(self):
+	self.phase = 'setup'
 	pl = self.current_player
 
 	## PLACE SETTLEMENT
@@ -66,7 +121,7 @@ def starting_phase(self):
 		                                if v.is_free()]
 	}]
 
-	move = yield from get_move(valid_moves)
+	move = yield from get_move(self, valid_moves)
 
 	self.do_move(self.current_player, move)
 
@@ -86,7 +141,7 @@ def starting_phase(self):
 		                                      if not path.built]
 	}]
 
-	move = yield from get_move(valid_moves)
+	move = yield from get_move(self, valid_moves)
 
 	self.do_move(self.current_player, move)
 
@@ -123,7 +178,7 @@ def rolled_robber(self):
 			'_number': len(player.cards_list) // 2,
 			'player_id': player.id
 		} for player in self.waiting_for_discards]
-		move = yield from get_move(valid_moves, validate_discards)
+		move = yield from get_move(self, valid_moves, validate_discards)
 		self.do_move(self.get_player(move['player_id']), move)
 
 	yield from move_robber(self)
@@ -135,7 +190,7 @@ def move_robber(self):
 		                                  if not hx.being_robbed],
 	}]
 
-	move = yield from get_move(valid_moves)
+	move = yield from get_move(self, valid_moves)
 	[hx for hx in self.board.land_hexes if hx.being_robbed][0].being_robbed = False
 
 	hx = self.board.Hex.get(move['location']['id'])
@@ -156,11 +211,12 @@ def move_robber(self):
 			} for vertex in target_vertices]
 		}]
 
-		move = yield from get_move(valid_moves)
+		move = yield from get_move(self, valid_moves)
 		self.do_move(self.current_player, move)
 
 
 def start_of_turn(self):
+	self.phase = 'start_turn'
 	self.can_trade = False
 
 	valid_moves = [{
@@ -169,7 +225,7 @@ def start_of_turn(self):
 
 	#TODO dev cards
 	
-	move = yield from get_move(valid_moves)
+	move = yield from get_move(self, valid_moves)
 
 	if move['type'] == 'roll':
 		die1, die2 = self.dice_gen.roll()
@@ -216,6 +272,7 @@ def start_of_turn(self):
 		self.do_move(self.current_player, move)
 
 def rest_of_turn(self):
+	self.phase = 'main'
 	self.can_trade = True
 
 	pl = self.current_player
@@ -226,49 +283,8 @@ def rest_of_turn(self):
 			'type': 'end_turn'
 		}]
 
-		cards = self.current_player.cards
-
-		if cards['wood'] and cards['clay']:
-			# can build road
-			valid_paths = [p for p in pl.get_connected_paths() if not p.built]
-
-			valid_moves.append({
-				'type': 'build',
-				'build': 'road',
-				'locations': [p.id_dict() for p in valid_paths]
-			})
-
-			if cards['wool'] and cards['wheat']:
-				#can build settlement
-				valid_verts = [v for v in pl.get_connected_vertices() if v.is_free()]
-				valid_moves.append({
-					'type': 'build',
-					'build': 'settlement',
-					'locations': [v.id_dict() for v in valid_verts]
-				})
-
-		if cards['wheat'] >= 2 and cards['ore'] >= 3:
-			# can build city
-			valid_verts = [v for v in pl.get_connected_vertices() 
-			                       if v.built 
-			                      and v.built.building == 'settlement'
-			                      and v.built.owner == pl]
-
-			valid_moves.append({
-				'type': 'build',
-				'build': 'city',
-				'locations': [v.id_dict() for v in valid_verts]
-			})
-
-
-		if cards['wheat'] and cards['wool'] and cards['ore']:
-			# can build dev card
-			valid_moves.append({
-				'type': 'build',
-				'build': 'dev_card'
-			})
-
-		move = yield from get_move(valid_moves)
+		valid_moves = update_build_moves(self, valid_moves)
+		move = yield from get_move(self, valid_moves)
 
 		if move['type'] == 'end_turn':
 			break

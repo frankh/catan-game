@@ -248,6 +248,7 @@ player_colors = {
 internal_game_id = 0
 class Game(object):
 	started = False
+	phase = None
 
 	def __init__(self, name="unnamed game", max_players=4):
 		self.players = []
@@ -519,6 +520,12 @@ class Game(object):
 				'player': player.as_dict(),
 				'trade': trade,
 			}, exclude=[player])
+		else:
+			moves = next(self.gen)
+			self.current_player.send({
+				'type': 'moves',
+				'moves': moves
+			})
 
 	def do_trade(self, trade, player_from, player_to=None):
 		self.action_number += 1

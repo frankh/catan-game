@@ -151,7 +151,10 @@
 		update_players();
 
 		delete Catan.active_trades[trade.player_from.id];
-		delete Catan.active_trades[trade.player_to.id];
+
+		if( trade.player_to !== null ) {
+			delete Catan.active_trades[trade.player_to.id];
+		}
 
 		Trade.update_other_trades();
 
