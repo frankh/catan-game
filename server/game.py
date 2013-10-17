@@ -623,8 +623,8 @@ class Game(object):
 			self.waiting_for_discards.remove(player)
 
 		elif move['type'] == 'steal_from':
-			vertex = move['vertex']
-			vertex = Vertex.get(vertex['id'])
+			vertex = move['location']
+			vertex = self.board.Vertex.get(vertex['id'])
 			target = vertex.built.owner
 
 			stolen = random.choice(target.cards_list)

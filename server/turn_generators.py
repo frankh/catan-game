@@ -191,6 +191,7 @@ def move_robber(self):
 	}]
 
 	move = yield from get_move(self, valid_moves)
+	self.action_number += 1
 	[hx for hx in self.board.land_hexes if hx.being_robbed][0].being_robbed = False
 
 	hx = self.board.Hex.get(move['location']['id'])
@@ -207,7 +208,7 @@ def move_robber(self):
 			'type': 'steal_from',
 			'locations': [{
 				'type': 'vertex',
-				'id': vertex.id
+				'id': list(vertex.id)
 			} for vertex in target_vertices]
 		}]
 
@@ -227,49 +228,51 @@ def start_of_turn(self):
 	
 	move = yield from get_move(self, valid_moves)
 
-	if move['type'] == 'roll':
-		die1, die2 = self.dice_gen.roll()
-		result = die1 + die2
+	if move['type'] != 'roll':
+		raise Exception("Expected ROLL move")
 
-		self.broadcast({
-			'type': 'roll',
-			'values': [die1, die2],
-			'result': result,
-		})
+	die1, die2 = self.dice_gen.roll()
+	result = die1 + die2
 
-		if result == 7:
-			yield from rolled_robber(self)
+	self.broadcast({
+		'type': 'roll',
+		'values': [die1, die2],
+		'result': result,
+	})
 
-		gen_hexes = [hx for hx in self.board.land_hexes if hx.value == result]
-		for hx in gen_hexes:
-			res = tile_resource_map[hx.tile]
+	if result == 7:
+		yield from rolled_robber(self)
 
-			if res:
-				for vert in hx.vertices:
-					if vert.built:
-						building = vert.built.building
-						res_count = 0
+	gen_hexes = [hx for hx in self.board.land_hexes if hx.value == result]
+	for hx in gen_hexes:
+		res = tile_resource_map[hx.tile]
 
-						if building == 'settlement':
-							res_count = 1
-						elif building == 'city':
-							res_count = 2
-						else:
-							raise Exception('invalid building type')
+		if res:
+			for vert in hx.vertices:
+				if vert.built:
+					building = vert.built.building
+					res_count = 0
 
-						if hx.being_robbed:
-							#TODO
-							pass
-						else:
-							# TODO message
-							vert.built.owner.cards[res] += res_count
+					if building == 'settlement':
+						res_count = 1
+					elif building == 'city':
+						res_count = 2
+					else:
+						raise Exception('invalid building type')
 
-		self.broadcast({
-			'type': 'resource_generation',
-			'hexes': [hx.as_dict() for hx in gen_hexes],
-		})
+					if hx.being_robbed:
+						#TODO
+						pass
+					else:
+						# TODO message
+						vert.built.owner.cards[res] += res_count
 
-		self.do_move(self.current_player, move)
+	self.broadcast({
+		'type': 'resource_generation',
+		'hexes': [hx.as_dict() for hx in gen_hexes],
+	})
+
+	self.do_move(self.current_player, move)
 
 def rest_of_turn(self):
 	self.phase = 'main'
