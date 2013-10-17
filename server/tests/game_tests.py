@@ -415,5 +415,27 @@ class GameTest(unittest.TestCase):
 				self.game.recv_move(conn.player, random_move(conn.moves))
 
 
+	def test_9_5_dev_cards(self):
+		# Sorting by classname will put Knights first.
+		self.game.dev_card_deck.cards.sort(key=lambda a:a.__class__.__name__, reverse=True)
+
+		with self.assert_moves(1):
+			self.game.recv_move(self.game.current_player, {'type': 'end_turn'})
+
+		self.dice_gen.next = 1, 1
+		conn = self.game.current_player.connection
+		conn.player.cards['ore'] += 1
+		conn.player.cards['wool'] += 1
+		conn.player.cards['wheat'] += 1
+
+		self.game.recv_move(conn.player, {'type': 'roll'})
+
+		with self.assert_moves(1):
+			self.game.recv_move(conn.player, {'type': 'build', 'build': 'dev_card'})
+
+		self.assertEqual(len(conn.player.dev_cards), 1)
+		self.assertEqual(conn.player.dev_cards[0].__class__.__name__, 'Knight')
+
+
 if __name__ == '__main__':
 	unittest.main()
