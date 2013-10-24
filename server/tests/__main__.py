@@ -10,6 +10,9 @@ from game_tests import *
 from utils_tests import *
 
 import time
+import logging
+
+logging.disable(logging.WARNING)
 
 def timingDecorator(func):
 	import functools
