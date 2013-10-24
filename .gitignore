@@ -5,3 +5,4 @@ pyserv.bat
 env/
 nohup.out
 *.css
+.venv/
