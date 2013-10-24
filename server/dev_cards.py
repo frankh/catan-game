@@ -20,11 +20,19 @@ class Deck(object):
 		return self.cards.pop()
 
 class DevCard(object):
-	def as_dict(self):
+	@property
+	def name(self):
 		return self.__class__.__name__
 
+	def playable(self, game):
+		return True
+
+	def as_dict(self):
+		return self.name
+
 class VictoryPoint(DevCard):
-	pass
+	def playable(self, game):
+		return False
 
 class Knight(DevCard):
 	pass

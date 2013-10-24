@@ -215,6 +215,16 @@ def move_robber(self):
 		move = yield from get_move(self, valid_moves)
 		self.do_move(self.current_player, move)
 
+def dev_card_moves(self):
+	moves = []
+	for dev_card in self.current_player.dev_cards:
+		if dev_card.playable(self):
+			moves.append({
+				'type': 'dev_card',
+				'dev_card': dev_card.name
+			})
+
+	return moves
 
 def start_of_turn(self):
 	self.phase = 'start_turn'
@@ -224,7 +234,7 @@ def start_of_turn(self):
 		'type': 'roll',
 	}]
 
-	#TODO dev cards
+	valid_moves += dev_card_moves(self)
 	
 	move = yield from get_move(self, valid_moves)
 
