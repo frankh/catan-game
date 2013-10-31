@@ -434,7 +434,7 @@ class GameTest(unittest.TestCase):
 			self.game.recv_move(conn.player, {'type': 'build', 'build': 'dev_card'})
 
 		self.assertEqual(len(conn.player.dev_cards), 1)
-		self.assertEqual(conn.player.dev_cards[0].__class__.__name__, 'Knight')
+		self.assertEqual(conn.player.dev_cards[0].name, 'Knight')
 
 
 if __name__ == '__main__':

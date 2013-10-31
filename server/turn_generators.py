@@ -215,16 +215,6 @@ def move_robber(self):
 		move = yield from get_move(self, valid_moves)
 		self.do_move(self.current_player, move)
 
-def dev_card_moves(self):
-	moves = []
-	for dev_card in self.current_player.dev_cards:
-		if dev_card.playable(self):
-			moves.append({
-				'type': 'dev_card',
-				'dev_card': dev_card.name
-			})
-
-	return moves
 
 def start_of_turn(self):
 	self.phase = 'start_turn'
@@ -234,12 +224,7 @@ def start_of_turn(self):
 		'type': 'roll',
 	}]
 
-	valid_moves += dev_card_moves(self)
-	
 	move = yield from get_move(self, valid_moves)
-
-	if move['type'] != 'roll':
-		raise Exception("Expected ROLL move")
 
 	die1, die2 = self.dice_gen.roll()
 	result = die1 + die2
@@ -256,7 +241,7 @@ def start_of_turn(self):
 	gen_hexes = [hx for hx in self.board.land_hexes if hx.value == result]
 	for hx in gen_hexes:
 		res = tile_resource_map[hx.tile]
-
+ 
 		if res:
 			for vert in hx.vertices:
 				if vert.built:
@@ -289,6 +274,8 @@ def rest_of_turn(self):
 	self.can_trade = True
 
 	pl = self.current_player
+	played_dev_card = False
+	player_dev_cards = self.current_player.dev_cards
 
 	#Actual turn!
 	while True:
@@ -297,7 +284,23 @@ def rest_of_turn(self):
 		}]
 
 		valid_moves = update_build_moves(self, valid_moves)
+		valid_moves = [m for m in valid_moves if m['type'] != 'dev_card']
+
+		# Can only play
+		if not played_dev_card:
+			for card_name in set(card.name for card in player_dev_cards):
+				valid_moves.append({
+					'type': 'dev_card',
+					'dev_card': card_name
+				})
+				
 		move = yield from get_move(self, valid_moves)
+
+			
+		if move['type'] == 'dev_card':
+			played_dev_card = True
+			if move['dev_card'] == 'Knight':
+				yield from move_robber(self)
 
 		if move['type'] == 'end_turn':
 			break
