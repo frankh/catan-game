@@ -286,7 +286,7 @@ def rest_of_turn(self):
 		valid_moves = update_build_moves(self, valid_moves)
 		valid_moves = [m for m in valid_moves if m['type'] != 'dev_card']
 
-		# Can only play
+		# Can only play once per turn
 		if not played_dev_card:
 			print("Current dev cards: {}".format(player_dev_cards))
 
