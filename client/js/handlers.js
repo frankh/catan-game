@@ -209,6 +209,19 @@
 				for( var res_type in Catan.resource_types ) {
 					$('.hand .card.'+res_type+' .count').text(player.cards[res_type]);
 				}
+
+				$('#dev_card_view').children().remove();
+				for( var dev_type in player.dev_cards ) {
+					var dev_type = player.dev_cards[dev_type];
+					var $dev = $('.dev_card.template').clone();
+
+					$dev
+						.removeClass('template')
+						.addClass(dev_type)
+						.data('type', dev_type);
+
+					$('#dev_card_view').append($dev);
+				}
 			}
 		}
 	};

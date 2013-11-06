@@ -250,7 +250,6 @@
 	};
 
 	Moves.build_dev_card = function(move) {
-
 		$('.build .'+move.build)
 			.addClass('enabled')
 			.click(function() {
@@ -263,6 +262,14 @@
 				});
 				$(this).unbind('click');
 				$(this).removeClass('enabled');
+			});
+	};
+
+	Moves.dev_card = function(move) {
+		$('.actions .dev_cards')
+			.addClass('enabled')
+			.click(function() {
+				$('#dev_card_view').show()
 			});
 	};
 }(window.Catan = window.Catan || {}, jQuery));

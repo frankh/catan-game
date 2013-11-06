@@ -275,7 +275,7 @@ def rest_of_turn(self):
 
 	pl = self.current_player
 	played_dev_card = False
-	player_dev_cards = self.current_player.dev_cards
+	player_dev_cards = list(self.current_player.dev_cards)
 
 	#Actual turn!
 	while True:
@@ -288,19 +288,26 @@ def rest_of_turn(self):
 
 		# Can only play
 		if not played_dev_card:
-			for card_name in set(card.name for card in player_dev_cards):
+			print("Current dev cards: {}".format(player_dev_cards))
+
+			for card_name in set(card.name for card in player_dev_cards if card.playable(self)):
 				valid_moves.append({
 					'type': 'dev_card',
 					'dev_card': card_name
 				})
 				
 		move = yield from get_move(self, valid_moves)
-
 			
 		if move['type'] == 'dev_card':
 			played_dev_card = True
+
+			card = [card for card in player_dev_cards if card.playable(self) and card.name == move['dev_card']][0]
+			card.played = True
+
 			if move['dev_card'] == 'Knight':
 				yield from move_robber(self)
+
+			continue
 
 		if move['type'] == 'end_turn':
 			break

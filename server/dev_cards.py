@@ -20,12 +20,14 @@ class Deck(object):
 		return self.cards.pop()
 
 class DevCard(object):
+	played = False
+
 	@property
 	def name(self):
 		return self.__class__.__name__
 
 	def playable(self, game):
-		return True
+		return not self.played
 
 	def as_dict(self):
 		return self.name

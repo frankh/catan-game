@@ -227,7 +227,8 @@ class Player(object):
 			'num_cards': len(self.cards_list),
 			'cards': self.cards,
 			'num_dev_cards': len(self.dev_cards),
-			'dev_cards': [c.as_dict() for c in self.dev_cards],
+			'dev_cards': [c.as_dict() for c in self.dev_cards if not c.played],
+			'played_dev_cards': [c.as_dict() for c in self.dev_cards if c.played],
 			'num_soldiers': self.num_soldiers,
 			'longest_road': self.longest_road,
 			'has_longest_road': self.has_longest_road,
@@ -638,7 +639,7 @@ class Game(object):
 				'resource': stolen
 			})
 		else:
-			raise Exception('invalid move')
+			raise Exception('invalid move: {}'.format(move))
 
 		self.broadcast({
 			'type': 'game',

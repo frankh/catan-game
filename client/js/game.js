@@ -160,6 +160,18 @@
 			$('.clicked').removeClass('clicked');
 		});
 
+		$('#dev_card_view .dev_card').live('click', function() {
+			if ($(this).data('type')) {
+				Catan.send({
+					type: 'do_move',
+					move: {
+						type: 'dev_card',
+						dev_card: $(this).data('type')
+					}
+				});
+				$('#dev_card_view').hide()
+			}
+		});
 	});
 
 	Catan.get_hex = function(hex_id) {
