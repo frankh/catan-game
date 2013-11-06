@@ -1,5 +1,6 @@
 import logging
 
+import const
 from const import tile_resource_map
 
 log = logging.getLogger('catan')
@@ -319,6 +320,37 @@ def rest_of_turn(self):
 					move = yield from get_move(self, valid_moves)
 
 					self.do_move(self.current_player, move)
+
+			elif move['dev_card'] == 'Plenty':
+				for _ in range(2):
+
+					valid_moves = [{
+						'type': 'choose_resource',
+						'resources': [res for res in const.resources]
+					}]
+
+					move = yield from get_move(self, valid_moves)
+					res = move['resource']
+					pl.cards[res] += 1
+
+			elif move['dev_card'] == 'Monopoly':
+				valid_moves = [{
+					'type': 'choose_resource',
+					'resources': [res for res in const.resources]
+				}]
+
+				move = yield from get_move(self, valid_moves)
+				res = move['resource']
+
+				total_res = 0
+				for p in self.players:
+					total_res += p.cards[res]
+					p.cards[res] = 0
+				pl.cards[res] = total_res
+
+			else:
+				raise Exception("Unknown Dev Card")
+
 			continue
 
 		if move['type'] == 'end_turn':
