@@ -307,6 +307,18 @@ def rest_of_turn(self):
 			if move['dev_card'] == 'Knight':
 				yield from move_robber(self)
 
+			elif move['dev_card'] == 'RoadBuilding':
+				for _ in range(2):
+					valid_paths = [p for p in pl.get_connected_paths() if not p.built]
+					valid_moves = [{
+						'type': 'place',
+						'build': 'road',
+						'locations': [path.id_dict() for path in valid_paths]
+					}]
+
+					move = yield from get_move(self, valid_moves)
+
+					self.do_move(self.current_player, move)
 			continue
 
 		if move['type'] == 'end_turn':
