@@ -44,7 +44,6 @@ class Socket(tornado.websocket.WebSocketHandler):
 				}
 			}))
 			print(game_tokens)
-			import pdb;pdb.set_trace()
 			self.close()
 			return
 
