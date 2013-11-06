@@ -112,6 +112,10 @@
 			game_token = location.hash.slice(1);
 		}
 
+		if (game_token == '') {
+			game_token = "default"
+		}
+
 		SOCKET = new WebSocket(sockprot+"//"+sockaddr+document.location.pathname+"socket/"+game_token);
 
 		$('.overlay').text('Connecting');

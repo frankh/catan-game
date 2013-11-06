@@ -24,8 +24,9 @@ class DefaultGame(Game):
 	def __init__(self):
 		super().__init__()
 		self.dice_gen = dice_gen.DeckDiceGen()
-		self.max_players = 2
-		
+		self.max_players = 1
+	
+global games, game_tokens
 games = set()
 game_tokens = {}
 
@@ -36,16 +37,20 @@ class Socket(tornado.websocket.WebSocketHandler):
 		global game_tokens
 		token = url_unescape(token)
 		if token not in game_tokens:
-			self.write_message(json.dumps({
-				'type': 'error',
-				'error': {
-					'type': 'Invalid Token',
-					'msg': 'Invalid Token'
-				}
-			}))
-			print(game_tokens)
-			self.close()
-			return
+
+			if "default" in game_tokens:
+				token = "default"
+			else:
+				self.write_message(json.dumps({
+					'type': 'error',
+					'error': {
+						'type': 'Invalid Token',
+						'msg': 'Invalid Token'
+					}
+				}))
+				print(game_tokens)
+				self.close()
+				return
 
 		game = game_tokens[token]
 		self.game = game
@@ -130,8 +135,34 @@ socket_app = tornado.web.Application([
 ])
 
 if __name__ == '__main__':
-	socket_app.listen(settings.port)
-	log.debug('Listening on port {0}'.format(settings.port))
+	import argparse
+	parser = argparse.ArgumentParser()
+	parser.add_argument(
+		'-p', 
+		'--port', 
+		metavar='port', 
+		type=int,
+		default=8080,
+		help='listen on the specified port'
+	)
+
+	parser.add_argument(
+		'--default_game',
+		action="store_true",
+		default=False
+	)
+
+	opts = parser.parse_args()
+	
+	if opts.default_game:
+		game = DefaultGame()
+		games.add(game)
+		game_tokens["default"] = game
+		default_player = Player("default", "default", game)
+		game.add_player(default_player)
+
+	socket_app.listen(opts.port)
+	log.debug('Listening on port {0}'.format(opts.port))
 	iol = tornado.ioloop.IOLoop.instance()
 	tornado.ioloop.PeriodicCallback(lambda: None,500,iol).start()
 	iol.start()
