@@ -6,3 +6,4 @@ env/
 nohup.out
 *.css
 .venv/
+.DS_Store
