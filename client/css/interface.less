@@ -336,7 +336,14 @@
 	// Get rid of spaces between inline-blocks
 	font-size:0;
 
+
 	.card {
+
+		&.disabled {
+			cursor: inherit;
+			opacity: 0.5;
+		}
+
 		width: 20%;
 		height: 100%;
 		cursor: pointer;

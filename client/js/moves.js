@@ -273,7 +273,12 @@
 			});
 	};
 
-	Moves.choose_resource = function(msg) {
-		$("#resource_selector").show();
+	Moves.choose_resource = function(move) {
+		$('#resource_selector').show();
+		$('#resource_selector .card').addClass('disabled');
+
+		$(move.resources).each(function () {
+			$('#resource_selector .card.'+this).removeClass('disabled');
+		});
 	};
 }(window.Catan = window.Catan || {}, jQuery));
