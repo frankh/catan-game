@@ -174,14 +174,22 @@ def rolled_robber(self):
 
 		return True
 
+	player_thresholds = {player.id: len(player.cards_list) - len(player.cards_list)//2 for player in self.waiting_for_discards}
 	while self.waiting_for_discards:
+
 		valid_moves = [{
-			'type': 'discard',
-			'_number': len(player.cards_list) // 2,
+			'type': 'choose_resource',
+			'resources': [res for res in const.resources if player.cards[res]],
 			'player_id': player.id
 		} for player in self.waiting_for_discards]
-		move = yield from get_move(self, valid_moves, validate_discards)
-		self.do_move(self.get_player(move['player_id']), move)
+		move = yield from get_move(self, valid_moves)
+		
+		player = self.get_player(move['player_id'])
+		player.cards[move['resource']] -= 1
+		self.action_number += 1
+		if len(player.cards_list) <= player_thresholds[player.id]:
+			self.waiting_for_discards.remove(player)
+
 
 	yield from move_robber(self)
 
