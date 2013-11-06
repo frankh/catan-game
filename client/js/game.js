@@ -172,6 +172,18 @@
 				$('#dev_card_view').hide()
 			}
 		});
+		$('#resource_selector .card').live('click', function() {
+			if ($(this).data('type')) {
+				Catan.send({
+					type: 'do_move',
+					move: {
+						type: 'choose_resource',
+						resource: $(this).data('type')
+					}
+				});
+				$('#resource_selector').hide()
+			}
+		});
 	});
 
 	Catan.get_hex = function(hex_id) {

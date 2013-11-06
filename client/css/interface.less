@@ -319,6 +319,34 @@
 	}
 }
 
+#resource_selector {
+	display: none;
+
+	position: absolute;
+	left: 20%;
+	top: 30%;
+
+	width: 70%;
+	height: 18%;
+
+	background-color: white;
+	border: solid black 1px;
+
+	z-index: 200;
+	// Get rid of spaces between inline-blocks
+	font-size:0;
+
+	.card {
+		width: 20%;
+		height: 100%;
+		cursor: pointer;
+
+		.image {
+			height: 100%;
+		}
+	}
+}
+
 #dev_card_view {
 	display: none;
 

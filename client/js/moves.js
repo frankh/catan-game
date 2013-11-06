@@ -272,4 +272,8 @@
 				$('#dev_card_view').show()
 			});
 	};
+
+	Moves.choose_resource = function(msg) {
+		$("#resource_selector").show();
+	};
 }(window.Catan = window.Catan || {}, jQuery));

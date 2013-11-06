@@ -12,7 +12,8 @@ def is_valid(move, valid_moves, *validators):
 		return False
 
 	plurals = {
-		'locations': 'location'
+		'locations': 'location',
+		'resources': 'resource',
 	}
 
 	for valid in valid_moves:
