@@ -7,11 +7,11 @@ def flatten(l):
 class Deck(object):
 	def __init__(self):
 		self.cards = flatten([
-			[Knight()]       * 14,
-			[Plenty()]       * 2,
-			[Monopoly()]     * 2,
-			[RoadBuilding()] * 2,
-			[VictoryPoint()] * 5,
+			[Knight() for _ in range(14)],
+			[Plenty() for _ in range(2)],
+			[Monopoly() for _ in range(2)],
+			[RoadBuilding() for _ in range(2)],
+			[VictoryPoint() for _ in range(5)],
 		])
 
 		random.shuffle(self.cards)
