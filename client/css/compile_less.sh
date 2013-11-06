@@ -5,5 +5,5 @@ do
     FROM=$file
     TO=${file/.*/.css}
     echo "$FROM --> $TO"
-    lessc $FROM $TO -x --yui-compress
+    /usr/local/bin/lessc $FROM $TO -x
 done
