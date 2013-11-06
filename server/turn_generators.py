@@ -342,6 +342,8 @@ def rest_of_turn(self):
 					res = move['resource']
 					pl.cards[res] += 1
 
+					self.action_number += 1
+
 			elif move['dev_card'] == 'Monopoly':
 				valid_moves = [{
 					'type': 'choose_resource',
@@ -356,6 +358,7 @@ def rest_of_turn(self):
 					total_res += p.cards[res]
 					p.cards[res] = 0
 				pl.cards[res] = total_res
+				self.action_number += 1
 
 			else:
 				raise Exception("Unknown Dev Card")
