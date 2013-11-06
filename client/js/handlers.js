@@ -1,4 +1,4 @@
-(function( Catan, $, undefined ) {
+(function( Catan, $ ) {
 	"use strict";
 	Catan.Handlers = Catan.Handlers || {};
 
