@@ -1,6 +1,7 @@
 (function( Catan, $, undefined ) {
 	Catan.board = null;
 	Catan.current_player = null;
+	Catan.speed = 0.1;
 
 	Catan.resource_types = {
 		'wheat': true,

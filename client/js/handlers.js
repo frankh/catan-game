@@ -300,7 +300,7 @@
 
 		$('.rolling_die')
 		   .addClass('rolling')
-		   .delay(1000)
+		   .delay(Catan.speed*1000)
 		   .promise()
 		   .done(function() {
 			$('.rolling_die').removeClass('rolling')
@@ -308,7 +308,7 @@
 			$('.rolling_die:eq(1)').addClass('value_'+values[1]);
 
 			$('.rolling_die')
-			   .delay(1000)
+			   .delay(Catan.speed*1000)
 			   .promise()
 			   .done(function() {
 			   	$(this).add($('.corner_dice .die'))
@@ -336,7 +336,7 @@
 			Catan.queue.wait_for('resource_generation');
 			var $hex = Catan.get_hex(this.id);
 			$hex.addClass('generating')
-			.delay(600).promise().done(function() {
+			.delay(Catan.speed*600).promise().done(function() {
 				$hex.removeClass('generating');
 				Catan.queue.finish('resource_generation');
 			});
@@ -345,7 +345,7 @@
 		if( msg.hexes.length ) {
 			Catan.queue.add_front(function() {
 				Catan.queue.wait_for('resource_summary');
-				$('.resource_summary').show().delay(2000).promise().done(function() {
+				$('.resource_summary').show().delay(Catan.speed*2000).promise().done(function() {
 					Catan.queue.finish('resource_summary');
 					$('.resource_summary').hide();
 				});
