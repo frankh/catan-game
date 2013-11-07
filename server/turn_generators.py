@@ -259,6 +259,7 @@ def start_of_turn(self):
 		yield from rolled_robber(self)
 
 	gen_hexes = [hx for hx in self.board.land_hexes if hx.value == result]
+	gen_players = {player.id: [] for player in self.players}
 	for hx in gen_hexes:
 		res = tile_resource_map[hx.tile]
  
@@ -280,11 +281,15 @@ def start_of_turn(self):
 						pass
 					else:
 						# TODO message
-						vert.built.owner.cards[res] += res_count
+						player = vert.built.owner
+						player.cards[res] += res_count
+
+						gen_players[player.id] += [res] * res_count
 
 	self.broadcast({
 		'type': 'resource_generation',
 		'hexes': [hx.as_dict() for hx in gen_hexes],
+		'players': gen_players
 	})
 
 	self.do_move(self.current_player, move)

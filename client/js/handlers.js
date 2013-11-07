@@ -345,6 +345,22 @@
 		if( msg.hexes.length ) {
 			Catan.queue.add_front(function() {
 				Catan.queue.wait_for('resource_summary');
+				$('.resource_summary .resource_player_row').each(function() {
+					var $this = $(this);
+					var $cards = $this.find('.cards');
+					var player_id = parseInt($this.attr('player_id'));
+					$cards.children().remove();
+
+					$(msg.players[player_id]).each(function() {
+						var res = this;
+						$('.card.template')
+							.clone()
+							.removeClass('template')
+							.addClass(res)
+							.appendTo($cards);
+					});
+				});
+
 				$('.resource_summary').show().delay(Catan.speed*2000).promise().done(function() {
 					Catan.queue.finish('resource_summary');
 					$('.resource_summary').hide();
