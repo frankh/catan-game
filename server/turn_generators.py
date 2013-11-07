@@ -298,8 +298,6 @@ def rest_of_turn(self):
 
 		# Can only play once per turn
 		if not played_dev_card:
-			print("Current dev cards: {}".format(player_dev_cards))
-
 			for card_name in set(card.name for card in player_dev_cards if card.playable(self)):
 				valid_moves.append({
 					'type': 'dev_card',

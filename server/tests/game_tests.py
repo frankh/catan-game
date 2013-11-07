@@ -396,14 +396,11 @@ class GameTest(unittest.TestCase):
 			self.assertFalse(self.game.waiting_for_discards)
 
 		for p in discard_players:
-			with self.assert_moves(1):
-				self.game.recv_move(p, 
-					{
-						'type': 'discard',
-						'_cards': dict(Counter(
-							random.sample(p.cards_list, len(p.cards_list) // 2)))
-					}
-				)
+			for _ in range(len(p.cards_list) // 2):
+				with self.assert_moves(1):
+					move = random_move(p.connection.moves)
+					self.assertEqual(move['type'], 'choose_resource')
+					self.game.recv_move(p, move)
 
 		# Move the robber.
 		with self.assert_moves(1):

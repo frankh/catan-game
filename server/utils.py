@@ -42,6 +42,9 @@ def random_move(moves):
 	if 'locations' in move:
 		move['location'] = random.choice(move['locations'])
 		del move['locations']
+	if 'resources' in move:
+		move['resource'] = random.choice(move['resources'])
+		del move['resources']
 
 	return move
 

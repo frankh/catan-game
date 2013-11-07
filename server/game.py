@@ -335,26 +335,24 @@ class Game(object):
 		current players valid moves which we then send back to the player.
 		"""
 		if player == self.current_player \
-		or move['type'] == 'discard' and self.waiting_for_discards:
+		or move['type'] == 'choose_resource' and self.waiting_for_discards:
 			move['player_id'] = player.id
 
 			gen_val = self.gen.send(move)
 
-			if isinstance(gen_val, list):
-				moves = gen_val
+			moves = gen_val
 
+			if self.waiting_for_discards:
+				for pl in self.waiting_for_discards:
+					pl.send({
+						'type': 'moves',
+						'moves': [move for move in moves if move['player_id'] == pl.id]
+					})
+			else:
 				self.current_player.send({
 					'type': 'moves',
 					'moves': moves
 				})
-			else:
-				val_type, val = gen_val
-				
-				if val_type == 'discard':
-					self.broadcast({
-						'type': 'discard',
-						'discards': val
-					})
 
 	def recv_trade(self, player, trade):
 		"""
