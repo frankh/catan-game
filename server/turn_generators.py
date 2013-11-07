@@ -228,7 +228,7 @@ def move_robber(self):
 			'type': 'steal_from',
 			'locations': [{
 				'type': 'vertex',
-				'id': list(vertex.str_id)
+				'id': vertex.str_id
 			} for vertex in target_vertices]
 		}]
 
