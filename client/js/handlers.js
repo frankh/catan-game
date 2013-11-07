@@ -381,4 +381,7 @@
 		Catan.clear_message();
 	};
 
+	Handlers.stolen = function(msg) {
+	};
+
 }(window.Catan = window.Catan || {}, jQuery));
