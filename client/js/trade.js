@@ -244,6 +244,7 @@
 			}
 
 			$('.trade_window').show();
+			Trade.reset_trade();
 		})
 
 		$('.hide_trade').click(function() {
