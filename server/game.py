@@ -92,6 +92,17 @@ class Player(object):
 		return [v for v in self.game.board.vertices
 			            if v.built and v.built.owner is self]
 
+	def show_message(self, message):
+		self.send({
+			'type': 'show_message',
+			'message': message
+		})
+
+	def hide_message(self):
+		self.send({
+			'type': 'hide_message',
+		})
+
 	@cached_per_action
 	def get_connected_locations(self):
 		current_verts = [v for v in self.game.board.vertices
@@ -427,20 +438,24 @@ class Game(object):
 				turn = int(trade['turn'])
 				if turn != self.action_number or not self.can_trade:
 					# Outdated trade
+					logging.debug("wrong action number")
 					return False
 
 				# Make sure all the resources are real ones.
 				for key in itertools.chain(trade['give'], trade['want']):
 					if key not in resources:
+						logging.debug("invalid resource")
 						return False
 
 				# Check if player has enough resources.
 				for res in trade['give']:
 					if player.cards[res] < trade['give'][res]:
+						logging.debug("not enough resources")
 						return False
 
 					# You can't have a resource in both give and want
 					if res in trade['want'] and trade['give'][res] > 0 and trade['want'][res] > 0:
+						logging.debug("want and give")
 						return False
 
 				# Make sure both giving and wanting something.
@@ -448,6 +463,7 @@ class Game(object):
 					return max(list(dict.values()) or [0]) == 0
 
 				if all_zero(trade['give']) or all_zero(trade['want']):
+					logging.debug("want nothing")
 					return False
 
 				# Make sure people dont try and cheat by offering negative values...
@@ -455,10 +471,12 @@ class Game(object):
 					return min(list(dict.values()) or [0]) < 0
 
 				if has_negative(trade['give']) or has_negative(trade['want']):
+					logging.debug("neg values")
 					return False
 
 				return True
 			except (KeyError, TypeError, IndexError, ValueError) as e:
+				logging.debug("error: {}".format(e))
 				return False
 
 		if not valid_trade(player, trade):
@@ -524,6 +542,10 @@ class Game(object):
 			self.current_player.send({
 				'type': 'moves',
 				'moves': moves
+			})
+			self.broadcast({
+				'type': 'game',
+				'game': self.as_dict()
 			})
 
 	def do_trade(self, trade, player_from, player_to=None):

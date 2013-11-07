@@ -182,14 +182,24 @@ def rolled_robber(self):
 			'resources': [res for res in const.resources if player.cards[res]],
 			'player_id': player.id
 		} for player in self.waiting_for_discards]
+
+		for player in set(self.players) - set(self.waiting_for_discards):
+			player.show_message("Waiting for {} players to discard".format(len(self.waiting_for_discards)))
+
+		for player in self.waiting_for_discards:
+			player.show_message("Select {} more cards to discard".format(
+				len(player.cards_list) - player_thresholds[player.id]))
+
 		move = yield from get_move(self, valid_moves)
-		
+
 		player = self.get_player(move['player_id'])
 		player.cards[move['resource']] -= 1
 		self.action_number += 1
 		if len(player.cards_list) <= player_thresholds[player.id]:
 			self.waiting_for_discards.remove(player)
 
+	for player in self.players:
+		player.hide_message()
 
 	yield from move_robber(self)
 
@@ -316,7 +326,7 @@ def rest_of_turn(self):
 				yield from move_robber(self)
 
 			elif move['dev_card'] == 'RoadBuilding':
-				for _ in range(2):
+				for i in range(2):
 					valid_paths = [p for p in pl.get_connected_paths() if not p.built]
 					valid_moves = [{
 						'type': 'place',
@@ -324,19 +334,22 @@ def rest_of_turn(self):
 						'locations': [path.id_dict() for path in valid_paths]
 					}]
 
+					pl.show_message("Place {} roads".format(2-i))
 					move = yield from get_move(self, valid_moves)
 
 					self.do_move(self.current_player, move)
 
 			elif move['dev_card'] == 'Plenty':
-				for _ in range(2):
+				for i in range(2):
 
 					valid_moves = [{
 						'type': 'choose_resource',
 						'resources': [res for res in const.resources]
 					}]
 
+					pl.show_message("Choose {} resource cards to gain".format(2 - i))
 					move = yield from get_move(self, valid_moves)
+					pl.hide_message()
 					res = move['resource']
 					pl.cards[res] += 1
 
@@ -348,7 +361,9 @@ def rest_of_turn(self):
 					'resources': [res for res in const.resources]
 				}]
 
+				pl.show_message("Choose which resource to monopolise")
 				move = yield from get_move(self, valid_moves)
+				pl.hide_message()
 				res = move['resource']
 
 				total_res = 0

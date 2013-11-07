@@ -357,4 +357,12 @@
 		Catan.local_player = msg.player;
 	};
 
+	Handlers.show_message = function(msg) {
+		Catan.show_message(msg.message);
+	};
+
+	Handlers.hide_message = function(msg) {
+		Catan.clear_message();
+	};
+
 }(window.Catan = window.Catan || {}, jQuery));
