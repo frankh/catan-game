@@ -81,5 +81,19 @@ class BoardGenTest(unittest.TestCase):
 		self.assertEqual(cur_path, path_1)
 		self.assertEqual(len(paths), len(set(paths)))
 
+	def test_validators(self):
+		import board_validators
+		import itertools
+		from inspect import getmembers, isfunction
+
+		validators_list = [name for (name, value) in getmembers(board_validators) if isfunction(value)]
+
+		for i in range(len(validators_list)+1):
+			for comb in itertools.combinations(validators_list, i):
+				import sys
+				sys.stdout.flush()
+				generate_board(options=comb)
+
+
 if __name__ == '__main__':
 	unittest.main()

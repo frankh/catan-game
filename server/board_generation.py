@@ -5,28 +5,6 @@ import functools
 def flatten(l):
 	return list(itertools.chain(*l))
 
-def cached_copy(func):
-	"""
-	Wrapper that causes the function to always return the same value.
-
-	If the value is not immutable it returns a copy.
-	"""
-
-	cache = {}
-	@functools.wraps(func)
-	def wrapper(self, *args, **kwargs):
-		key = func.__qualname__, self.id
-
-		if key not in cache:
-			cache[key] = func(self, *args, **kwargs)
-
-		if isinstance(cache[key], list):
-			cache[key] = list(cache[key])
-
-		return cache[key]
-
-	return wrapper
-
 def get_ident(*ident_in):
 	"""
 	Normalise id by ordering tuples, converting string (JavaScript) notation
@@ -64,8 +42,9 @@ def get_ident(*ident_in):
 	return ident
 
 class Board(object):
-	def __init__(self, Hex, Vertex, Path):
+	def __init__(self, Hex, Vertex, Path, CacheObj):
 		self.Hex, self.Vertex, self.Path = Hex, Vertex, Path
+		self.CacheObj = CacheObj
 
 		self.hexes = list(Hex.objects.values())
 		self.vertices = list(Vertex.objects.values())
@@ -89,6 +68,31 @@ def Sea(hex1, hex2):
 	return 10000 + 100*hex1 + hex2 
 
 def create_board():
+
+	class CacheObj(object):
+		cache_val = 0
+
+	def cached_copy(func):
+		"""
+		Wrapper that causes the function to always return the same value.
+
+		If the value is not immutable it returns a copy.
+		"""
+
+		cache = {}
+		@functools.wraps(func)
+		def wrapper(self, *args, **kwargs):
+			key = CacheObj.cache_val, func.__qualname__, self.id
+
+			if key not in cache:
+				cache[key] = func(self, *args, **kwargs)
+
+			if isinstance(cache[key], list):
+				cache[key] = list(cache[key])
+
+			return cache[key]
+
+		return wrapper
 
 	class CatanObj(object):
 		objects = None
@@ -321,6 +325,7 @@ def create_board():
 				'type': 'vertex',
 			}
 
+	coastal_path_cache = None
 	class Path(CatanObj):
 		port = None
 		built = None
@@ -328,6 +333,9 @@ def create_board():
 		@property
 		@cached_copy
 		def next_coastal_path(self):
+			if coastal_path_cache is not None:
+				return Path.get(coastal_path_cache[self.id])
+
 			paths = [p for p in self.paths if p.is_coastal]
 
 			def max_path_hex(p):
@@ -397,106 +405,138 @@ def create_board():
 	Hex.create_vertices()
 	CatanObj.initialised = True
 
-	return Board(Hex, Vertex, Path)
+	board = Board(Hex, Vertex, Path, CacheObj)
 
-def generate_board(port_start_offset=0):
-	board = create_board()
-	Hex, Vertex, Path = board.Hex, board.Vertex, board.Path
+	path_map = {}
+	for path in board.paths:
+		if path.is_coastal:
+			path_map[path.id] = path.next_coastal_path.id
 
-	port_start_sea_hex = Hex.get(Sea(1,2))
-	port_start_v1, port_start_v2 = [v for v in port_start_sea_hex.vertices
-	                                        if Hex.get(2) in v.hexes]
-
-	port_start = Path.get(port_start_v1.id, port_start_v2.id)
-
-	for i in range(port_start_offset):
-		port_start = port_start.next_coastal_path
-
-	tiles = [
-		['desert']		* 1,
-		['fields']		* 4,
-		['forest']		* 4,
-		['pasture']		* 4,
-		['hills']		* 3,
-		['mountains']	* 3,
-	]
-
-	port_types = [
-		['general']	* 4,
-		['wheat']	* 1,
-		['wood']	* 1,
-		['wool']	* 1,
-		['clay']	* 1,
-		['ore']		* 1,
-	]
-
-	values = [
-		[2]	* 1,
-		[3]	* 2,
-		[4]	* 2,
-		[5]	* 2,
-		[6]	* 2,
-		[8]	* 2,
-		[9]	* 2,
-		[10]* 2,
-		[11]* 2,
-		[12]* 1,
-	]
-
-	tiles = flatten(tiles)
-	random.shuffle(tiles)
-
-	values = flatten(values)
-	random.shuffle(values)
-
-	port_types = flatten(port_types)
-	random.shuffle(port_types)
-
-
-	ports = []
-	port_spacing = [3,3,4,3,3,4,3,3,4]
-
-	# Assign ports
-	port_path = port_start
-	for port_type in port_types:
-		port_hex = [hx for hx in port_path.hexes 
-		                      if not hx.is_sea][0]
-
-		# if port_path.port:
-		# 	raise Exception('Path already has a port')
-
-		port_path.port = port_type
-		port_hex.port = port_type
-		port_hex.port_path = port_path
-
-		for vert in port_path.verts:
-			vert.port = port_type
-
-		ports.append({
-			'id': len(ports),
-			'port_type': port_type,
-			'path': port_path.as_dict(),
-			'hex': port_hex.as_dict(),
-		})
-
-		for i in range(port_spacing.pop(0)):
-			port_path = port_path.next_coastal_path
-
-	board.ports = ports
-
-	# Assign tiles
-	for hx, tile in zip([hx for hx in board.land_hexes], tiles):
-		hx.tile = tile
-
-	hexes = [hx for hx in board.land_hexes 
-	                   if not hx.tile == 'desert']
-
-	desert_hex = [hx for hx in board.land_hexes if hx.tile == 'desert'][0]
-	desert_hex.being_robbed = True
-	desert_hex.value = 0
-
-	# Assign values
-	for hx, value in zip(hexes, values):
-		hx.value = value
+	coastal_path_cache = path_map
 
 	return board
+
+def generate_board(port_start_offset=0, options=None):
+	if options is None:
+		options = ['desert_on_coast','no_same_value_adjacent','no_red_adjacent',
+			'no_double_red_resource','no_same_value_resource','no_13_plus_vertex']
+		options = []
+	
+	board = create_board()
+	def unvalidated_gen_board():
+		board.CacheObj.cache_val += 1
+		Hex, Vertex, Path = board.Hex, board.Vertex, board.Path
+
+		port_start_sea_hex = Hex.get(Sea(1,2))
+		port_start_v1, port_start_v2 = [v for v in port_start_sea_hex.vertices
+		                                        if Hex.get(2) in v.hexes]
+
+		port_start = Path.get(port_start_v1.id, port_start_v2.id)
+
+		for i in range(port_start_offset):
+			port_start = port_start.next_coastal_path
+
+
+		tiles = [
+			['desert']		* 1,
+			['fields']		* 4,
+			['forest']		* 4,
+			['pasture']		* 4,
+			['hills']		* 3,
+			['mountains']	* 3,
+		]
+
+		port_types = [
+			['general']	* 4,
+			['wheat']	* 1,
+			['wood']	* 1,
+			['wool']	* 1,
+			['clay']	* 1,
+			['ore']		* 1,
+		]
+
+		values = [
+			[2]	* 1,
+			[3]	* 2,
+			[4]	* 2,
+			[5]	* 2,
+			[6]	* 2,
+			[8]	* 2,
+			[9]	* 2,
+			[10]* 2,
+			[11]* 2,
+			[12]* 1,
+		]
+
+		tiles = flatten(tiles)
+		random.shuffle(tiles)
+
+		values = flatten(values)
+		random.shuffle(values)
+
+		port_types = flatten(port_types)
+		random.shuffle(port_types)
+
+
+		ports = []
+		port_spacing = [3,3,4,3,3,4,3,3,4]
+
+		# Assign ports
+		port_path = port_start
+		for port_type in port_types:
+			port_hex = [hx for hx in port_path.hexes 
+			                      if not hx.is_sea][0]
+
+			# if port_path.port:
+			# 	raise Exception('Path already has a port')
+
+			port_path.port = port_type
+			port_hex.port = port_type
+			port_hex.port_path = port_path
+
+			for vert in port_path.verts:
+				vert.port = port_type
+
+			ports.append({
+				'id': len(ports),
+				'port_type': port_type,
+				'path': port_path.as_dict(),
+				'hex': port_hex.as_dict(),
+			})
+
+			for i in range(port_spacing.pop(0)):
+				port_path = port_path.next_coastal_path
+
+		board.ports = ports
+
+		# Assign tiles
+		for hx, tile in zip([hx for hx in board.land_hexes], tiles):
+			hx.tile = tile
+
+		hexes = [hx for hx in board.land_hexes 
+		                   if not hx.tile == 'desert']
+
+		desert_hex = [hx for hx in board.land_hexes if hx.tile == 'desert'][0]
+		desert_hex.being_robbed = True
+		desert_hex.value = 0
+
+		# Assign values
+		for hx, value in zip(hexes, values):
+			hx.value = value
+
+		return board
+
+	board = unvalidated_gen_board()
+
+	while True:
+		for validator in options:
+			import board_validators
+			validator = getattr(board_validators, validator)
+			if not validator(board):
+				board = unvalidated_gen_board()
+				break
+		else:
+			break
+
+	return board
+
