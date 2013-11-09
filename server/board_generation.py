@@ -241,7 +241,7 @@ def create_board():
 			super().__init__(ident)
 			ident = self.id
 
-			self.adj_hexes = list(map(Hex.get, Hex.hex_adj_graph[ident]))
+			self.adj_hexes = frozenset(map(Hex.get, Hex.hex_adj_graph[ident]))
 
 		@classmethod
 		def create_vertices(cls):
