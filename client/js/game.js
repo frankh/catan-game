@@ -2,6 +2,7 @@
 	Catan.board = null;
 	Catan.current_player = null;
 	Catan.speed = 0.1;
+	Catan.muted = true;
 
 	Catan.resource_types = {
 		'wheat': true,
@@ -85,7 +86,7 @@
 
 	Catan.play_sound = function(sound) {
 		var aud = $('#audio-'+sound)[0];
-		if( !aud.muted ) {
+		if( !aud.muted && !Catan.muted ) {
 			aud.load();
 			aud.play();
 		}
