@@ -333,6 +333,9 @@ def create_board():
 		@property
 		@cached_copy
 		def next_coastal_path(self):
+			# This is essentially static data, but keep the generation func
+			# in case it ever changes.
+			# Cache once globally, not just per board.
 			if coastal_path_cache is not None:
 				return Path.get(coastal_path_cache[self.id])
 
