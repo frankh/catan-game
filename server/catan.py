@@ -21,10 +21,10 @@ log = log.getLogger('catan')
 
 class DefaultGame(Game):
 
-	def __init__(self):
+	def __init__(self, max_players=1):
 		super().__init__()
 		self.dice_gen = dice_gen.DeckDiceGen()
-		self.max_players = 1
+		self.max_players = max_players
 	
 global games, game_tokens
 games = set()
@@ -148,18 +148,29 @@ if __name__ == '__main__':
 
 	parser.add_argument(
 		'--default_game',
-		action="store_true",
-		default=False
+		type=int,
+		metavar='num_players',
+		dest='default_num_players',
+		nargs='?',
+		default='no_default'
 	)
 
 	opts = parser.parse_args()
-	
-	if opts.default_game:
-		game = DefaultGame()
+	if opts.default_num_players is None:
+		opts.default_num_players = 1
+
+	if opts.default_num_players == "no_default":
+		opts.default_num_players = None
+
+	if opts.default_num_players is not None:
+		num_players = opts.default_num_players
+		game = DefaultGame(num_players)
 		games.add(game)
-		game_tokens["default"] = game
-		default_player = Player("default", "default", game)
-		game.add_player(default_player)
+		for i in range(num_players):
+			token = "default{}".format(i+1)
+			game_tokens[token] = game
+			default_player = Player(token, token, game)
+			game.add_player(default_player)
 
 	socket_app.listen(opts.port)
 	log.debug('Listening on port {0}'.format(opts.port))
