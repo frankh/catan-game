@@ -381,6 +381,17 @@
 		Catan.clear_message();
 	};
 
+	Handlers.change_status = function(msg) {
+		$('.status_container .phase').text(msg.status);
+	};
+
+	Handlers.log_message = function(msg) {
+		var log_message = $('.log_message.template').clone();
+		log_message.text(msg.message);
+
+		$('.status_container .status').prepend(log_message);
+	};
+
 	Handlers.stolen = function(msg) {
 	};
 
