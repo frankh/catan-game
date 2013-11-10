@@ -262,10 +262,10 @@ class Game(object):
 	started = False
 	phase = None
 
-	def __init__(self, name="unnamed game", max_players=4):
+	def __init__(self, name="unnamed game", max_players=4, validators=[]):
 		self.players = []
 		self.password = None
-		self.board = generate_board()
+		self.board = generate_board(validators=validators)
 		self.current_player = None
 		self.started = False
 		self._can_trade = False

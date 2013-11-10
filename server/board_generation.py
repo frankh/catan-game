@@ -419,11 +419,11 @@ def create_board():
 
 	return board
 
-def generate_board(port_start_offset=0, options=None):
-	if options is None:
-		options = ['desert_on_coast','no_same_value_adjacent','no_red_adjacent',
+def generate_board(port_start_offset=0, validators=None):
+	if validators is None:
+		validators = ['desert_on_coast','no_same_value_adjacent','no_red_adjacent',
 			'no_double_red_resource','no_same_value_resource','no_13_plus_vertex']
-		options = []
+		validators = []
 	
 	board = create_board()
 	def unvalidated_gen_board():
@@ -532,7 +532,7 @@ def generate_board(port_start_offset=0, options=None):
 	board = unvalidated_gen_board()
 
 	while True:
-		for validator in options:
+		for validator in validators:
 			import board_validators
 			validator = getattr(board_validators, validator)
 			if not validator(board):

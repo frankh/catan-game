@@ -223,6 +223,10 @@ def move_robber(self):
 	target_vertices = {v for v in target_vertices 
 	 			      if max(val for val in v.built.owner.cards.values()) > 0}
 
+	self.broadcast({
+		"type": "game",
+		"game": self.as_dict()
+	})
 	if target_vertices:
 		valid_moves = [{
 			'type': 'steal_from',

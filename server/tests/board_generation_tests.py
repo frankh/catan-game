@@ -92,7 +92,7 @@ class BoardGenTest(unittest.TestCase):
 			for comb in itertools.combinations(validators_list, i):
 				import sys
 				sys.stdout.flush()
-				generate_board(options=comb)
+				generate_board(validators=comb)
 
 
 if __name__ == '__main__':

@@ -22,9 +22,11 @@ log = log.getLogger('catan')
 class DefaultGame(Game):
 
 	def __init__(self, max_players=1):
-		super().__init__()
+		from inspect import getmembers, isfunction
+		import board_validators
+		validators_list = [name for (name, value) in getmembers(board_validators) if isfunction(value)]
+		super().__init__(max_players=max_players, validators=validators_list)
 		self.dice_gen = dice_gen.DeckDiceGen()
-		self.max_players = max_players
 	
 global games, game_tokens
 games = set()
