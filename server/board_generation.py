@@ -519,6 +519,9 @@ def generate_board(port_start_offset=0, validators=None):
 		hexes = [hx for hx in board.land_hexes 
 		                   if not hx.tile == 'desert']
 
+		desert_hex = [hx for hx in board.land_hexes if hx.tile == 'desert'][0]
+		desert_hex.value = 0
+		
 		# Assign values
 		for hx, value in zip(hexes, values):
 			hx.value = value
@@ -539,6 +542,5 @@ def generate_board(port_start_offset=0, validators=None):
 
 	desert_hex = [hx for hx in board.land_hexes if hx.tile == 'desert'][0]
 	desert_hex.being_robbed = True
-	desert_hex.value = 0
 	return board
 
