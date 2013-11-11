@@ -87,12 +87,7 @@ class BoardGenTest(unittest.TestCase):
 		from inspect import getmembers, isfunction
 
 		validators_list = [name for (name, value) in getmembers(board_validators) if isfunction(value)]
-
-		for i in range(len(validators_list)+1):
-			for comb in itertools.combinations(validators_list, i):
-				import sys
-				sys.stdout.flush()
-				generate_board(validators=comb)
+		generate_board(validators=validators_list)
 
 
 if __name__ == '__main__':

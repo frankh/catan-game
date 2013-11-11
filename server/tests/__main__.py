@@ -26,19 +26,19 @@ def timingDecorator(func):
 
 
 class _WritelnDecorator(object):
-    """Used to decorate file-like objects with a handy 'writeln' method"""
-    def __init__(self,stream):
-        self.stream = stream
+		"""Used to decorate file-like objects with a handy 'writeln' method"""
+		def __init__(self,stream):
+				self.stream = stream
 
-    def __getattr__(self, attr):
-        if attr in ('stream', '__getstate__'):
-            raise AttributeError(attr)
-        return getattr(self.stream,attr)
+		def __getattr__(self, attr):
+				if attr in ('stream', '__getstate__'):
+						raise AttributeError(attr)
+				return getattr(self.stream,attr)
 
-    def writeln(self, arg=None):
-        if arg:
-            self.write(arg)
-            self.flush()
+		def writeln(self, arg=None):
+				if arg:
+						self.write(arg)
+						self.flush()
 
 class TimeTestResult(unittest.TextTestResult):
 	def __init__(self, *args,**kwargs):
@@ -74,16 +74,23 @@ class TimeTestResult(unittest.TextTestResult):
 		return super().addUnexpectedSuccess(test)
 
 class TimeTestRunner(unittest.TextTestRunner):
-    resultclass = TimeTestResult
+		resultclass = TimeTestResult
 
 if __name__ == '__main__':
-	if len(sys.argv) > 1:
-		seed = int(sys.argv[1])
-		sys.argv = sys.argv[:1]
-	else:
-		seed = random.randint(1, 1000000000)
+	import argparse
+	parser = argparse.ArgumentParser()
 
+	parser.add_argument(
+		'-s',
+		'--seed',
+		type=int,
+		default=random.randint(1, 1000000000)
+	)
+	opts = parser.parse_args()
+
+	seed = opts.seed
 	print('Using random seed', seed)
 	random.seed(seed)
 	sys.stdout.flush()
+	sys.argv = sys.argv[:1]
 	unittest.TestProgram(verbosity=2, testRunner=TimeTestRunner, exit=True)
