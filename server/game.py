@@ -294,6 +294,12 @@ class Game(object):
 			'can_trade': self.can_trade
 		})
 
+	def broadcast_game(self):
+		self.broadcast({
+			'type': 'game',
+			'game': self.as_dict()
+		})
+
 	def maybe_start(self):
 		"""
 		Start the game if everyone is ready, the game is full and we

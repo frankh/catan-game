@@ -198,6 +198,8 @@ def rolled_robber(self):
 		if len(player.cards_list) <= player_thresholds[player.id]:
 			self.waiting_for_discards.remove(player)
 
+		self.broadcast_game()
+
 	for player in self.players:
 		player.hide_message()
 
@@ -223,10 +225,7 @@ def move_robber(self):
 	target_vertices = {v for v in target_vertices 
 	 			      if max(val for val in v.built.owner.cards.values()) > 0}
 
-	self.broadcast({
-		"type": "game",
-		"game": self.as_dict()
-	})
+	self.broadcast_game()
 	if target_vertices:
 		valid_moves = [{
 			'type': 'steal_from',
@@ -363,6 +362,7 @@ def rest_of_turn(self):
 					pl.cards[res] += 1
 
 					self.action_number += 1
+					self.broadcast_game()
 
 			elif move['dev_card'] == 'Monopoly':
 				valid_moves = [{
@@ -381,6 +381,7 @@ def rest_of_turn(self):
 					p.cards[res] = 0
 				pl.cards[res] = total_res
 				self.action_number += 1
+				self.broadcast_game()
 
 			else:
 				raise Exception("Unknown Dev Card")
