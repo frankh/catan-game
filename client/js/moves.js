@@ -94,6 +94,7 @@
 			vertex.addClass('steal_from');
 
 			vertex.click(function() {
+				Catan.clear_message();
 				$('.steal_from').removeClass('steal_from').unbind('click');
 
 				Catan.send({
