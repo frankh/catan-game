@@ -80,7 +80,7 @@
 	Moves.discard = function(move) {
 		$.each(move, function() {
 			if( this.player_id == Catan.local_player.id ) {
-				Catan.show_mesasge("You must discard "+move.number+" cards");
+				Catan.show_message("You must discard "+move.number+" cards");
 			}
 		});
 	}
@@ -210,8 +210,10 @@
 						place_locations.unbind();
 						place_locations.removeClass('build');
 						place_locations.removeClass('build_'+move.build);
-						place_locations.removeClass(Catan.local_player.color);
-
+						if( move.build != "city" ) {
+							place_locations.removeClass(Catan.local_player.color);
+						}
+						
 						Catan.clear_message();
 
 						var loc_type = 'path';

@@ -6,7 +6,7 @@
 		if( !$vert.hasClass('built_'+building) ) {
 			Catan.play_sound('build');
 			$vert.removeClass('unbuilt');
-			$vert.removeClass('build_settlement');
+			$vert.removeClass('built_settlement');
 			$vert.addClass('built_'+building);
 			$vert.addClass(color);
 			$vert.addClass('built');
