@@ -153,7 +153,7 @@ class Player(object):
 		return len([v for v in self.game.board.vertices
 		                    if v.built 
 		                   and v.built.building == 'city' 
-		                   and v.built.owner == self])
+		                   and v.built.owner == self]) * 2
 
 	@property
 	@cached_per_action
