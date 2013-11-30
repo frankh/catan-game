@@ -154,14 +154,14 @@ if __name__ == '__main__':
 		metavar='num_players',
 		dest='default_num_players',
 		nargs='?',
-		default='no_default'
+		default=-1
 	)
 
 	opts = parser.parse_args()
 	if opts.default_num_players is None:
 		opts.default_num_players = 1
 
-	if opts.default_num_players == "no_default":
+	if opts.default_num_players == -1:
 		opts.default_num_players = None
 
 	if opts.default_num_players is not None:
