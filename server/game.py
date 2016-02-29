@@ -66,7 +66,6 @@ class Player(object):
 			'ore': 0,
 		}
 		self.dev_cards = []
-		self.num_soldiers = 0
 		self.has_longest_road = 0
 		self.has_largest_army = 0
 		self.ready = False
@@ -75,6 +74,11 @@ class Player(object):
 	@property
 	def connected(self):
 		return self.connection is not None
+
+	@property
+	@cached_per_action
+	def num_knights(self):
+		return sum(1 for c in self.dev_cards if c.played and c.name == "Knight")
 
 	@property
 	@cached_per_action
@@ -106,7 +110,7 @@ class Player(object):
 	@cached_per_action
 	def get_connected_locations(self):
 		current_verts = [v for v in self.game.board.vertices
-		                         if v.built 
+		                         if v.built
 		                        and v.built.owner is self]
 		visited_verts = set(current_verts)
 		visited_paths = set()
@@ -143,16 +147,16 @@ class Player(object):
 	@cached_per_action
 	def victory_points_settlements(self):
 		return len([v for v in self.game.board.vertices
-		                    if v.built 
-		                   and v.built.building == 'settlement' 
+		                    if v.built
+		                   and v.built.building == 'settlement'
 		                   and v.built.owner == self])
 
 	@property
 	@cached_per_action
 	def victory_points_cities(self):
 		return len([v for v in self.game.board.vertices
-		                    if v.built 
-		                   and v.built.building == 'city' 
+		                    if v.built
+		                   and v.built.building == 'city'
 		                   and v.built.owner == self]) * 2
 
 	@property
@@ -198,7 +202,7 @@ class Player(object):
 			if v.built and v.built.owner is not self:
 				return l
 
-			next_paths = (p for p in v.paths 
+			next_paths = (p for p in v.paths
 			                      if p.built and p.built.owner == self
 			                     and p not in visited_paths)
 
@@ -211,7 +215,7 @@ class Player(object):
 			return max(res)
 
 		ret = max([longest_road_from_point(v, 0, set()) for v
-		           in self.game.board.vertices 
+		           in self.game.board.vertices
 			       if [p for p in v.paths if p.built and p.built.owner == self]
 			      ] or [0])
 
@@ -240,7 +244,7 @@ class Player(object):
 			'num_dev_cards': len(self.dev_cards),
 			'dev_cards': [c.as_dict() for c in self.dev_cards if not c.played],
 			'played_dev_cards': [c.as_dict() for c in self.dev_cards if c.played],
-			'num_soldiers': self.num_soldiers,
+			'num_knights': self.num_knights,
 			'longest_road': self.longest_road,
 			'has_longest_road': self.has_longest_road,
 			'ports': list(self.get_ports()),
@@ -375,7 +379,7 @@ class Game(object):
 		"""
 		Sent every time the client updates the player's trade offer.
 
-		trade should look like: 
+		trade should look like:
 		{
 			'give': {
 				'ore': 2,
@@ -390,11 +394,11 @@ class Game(object):
 		}
 
 		The player's active trade is set to this trade if it is valid.
-		Invalid trades (invalid player, invalid resource etc) are silently 
+		Invalid trades (invalid player, invalid resource etc) are silently
 		dropped.
 
 		If the player_id is not None, and the specified player's active trade
-		mirrors this trade, the trade is done. Note that this means the 
+		mirrors this trade, the trade is done. Note that this means the
 		target active trade must also specify this player id and the turn
 		numbers must match.
 
@@ -402,7 +406,7 @@ class Game(object):
 		"""
 		def valid_trade(player, trade):
 			"""
-			Returns true if the format of the trade is as expected, 
+			Returns true if the format of the trade is as expected,
 			otherwise false.
 			"""
 			try:
@@ -428,7 +432,7 @@ class Game(object):
 						return False
 
 					trade_res, trade_count = [(key,val) for (key, val)
-					                                   in trade['give'].items() 
+					                                   in trade['give'].items()
 					                                   if val > 0][0]
 
 					# You can only trade at the best rate you have.
@@ -526,7 +530,7 @@ class Game(object):
 			and self.current_player in (player, t_player) \
 			and valid_trade(t_player, matched_trade):
 				# Do the trade!
-				# Both players must have enough cards because of the 
+				# Both players must have enough cards because of the
 				# valid_trade checks
 				self.do_trade(trade, player, t_player)
 				traded = True
@@ -638,7 +642,7 @@ class Game(object):
 			location.built = Building(player, move['build'])
 
 			player.cards = {
-				key: val - location.built.resource_cost[key] 
+				key: val - location.built.resource_cost[key]
 				     for key, val in player.cards.items()
 			}
 		elif move['type'] == 'roll':

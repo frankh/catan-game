@@ -133,7 +133,7 @@
 			// Ignore local players offers.
 			return;
 		}
-		
+
 		Catan.active_trades[msg.player.id] = trade;
 
 		Trade.update_other_trades();
@@ -158,7 +158,7 @@
 
 		Trade.update_other_trades();
 
-		if( trade.player_from.id == Catan.local_player.id 
+		if( trade.player_from.id == Catan.local_player.id
 		 || (trade.player_to && trade.player_to.id == Catan.local_player.id) ) {
 			Trade.reset_trade();
 		}
@@ -191,6 +191,7 @@
 			player_row.find('.summary_player.name .name').text(player.name);
 			player_row.find('.summary_player.name .icon').addClass(player.icon);
 			player_row.find('.summary_player.cards').text(player.num_cards);
+			player_row.find('.summary_player.knights').text(player.num_knights);
 			player_row.find('.summary_player.points').text(player.victory_points);
 			player_row.find('.summary_player.roads').text(player.longest_road);
 
