@@ -91,7 +91,7 @@
 			aud.play();
 		}
 	}
-	
+
 	var SOCKET;
 
 	$(window).load(function() {
@@ -103,8 +103,9 @@
 		var sockaddr = document.domain;
 		var sockprot = 'ws:';
 		var game_token = '';
-		if( document.domain == 'localhost' ) {
+		if( document.domain == 'localhost' || true ) {
 			sockaddr += ':8080';
+		} else {
 		}
 		if (document.location.protocol === "https:") {
 			sockprot = "wss:";
@@ -130,7 +131,7 @@
 			var msg = JSON.parse(msg.data);
 
 			console.log('queue: '+msg.type);
-			
+
 			Catan.queue.add(Catan.Handlers[msg.type], [msg]);
 		}
 	});

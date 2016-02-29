@@ -1,0 +1,7 @@
+FROM alpine
+
+RUN apk add --no-cache python3
+
+ADD client /srv/client
+WORKDIR "/srv/client"
+CMD ["python3", "/srv/client/temp_http.py"]

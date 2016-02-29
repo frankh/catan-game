@@ -1,0 +1,9 @@
+client:
+  image: frankh/catan-client
+  ports:
+    - "8000:8000"
+
+server:
+  image: frankh/catan-server
+  ports:
+    - "8080:8080"

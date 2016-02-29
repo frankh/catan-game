@@ -1,0 +1,16 @@
+FROM alpine
+
+RUN apk add --no-cache python3 && \
+    apk add --no-cache --virtual=build-dependencies wget ca-certificates && \
+        wget "https://bootstrap.pypa.io/get-pip.py" -O /dev/stdout | python3 && \
+        apk del build-dependencies
+
+ADD server /srv/server
+
+RUN cd /srv/server && \
+    pip3 install -r requirements.txt
+
+WORKDIR "/srv/server"
+
+CMD ["python3", "/srv/server/catan.py", "--default_game"]
+
