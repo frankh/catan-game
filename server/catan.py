@@ -27,7 +27,7 @@ class DefaultGame(Game):
 		validators_list = [name for (name, value) in getmembers(board_validators) if isfunction(value)]
 		super().__init__(max_players=max_players, validators=validators_list)
 		self.dice_gen = dice_gen.DeckDiceGen()
-	
+
 global games, game_tokens
 games = set()
 game_tokens = {}
@@ -79,9 +79,9 @@ class Socket(tornado.websocket.WebSocketHandler):
 
 	def on_message(self, message):
 		try:
-			log.debug(str('temp')+'>'+pformat(json.loads(message)['type']))
+			log.debug("in <-"+pformat(json.loads(message)['type']))
 		except:
-			log.debug(str('temp')+'>'+message)
+			log.debug("in <-"+message)
 
 		message = json.loads(message)
 
@@ -94,12 +94,12 @@ class Socket(tornado.websocket.WebSocketHandler):
 		elif( message['type'] == 'trade' ):
 			self.game.recv_trade(self.player, message['trade'])
 			# { 'type': 'trade', 'trade': {'give': {}, 'want': {}, 'turn': 1, 'player': None} }
-		
+
 	def write_message(self, message):
 		try:
-			log.debug(str('temp')+'<'+pformat(json.loads(message)['type']))
+			log.debug("out -> "+pformat(json.loads(message)['type']))
 		except:
-			log.debug(str('temp')+'<'+message)
+			log.debug("out -> "+message)
 
 		super().write_message(message);
 
@@ -140,9 +140,9 @@ if __name__ == '__main__':
 	import argparse
 	parser = argparse.ArgumentParser()
 	parser.add_argument(
-		'-p', 
-		'--port', 
-		metavar='port', 
+		'-p',
+		'--port',
+		metavar='port',
 		type=int,
 		default=8080,
 		help='listen on the specified port'
@@ -154,28 +154,31 @@ if __name__ == '__main__':
 		metavar='num_players',
 		dest='default_num_players',
 		nargs='?',
-		default=-1
+		default=3
 	)
 
 	opts = parser.parse_args()
 	if opts.default_num_players is None:
-		opts.default_num_players = 1
+		opts.default_num_players = 3
 
 	if opts.default_num_players == -1:
 		opts.default_num_players = None
 
 	if opts.default_num_players is not None:
+		log.debug("default game players:" + str(opts.default_num_players))
 		num_players = opts.default_num_players
 		game = DefaultGame(num_players)
 		games.add(game)
 		for i in range(num_players):
 			token = "default{}".format(i+1)
+			log.debug(token)
 			game_tokens[token] = game
 			default_player = Player(token, token, game)
 			game.add_player(default_player)
 
 	socket_app.listen(opts.port)
 	log.debug('Listening on port {0}'.format(opts.port))
+	log.debug(game_tokens)
 	iol = tornado.ioloop.IOLoop.instance()
 	tornado.ioloop.PeriodicCallback(lambda: None,500,iol).start()
 	iol.start()

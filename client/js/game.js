@@ -1,7 +1,7 @@
 (function( Catan, $, undefined ) {
 	Catan.board = null;
 	Catan.current_player = null;
-	Catan.speed = 0.1;
+	Catan.speed = 1;
 	Catan.muted = true;
 
 	Catan.resource_types = {

@@ -1,7 +1,13 @@
+FROM node AS css
+RUN npm install -g less
+ADD client/css /srv/client/css
+RUN cd /srv/client/css && ./compile_less.sh
+
 FROM alpine
 
 RUN apk add --no-cache python3
 
 ADD client /srv/client
+COPY --from=css /srv/client/css /srv/client/css
 WORKDIR "/srv/client"
 CMD ["python3", "/srv/client/temp_http.py"]
