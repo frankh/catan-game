@@ -1,9 +1,14 @@
-client:
-  image: frankh/catan-client
-  ports:
-    - "8000:8000"
-
-server:
-  image: frankh/catan-server
-  ports:
-    - "8080:8080"
+version: '2'
+services:
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    ports:
+      - "8000:8000"
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    ports:
+      - "8080:8080"
